@@ -1,0 +1,30 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#74b9ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0984e3;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="19.2" fill="url(#grad1)"/>
+  
+  <!-- Sun -->
+  <circle cx="64" cy="44.8" r="19.2" fill="#fff" opacity="0.9"/>
+  
+  <!-- Sun rays -->
+  <g stroke="#fff" stroke-width="2.56" opacity="0.6">
+    <line x1="83.2" y1="44.8" x2="93.44" y2="44.8"/><line x1="77.57645019878171" y1="58.37645019878171" x2="84.81722363813196" y2="65.61722363813195"/><line x1="64" y1="64" x2="64" y2="74.24"/><line x1="50.423549801218286" y1="58.37645019878171" x2="43.182776361868044" y2="65.61722363813196"/><line x1="44.8" y1="44.8" x2="34.56" y2="44.800000000000004"/><line x1="50.423549801218286" y1="31.223549801218287" x2="43.18277636186804" y2="23.98277636186804"/><line x1="64" y1="25.599999999999998" x2="63.99999999999999" y2="15.36"/><line x1="77.57645019878171" y1="31.223549801218283" x2="84.81722363813195" y2="23.982776361868034"/>
+  </g>
+  
+  <!-- Cloud -->
+  <g fill="#fff" opacity="0.7">
+    <circle cx="64" cy="83.2" r="15.36"/>
+    <circle cx="74.24" cy="83.2" r="12.8"/>
+    <circle cx="53.76" cy="83.2" r="12.8"/>
+    <circle cx="69.12" cy="76.8" r="10.24"/>
+    <circle cx="58.88" cy="76.8" r="10.24"/>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="44.8" cy="31.999999999999996" r="3.84" fill="#fff" opacity="0.6"/>
+  <circle cx="89.6" cy="51.199999999999996" r="3.2" fill="#fff" opacity="0.6"/>
+</svg>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate PWA Icons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .icon-container {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            background: white;
+        }
+        button {
+            background: #74b9ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0984e3;
+        }
+    </style>
+</head>
+<body>
+    <h1>PWA Icon Generator</h1>
+    <p>Click "Generate All Icons" to create all required PWA icons, then right-click each canvas to save as PNG.</p>
+    
+    <button onclick="generateAllIcons()">Generate All Icons</button>
+    <button onclick="downloadAllIcons()">Download All Icons</button>
+    
+    <div id="icons"></div>
+
+    <script>
+        const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function generateIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.id = `icon-${size}`;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#74b9ff');
+            gradient.addColorStop(1, '#0984e3');
+            
+            // Draw rounded rectangle background
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 0, 0, size, size, size * 0.15);
+            ctx.fill();
+            
+            // Draw sun
+            const sunRadius = size * 0.15;
+            const sunX = size * 0.5;
+            const sunY = size * 0.35;
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, sunRadius, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw sun rays
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = size * 0.02;
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI) / 4;
+                const startX = sunX + Math.cos(angle) * sunRadius;
+                const startY = sunY + Math.sin(angle) * sunRadius;
+                const endX = sunX + Math.cos(angle) * (sunRadius + size * 0.08);
+                const endY = sunY + Math.sin(angle) * (sunRadius + size * 0.08);
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+            }
+            
+            // Draw cloud
+            const cloudY = size * 0.65;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            
+            // Main cloud body
+            ctx.beginPath();
+            ctx.arc(sunX, cloudY, size * 0.12, 0, 2 * Math.PI);
+            ctx.arc(sunX + size * 0.08, cloudY, size * 0.1, 0, 2 * Math.PI);
+            ctx.arc(sunX - size * 0.08, cloudY, size * 0.1, 0, 2 * Math.PI);
+            ctx.arc(sunX + size * 0.04, cloudY - size * 0.05, size * 0.08, 0, 2 * Math.PI);
+            ctx.arc(sunX - size * 0.04, cloudY - size * 0.05, size * 0.08, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Add small decorative elements
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            ctx.arc(sunX - size * 0.15, sunY - size * 0.1, size * 0.03, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(sunX + size * 0.2, sunY + size * 0.05, size * 0.025, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            return canvas;
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function generateAllIcons() {
+            const container = document.getElementById('icons');
+            container.innerHTML = '';
+            
+            iconSizes.forEach(size => {
+                const canvas = generateIcon(size);
+                const div = document.createElement('div');
+                div.className = 'icon-container';
+                
+                const label = document.createElement('div');
+                label.textContent = `${size}x${size}`;
+                label.style.marginTop = '5px';
+                label.style.fontSize = '12px';
+                
+                div.appendChild(canvas);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+        }
+        
+        function downloadAllIcons() {
+            iconSizes.forEach(size => {
+                const canvas = document.getElementById(`icon-${size}`);
+                if (canvas) {
+                    const link = document.createElement('a');
+                    link.download = `icon-${size}x${size}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }
+            });
+        }
+        
+        // Generate icons on page load
+        window.onload = generateAllIcons;
+    </script>
+</body>
+</html> 
