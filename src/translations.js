@@ -59,6 +59,11 @@ darkMode: "Тъмен режим",
     // Error messages
     cityNotFound: "Градът не е намерен",
     locationError: "Не може да се определи местоположението",
+    locationPermissionDenied: "Достъпът до местоположението е отказан",
+    locationUnavailable: "Местоположението е недостъпно",
+    locationTimeout: "Времето за определяне на местоположението изтече",
+    locationNotSupported: "Геолокацията не се поддържа от браузъра",
+    locationEnableInstructions: "Моля, разрешете достъпа до местоположението от настройките на браузъра или устройството си.",
     forecastError: "Данните за прогнозата не са достъпни",
     
     // Loading
@@ -141,7 +146,12 @@ darkMode: "Тъмен режим",
     
     // Error messages
     cityNotFound: "City not found",
-    locationError: "Unable to get current location weather",
+    locationError: "Cannot determine location",
+    locationPermissionDenied: "Location access denied",
+    locationUnavailable: "Location unavailable",
+    locationTimeout: "Location request timed out",
+    locationNotSupported: "Geolocation is not supported by your browser",
+    locationEnableInstructions: "Please enable location access in your browser or device settings.",
     forecastError: "Forecast data not available",
     
     // Loading

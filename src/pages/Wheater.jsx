@@ -9,6 +9,18 @@ import InstallPrompt from '../components/InstallPrompt.jsx';
 import OfflineIndicator from '../components/OfflineIndicator.jsx';
 import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 import WeatherMap from '../components/WeatherMap.jsx';
+import { useEffect } from 'react';
+import AdminStats from '../components/AdminStats.jsx';
+
+function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+    return isMobile;
+}
 
 function Weather() {
     const { language, changeLanguage, t } = useLanguage();
@@ -63,15 +75,34 @@ function Weather() {
         }
     }
 
-    const getCurrentLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (position) => {
+    const getCurrentLocation = async () => {
+        if (!navigator.geolocation) {
+            setError(t('locationError') + ': ' + t('locationNotSupported'));
+            return;
+        }
+        setLoading(true);
+        setError('');
+        // Проверка с Permissions API
+        if (navigator.permissions) {
+            try {
+                const status = await navigator.permissions.query({ name: 'geolocation' });
+                if (status.state === 'denied') {
+                    setError(t('locationError') + ': ' + t('locationPermissionDenied') + '. ' + t('locationEnableInstructions'));
+                    setLoading(false);
+                    return;
+                }
+            } catch (e) {
+                // Permissions API не се поддържа, продължаваме нататък
+            }
+        }
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
                 const { latitude, longitude } = position.coords;
-                setLoading(true);
                 try {
                     const res = await fetch(
                         `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
                     );
+                    if (!res.ok) throw new Error(t('locationError'));
                     const data = await res.json();
                     setWeatherData(data);
                     setCity(data.name);
@@ -81,10 +112,17 @@ function Weather() {
                 } finally {
                     setLoading(false);
                 }
-            });
-        } else {
-            setError(t('locationError'));
-        }
+            },
+            (geoError) => {
+                let msg = t('locationError');
+                if (geoError.code === 1) msg += ': ' + t('locationPermissionDenied') + '. ' + t('locationEnableInstructions');
+                else if (geoError.code === 2) msg += ': ' + t('locationUnavailable');
+                else if (geoError.code === 3) msg += ': ' + t('locationTimeout');
+                setError(msg);
+                setLoading(false);
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
     };
     
 
@@ -190,33 +228,37 @@ function Weather() {
         setError('');
     };
 
+    const isMobile = useIsMobile();
+
     return (
         <div className={containerClass}>
-            <div className="header">
-                <div className="header-left">
-                    <h1>{t('appTitle')}</h1>
-                    <div className="language-selector">
-                        <select 
-                            className="language-dropdown"
-                            value={language}
-                            onChange={(e) => changeLanguage(e.target.value)}
-                        >
-                            <option value="bg">🇧🇬 БГ</option>
-                            <option value="en">🇺🇸 EN</option>
-                        </select>
+            {isMobile ? (
+                <div className="header">
+                    {/* 1-ви ред: Лого, заглавие, език, тема */}
+                    <div className="header-row header-row-top">
+                        <span className="header-logo" role="img" aria-label="logo">☁️</span>
+                        <h1 className="header-title">Oblako</h1>
+                        <div className="header-controls">
+                            <select 
+                                className="language-dropdown"
+                                value={language}
+                                onChange={(e) => changeLanguage(e.target.value)}
+                            >
+                                <option value="bg">🇧🇬 БГ</option>
+                                <option value="en">🇺🇸 EN</option>
+                            </select>
+                            <button
+                                className="theme-toggle"
+                                onClick={toggleTheme}
+                                title={theme === 'dark' ? t('lightMode') : t('darkMode')}
+                            >
+                                {theme === 'dark' ? '☀️' : '🌙'}
+                            </button>
+                        </div>
                     </div>
-                    <button
-                        className="theme-toggle"
-                        onClick={toggleTheme}
-                        title={theme === 'dark' ? t('lightMode') : t('darkMode')}
-                    >
-                        {theme === 'dark' ? '☀️' : '🌙'}
-                        {theme === 'dark' ? t('lightMode') : t('darkMode')}
-                    </button>
-                </div>
-                <div className="weather-input">
-                    <form onSubmit={getWeather} style={{display: 'flex', gap: '10px', position: 'relative'}}>
-                        <div className="search-history">
+                    {/* 2-ри ред: Търсачка и бутон */}
+                    <div className="header-row header-row-search">
+                        <form onSubmit={getWeather} className="search-form">
                             <input
                                 type="text"
                                 value={city}
@@ -224,42 +266,15 @@ function Weather() {
                                 onFocus={handleInputFocus}
                                 onBlur={handleInputBlur}
                                 placeholder={t('searchPlaceholder')}
+                                className="search-input"
                             />
-                            
-                            {/* History Dropdown */}
-                            {showHistory && (
-                                <div className="history-dropdown">
-                                    {searchHistory.length > 0 ? (
-                                        <>
-                                            {searchHistory.map((historyCity, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="history-item"
-                                                    onClick={() => handleHistoryClick(historyCity)}
-                                                >
-                                                    <span className="history-item-text">{historyCity}</span>
-                                                    <span className="history-icon">🕒</span>
-                                                </div>
-                                            ))}
-                                            <div 
-                                                className="clear-history"
-                                                onClick={clearHistory}
-                                            >
-                                                {t('clearHistory')}
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div className="no-history">
-                                            {t('noHistory')}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                        
-                        <button type="submit" className="search-btn" disabled={loading}>
-                            {t('searchButton')}
-                        </button>
+                            <button type="submit" className="search-btn" disabled={loading}>
+                                {t('searchButton')}
+                            </button>
+                        </form>
+                    </div>
+                    {/* 3-ти ред: Бутон за текущо местоположение (само на мобилни) */}
+                    <div className="header-row header-row-location">
                         <button
                             type="button"
                             className="location-btn"
@@ -268,9 +283,87 @@ function Weather() {
                         >
                             {t('currentLocation')}
                         </button>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className="header">
+                    <div className="header-left">
+                        <h1>{t('appTitle')}</h1>
+                        <div className="language-selector">
+                            <select 
+                                className="language-dropdown"
+                                value={language}
+                                onChange={(e) => changeLanguage(e.target.value)}
+                            >
+                                <option value="bg">🇧🇬 БГ</option>
+                                <option value="en">🇺🇸 EN</option>
+                            </select>
+                        </div>
+                        <button
+                            className="theme-toggle"
+                            onClick={toggleTheme}
+                            title={theme === 'dark' ? t('lightMode') : t('darkMode')}
+                        >
+                            {theme === 'dark' ? '☀️' : '🌙'}
+                            {theme === 'dark' ? t('lightMode') : t('darkMode')}
+                        </button>
+                    </div>
+                    <div className="weather-input">
+                        <form onSubmit={getWeather} style={{display: 'flex', gap: '10px', position: 'relative'}}>
+                            <div className="search-history">
+                                <input
+                                    type="text"
+                                    value={city}
+                                    onChange={(e) => setCity(e.target.value)}
+                                    onFocus={handleInputFocus}
+                                    onBlur={handleInputBlur}
+                                    placeholder={t('searchPlaceholder')}
+                                />
+                                {/* History Dropdown */}
+                                {showHistory && (
+                                    <div className="history-dropdown">
+                                        {searchHistory.length > 0 ? (
+                                            <>
+                                                {searchHistory.map((historyCity, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="history-item"
+                                                        onClick={() => handleHistoryClick(historyCity)}
+                                                    >
+                                                        <span className="history-item-text">{historyCity}</span>
+                                                        <span className="history-icon">🕒</span>
+                                                    </div>
+                                                ))}
+                                                <div 
+                                                    className="clear-history"
+                                                    onClick={clearHistory}
+                                                >
+                                                    {t('clearHistory')}
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="no-history">
+                                                {t('noHistory')}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                            <button type="submit" className="search-btn" disabled={loading}>
+                                {t('searchButton')}
+                            </button>
+                            <button
+                                type="button"
+                                className="location-btn"
+                                onClick={getCurrentLocation}
+                                disabled={loading}
+                            >
+                                {t('currentLocation')}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             {loading && <div className="loading">{t('loading')}</div>}
             {error && <div className="error-message">{error}</div>}
