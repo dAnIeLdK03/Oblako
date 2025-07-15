@@ -83,10 +83,12 @@ function Forecast({city}){
             </div>
 
             {/* Temperature Chart */}
-            <TemperatureChart 
-                forecastData={forecastData} 
-                type={chartType}
-            />
+            <div className="scroll-x">
+              <TemperatureChart 
+                  forecastData={forecastData} 
+                  type={chartType}
+              />
+            </div>
             
             {/* Existing forecast cards */}
             <div className="forecast-container">
