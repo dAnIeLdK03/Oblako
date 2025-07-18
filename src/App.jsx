@@ -2,7 +2,6 @@ import Weather from './pages/Wheater'
 import { LanguageProvider } from './LanguageContext.jsx'
 import { ThemeProvider } from './ThemeContext.jsx'
 import { HistoryProvider } from './HistoryContext.jsx';
-import InstallPrompt from './components/InstallPrompt.jsx';
 import AdminStats from './components/AdminStats.jsx';
 import Footer from './components/Footer.jsx';
 import Terms from './pages/Terms.jsx';
@@ -16,7 +15,6 @@ function App() {
     <Router>
     <ThemeProvider>
     <LanguageProvider>
-          <InstallPrompt />
       <HistoryProvider>
             <Routes>
               <Route path="/" element={<div><Weather/></div>} />

@@ -5,7 +5,6 @@ import '../Weather.css';
 import {useTheme} from '../ThemeContext.jsx';
 import { useHistory } from '../HistoryContext.jsx';
 import SunriseSunset from '../components/SunriseSunset.jsx';
-import InstallPrompt from '../components/InstallPrompt.jsx';
 import OfflineIndicator from '../components/OfflineIndicator.jsx';
 import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 import WeatherMap from '../components/WeatherMap.jsx';
@@ -413,7 +412,6 @@ function Weather() {
             )}
 
             {/* PWA Components */}
-            <InstallPrompt />
             <OfflineIndicator />
             {/* Интерактивна карта най-отдолу */}
             <WeatherMap onLocationSelect={handleMapWeather} />

@@ -10,6 +10,33 @@ const VISITS_FILE = path.join(__dirname, 'visits.json');
 
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs : 15 * 60 * 1000,
+  max: 100,
+  message: "To many requests, please try again later.",
+  standartHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use(cors({
+  origin: ['https://Oblako17.com', 'https://www.Oblako17.com'],
+  methods: ['GET', 'POST'],
+}));
+
+app.use((req, res, next) => {
+  const ua = req.get('user-agent') || '';
+  if(/curl|wget|bot|spider|scraper/i.test(ua)) {
+    return res.status(403).json({ error: 'Access denied' });
+  }
+  next();
+});
 
 // Записва всяко посещение
 app.post('/track-visit', (req, res) => {
@@ -45,4 +72,8 @@ app.get(SECRET_PATH, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Visit tracker server running on http://localhost:${PORT}`);
   console.log(`Stats available at http://localhost:${PORT}${SECRET_PATH}`);
+
+  app.use((req, res, next) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
 }); 
