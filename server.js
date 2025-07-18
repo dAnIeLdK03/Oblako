@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use(cors({
-  origin: ['https://Oblako17.com', 'https://www.Oblako17.com'],
+  origin: ['https://oblako17.online', 'https://www.oblako17.online'],
   methods: ['GET', 'POST'],
 }));
 
@@ -69,11 +69,12 @@ app.get(SECRET_PATH, (req, res) => {
   res.json(visits);
 });
 
+// SPA fallback: връща index.html за всички непознати пътища
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Visit tracker server running on http://localhost:${PORT}`);
   console.log(`Stats available at http://localhost:${PORT}${SECRET_PATH}`);
-
-  app.use((req, res, next) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
 }); 
