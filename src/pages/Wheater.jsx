@@ -9,7 +9,8 @@ import OfflineIndicator from '../components/OfflineIndicator.jsx';
 import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 import WeatherMap from '../components/WeatherMap.jsx';
 import { useEffect } from 'react';
-import AdminStats from '../components/AdminStats.jsx';
+import LocalClock from '../components/LocalClock.jsx';
+
 
 function useIsMobile() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -234,7 +235,7 @@ function Weather() {
             {isMobile ? (
                 <div className="header">
                     {/* 1-ви ред: Лого, заглавие, език, тема */}
-                    <div className="header-row header-row-top">
+                    <div className="header-row header-row-top" style={{position: 'relative'}}>
                         <span className="header-logo" role="img" aria-label="logo">☁️</span>
                         <h1 className="header-title">Oblako</h1>
                         <div className="header-controls">
@@ -254,6 +255,11 @@ function Weather() {
                                 {theme === 'dark' ? '☀️' : '🌙'}
                             </button>
                         </div>
+                        {weatherData && weatherData.timezone !== undefined && (
+                            <div className="header-clock">
+                                <LocalClock timezoneOffset={weatherData.timezone} />
+                            </div>
+                        )}
                     </div>
                     {/* 2-ри ред: Търсачка и бутон */}
                     <div className="header-row header-row-search">
@@ -286,7 +292,7 @@ function Weather() {
                 </div>
             ) : (
                 <div className="header">
-                    <div className="header-left">
+                    <div className="header-left" style={{position: 'relative'}}>
                         <h1>{t('appTitle')}</h1>
                         <div className="language-selector">
                             <select 
@@ -306,6 +312,11 @@ function Weather() {
                             {theme === 'dark' ? '☀️' : '🌙'}
                             {theme === 'dark' ? t('lightMode') : t('darkMode')}
                         </button>
+                        {weatherData && weatherData.timezone !== undefined && (
+                            <div className="header-clock">
+                                <LocalClock timezoneOffset={weatherData.timezone} />
+                            </div>
+                        )}
                     </div>
                     <div className="weather-input">
                         <form onSubmit={getWeather} style={{display: 'flex', gap: '10px', position: 'relative'}}>
@@ -403,6 +414,8 @@ function Weather() {
 
                         {/* Sunrise & Sunset Component */}
                         <SunriseSunset weatherData={weatherData} />
+                        {console.log('weatherData:', weatherData)}
+                        {console.log('weatherData.timezone:', weatherData && weatherData.timezone)}
                     </div>
 
                     <div className="weather-right">

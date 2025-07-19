@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = 4000; // Можеш да смениш порта ако искаш
@@ -69,7 +71,11 @@ app.get(SECRET_PATH, (req, res) => {
   res.json(visits);
 });
 
-// SPA fallback: връща index.html за всички непознати пътища
+// Премахвам nodemailer import и FEEDBACK_FILE
+// Премахвам app.post('/api/feedback', ...) и свързания код
+// Премахвам app.get('/my-secret-feedback', ...) и свързания код
+
+// SPA fallback: връща index.html за всички непознати пътища (винаги най-отдолу!)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
