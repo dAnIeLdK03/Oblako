@@ -23,11 +23,19 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem('oblako_language', newLanguage);
   };
   
-  // Load saved language on init
+  // Load saved language on init, иначе избери според браузъра
   React.useEffect(() => {
     const savedLanguage = localStorage.getItem('oblako_language');
     if (savedLanguage && translations[savedLanguage]) {
       setLanguage(savedLanguage);
+    } else {
+      // Автоматичен избор според браузъра
+      const browserLang = navigator.language || navigator.userLanguage || 'en';
+      if (browserLang.startsWith('bg')) {
+        setLanguage('bg');
+      } else {
+        setLanguage('en');
+      }
     }
   }, []);
   

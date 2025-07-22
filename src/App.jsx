@@ -9,8 +9,17 @@ import Privacy from './pages/Privacy.jsx';
 import Cookies from './pages/Cookies.jsx';
 import CookieConsent from './components/CookieConsent.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import FeedbackPopup from './components/FeedbackPopup.jsx';
+import { useState, useEffect } from 'react';
 
 function App() {
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowFeedback(true), 20000); // 20 секунди
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Router>
     <ThemeProvider>
@@ -28,6 +37,7 @@ function App() {
     </LanguageProvider>
     </ThemeProvider>
       <CookieConsent />
+      {showFeedback && <FeedbackPopup onClose={() => setShowFeedback(false)} />}
     </Router>
   )
 }
