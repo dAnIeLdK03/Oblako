@@ -62,20 +62,24 @@ function Navigation() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Handle mouse events for dragging
+  // Handle mouse and touch events for dragging
   const handleMouseDown = (e) => {
     setIsDragging(true);
     const rect = e.currentTarget.getBoundingClientRect();
+    const clientX = e.clientX || e.touches?.[0]?.clientX;
+    const clientY = e.clientY || e.touches?.[0]?.clientY;
     setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: clientX - rect.left,
+      y: clientY - rect.top
     });
   };
 
   const handleMouseMove = (e) => {
     if (isDragging) {
-      const newX = e.clientX - dragOffset.x;
-      const newY = e.clientY - dragOffset.y;
+      const clientX = e.clientX || e.touches?.[0]?.clientX;
+      const clientY = e.clientY || e.touches?.[0]?.clientY;
+      const newX = clientX - dragOffset.x;
+      const newY = clientY - dragOffset.y;
       
       // Keep button within viewport bounds
       const maxX = window.innerWidth - 40;
@@ -92,15 +96,35 @@ function Navigation() {
     setIsDragging(false);
   };
 
-  // Add global mouse event listeners
+  // Touch event handlers for mobile
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    handleMouseDown(e);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    handleMouseMove(e);
+  };
+
+  const handleTouchEnd = (e) => {
+    e.preventDefault();
+    handleMouseUp();
+  };
+
+  // Add global mouse and touch event listeners
   useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
       
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
       };
     }
   }, [isDragging, dragOffset]);
@@ -109,7 +133,8 @@ function Navigation() {
   useEffect(() => {
     const mainContent = document.querySelector('.main-content');
     if (mainContent) {
-      if (isMenuOpen) {
+      const isMobile = window.innerWidth <= 768;
+      if (isMenuOpen && !isMobile) {
         mainContent.style.marginLeft = '280px';
         mainContent.style.transition = 'margin-left 0.3s ease';
       } else {
@@ -128,28 +153,50 @@ function Navigation() {
            top: `${buttonPosition.y}px`,
            left: `${buttonPosition.x}px`,
            zIndex: 99999,
-           width: '40px',
-           height: '40px',
+           width: window.innerWidth <= 768 ? '50px' : '40px',
+           height: window.innerWidth <= 768 ? '50px' : '40px',
            background: 'var(--accent-color)',
            border: '2px solid var(--border-color)',
-           borderRadius: '10px',
+           borderRadius: '12px',
            cursor: isDragging ? 'grabbing' : 'grab',
            display: 'flex',
            flexDirection: 'column',
            justifyContent: 'center',
            alignItems: 'center',
-           padding: '8px',
+           padding: window.innerWidth <= 768 ? '12px' : '8px',
            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
            userSelect: 'none',
-           transition: 'all 0.2s ease'
+           transition: 'all 0.2s ease',
+           touchAction: 'none'
          }} 
          onClick={!isDragging ? toggleMenu : undefined}
          onMouseDown={handleMouseDown}
+         onTouchStart={handleTouchStart}
+         onTouchMove={handleTouchMove}
+         onTouchEnd={handleTouchEnd}
          title={language === 'bg' ? 'Премести бутона' : 'Drag to move button'}
        >
-         <span style={{width: '100%', height: '3px', background: 'white', margin: '1px 0', borderRadius: '2px'}}></span>
-         <span style={{width: '100%', height: '3px', background: 'white', margin: '1px 0', borderRadius: '2px'}}></span>
-         <span style={{width: '100%', height: '3px', background: 'white', margin: '1px 0', borderRadius: '2px'}}></span>
+         <span style={{
+           width: '100%', 
+           height: window.innerWidth <= 768 ? '4px' : '3px', 
+           background: 'white', 
+           margin: '1px 0', 
+           borderRadius: '2px'
+         }}></span>
+         <span style={{
+           width: '100%', 
+           height: window.innerWidth <= 768 ? '4px' : '3px', 
+           background: 'white', 
+           margin: '1px 0', 
+           borderRadius: '2px'
+         }}></span>
+         <span style={{
+           width: '100%', 
+           height: window.innerWidth <= 768 ? '4px' : '3px', 
+           background: 'white', 
+           margin: '1px 0', 
+           borderRadius: '2px'
+         }}></span>
        </div>
 
       <nav className={`navigation ${isMenuOpen ? 'open' : ''}`}>
