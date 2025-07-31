@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
+import Logo from '../components/Logo.jsx';
 import TemperatureChart from '../components/TemperatureChart.jsx';
 import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 
@@ -35,9 +36,17 @@ function Forecast({city}){
                 // Save to offline storage
                 saveForecastData(data, city);
 
-                // Filter for cards display
+                // Filter for cards display - get unique days only
                 const daily = data.list.filter(item => item.dt_txt.includes('12:00:00'));
-                setForecast(daily.slice(0, 5));
+                // Remove duplicates by date to avoid showing the same day multiple times
+                const uniqueDays = daily.reduce((acc, item) => {
+                    const date = new Date(item.dt_txt).toDateString();
+                    if (!acc.find(existing => new Date(existing.dt_txt).toDateString() === date)) {
+                        acc.push(item);
+                    }
+                    return acc;
+                }, []);
+                setForecast(uniqueDays.slice(0, 5));
             } catch (err) {
                 console.error('Forecast error:', err);
                 setError(err.message);
@@ -66,7 +75,10 @@ function Forecast({city}){
 
     return (
         <div className="card">
-            <h3>{t('forecastTitle')} {city} 🌦️</h3>
+            <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px'}}>
+                <Logo size="small" showText={false} />
+                <h3>{t('forecastTitle')} {city} 🌦️</h3>
+            </div>
             
             {/* Chart Toggle */}
             <div className="chart-toggle">

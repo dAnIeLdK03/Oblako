@@ -1,6 +1,7 @@
 import React from 'react';
 import RainChance from '../components/RainChance';
 import { useLanguage } from '../LanguageContext.jsx';
+import Logo from '../components/Logo.jsx';
 import '../Weather.css';
 
 function RainChancePage() {
@@ -30,7 +31,10 @@ function RainChancePage() {
   return (
     <div className="rain-chance-page">
       <div className="page-header">
-        <h1>{language === 'bg' ? 'Вероятност за валежи' : 'Rain Probability'}</h1>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
+          <Logo size="xlarge" showText={false} />
+          <h1>{language === 'bg' ? 'Вероятност за валежи' : 'Rain Probability'}</h1>
+        </div>
         <p>{language === 'bg' ? 'Детайлна информация за валежите' : 'Detailed precipitation information'}</p>
       </div>
       

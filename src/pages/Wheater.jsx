@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Forecast from './Forecast';
 import { useLanguage } from '../LanguageContext.jsx';
+import SEOHead from '../components/SEOHead.jsx';
+import Logo from '../components/Logo.jsx';
 import '../Weather.css';
 import {useTheme} from '../ThemeContext.jsx';
 import { useHistory } from '../HistoryContext.jsx';
@@ -8,6 +10,7 @@ import SunriseSunset from '../components/SunriseSunset.jsx';
 import OfflineIndicator from '../components/OfflineIndicator.jsx';
 import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 import WeatherMap from '../components/WeatherMap.jsx';
+import WorldClock from '../components/WorldClock.jsx';
 import { useEffect } from 'react';
 
 
@@ -32,6 +35,7 @@ function Weather() {
     const [showHistory, setShowHistory] = useState(false);
     
     const [city, setCity] = useState('');
+
     const [weatherData, setWeatherData] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -248,63 +252,73 @@ function Weather() {
     const isMobile = useIsMobile();
 
     return (
-        <div className={containerClass}>
+        <>
+            <SEOHead 
+                title="Oblako ☁️ - Безплатна прогноза за времето в реално време"
+                description="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света."
+                keywords="времето, прогноза, weather, облако, облако app, weather app, карта, прогноза за времето, безплатна прогноза, почасова прогноза, температура, изгрев, залез, България, weather forecast, free weather app"
+                url="https://oblako17.online/"
+            />
+            <div className={containerClass}>
             {isMobile ? (
                 <div className="header">
-                    {/* 1-ви ред: Лого, заглавие, език, тема */}
-                    <div className="header-row header-row-top" style={{position: 'relative'}}>
-                        <span className="header-logo" role="img" aria-label="logo">☁️</span>
-                        <h1 className="header-title">Oblako</h1>
-                        <div className="header-controls">
-                            <select 
-                                className="language-dropdown"
-                                value={language}
-                                onChange={(e) => changeLanguage(e.target.value)}
-                            >
-                                <option value="bg">🇧🇬 БГ</option>
-                                <option value="en">🇺🇸 EN</option>
-                            </select>
-                            <button
-                                className="theme-toggle"
-                                onClick={() => {
-                                    console.log('Theme toggle clicked, current theme:', theme);
-                                    toggleTheme();
-                                }}
-                                title={theme === 'dark' ? t('lightMode') : t('darkMode')}
-                            >
-                                {theme === 'dark' ? '☀️' : '🌙'}
-                            </button>
-                            <button
-                                className="temp-toggle"
-                                onClick={() => {
-                                    console.log('Temperature toggle clicked, current unit:', temperatureUnit);
-                                    toggleTemperatureUnit();
-                                }}
-                                title={temperatureUnit === 'celsius' ? 'Switch to Fahrenheit' : 'Switch to Celsius'}
-                            >
-                                🌡️ {temperatureUnit === 'celsius' ? '°F' : '°C'}
-                            </button>
-                        </div>
+                    {/* 1-ви ред: Лого центрирано */}
+                    <div className="header-row header-row-logo" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: '-10px', paddingTop: '0'}}>
+                        <Logo size="xxlarge" showText={false} />
                     </div>
-                    {/* 2-ри ред: Търсачка и бутон */}
-                    <div className="header-row header-row-search">
-                        <form onSubmit={getWeather} className="search-form">
+                    {/* 2-ри ред: Контроли */}
+                    <div className="header-row header-row-controls" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '15px'}}>
+                        <select 
+                            className="language-dropdown"
+                            value={language}
+                            onChange={(e) => changeLanguage(e.target.value)}
+                        >
+                            <option value="bg">🇧🇬 БГ</option>
+                            <option value="en">🇺🇸 EN</option>
+                        </select>
+                        <button
+                            className="theme-toggle"
+                            onClick={() => {
+                                console.log('Theme toggle clicked, current theme:', theme);
+                                toggleTheme();
+                            }}
+                            title={theme === 'dark' ? t('lightMode') : t('darkMode')}
+                        >
+                            {theme === 'dark' ? '☀️' : '🌙'}
+                        </button>
+                        <button
+                            className="temp-toggle"
+                            onClick={() => {
+                                console.log('Temperature toggle clicked, current unit:', temperatureUnit);
+                                toggleTemperatureUnit();
+                            }}
+                            title={temperatureUnit === 'celsius' ? 'Switch to Fahrenheit' : 'Switch to Celsius'}
+                        >
+                            🌡️ {temperatureUnit === 'celsius' ? '°F' : '°C'}
+                        </button>
+                    </div>
+                    {/* 3-ти ред: Търсачка и бутон */}
+                    <div className="header-row header-row-search" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px'}}>
+                        <form onSubmit={getWeather} className="search-form" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', width: '100%', maxWidth: '500px'}}>
                             <input
                                 type="text"
                                 value={city}
-                                onChange={(e) => setCity(e.target.value)}
+                                onChange={(e) => {
+                                    setCity(e.target.value);
+                                }}
                                 onFocus={handleInputFocus}
                                 onBlur={handleInputBlur}
                                 placeholder={t('searchPlaceholder')}
                                 className="search-input"
+                                style={{flex: '1', maxWidth: '300px'}}
                             />
                             <button type="submit" className="search-btn" disabled={loading}>
                                 {t('searchButton')}
                             </button>
                         </form>
                     </div>
-                    {/* 3-ти ред: Бутон за текущо местоположение (само на мобилни) */}
-                    <div className="header-row header-row-location">
+                    {/* 4-ти ред: Бутон за текущо местоположение (само на мобилни) */}
+                    <div className="header-row header-row-location" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px'}}>
                         <button
                             type="button"
                             className="location-btn"
@@ -317,18 +331,20 @@ function Weather() {
                 </div>
             ) : (
                 <div className="header">
-                    <div className="header-left" style={{position: 'relative'}}>
-                        <h1>{t('appTitle')}</h1>
-                        <div className="language-selector">
-                            <select 
-                                className="language-dropdown"
-                                value={language}
-                                onChange={(e) => changeLanguage(e.target.value)}
-                            >
-                                <option value="bg">🇧🇬 БГ</option>
-                                <option value="en">🇺🇸 EN</option>
-                            </select>
-                        </div>
+                    {/* Лого центрирано */}
+                    <div className="desktop-logo" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: '0'}}>
+                        <Logo size="xxlarge" showText={false} />
+                    </div>
+                    {/* Контроли */}
+                    <div className="header-controls" style={{position: 'relative', display: 'flex', alignItems: 'center', gap: '25px', marginTop: '20px', marginBottom: '20px'}}>
+                        <select 
+                            className="language-dropdown"
+                            value={language}
+                            onChange={(e) => changeLanguage(e.target.value)}
+                        >
+                            <option value="bg">🇧🇬 БГ</option>
+                            <option value="en">🇺🇸 EN</option>
+                        </select>
                         <button
                             className="theme-toggle"
                             onClick={() => {
@@ -351,17 +367,26 @@ function Weather() {
                             🌡️ {temperatureUnit === 'celsius' ? '°F' : '°C'}
                         </button>
                     </div>
-                    <div className="weather-input">
-                        <form onSubmit={getWeather} style={{display: 'flex', gap: '10px', position: 'relative'}}>
-                            <div className="search-history">
-                                <input
-                                    type="text"
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                    onFocus={handleInputFocus}
-                                    onBlur={handleInputBlur}
-                                    placeholder={t('searchPlaceholder')}
-                                />
+                    
+                    {/* World Clock - винаги видим в desktop версията */}
+                    <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '10px', marginBottom: '10px', marginLeft: '20px'}}>
+                        <WorldClock city="Sofia" language={language} hasError={false} />
+                    </div>
+                    
+                    <div className="weather-input" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px'}}>
+                        <form onSubmit={getWeather} style={{display: 'flex', gap: '10px', position: 'relative', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '600px'}}>
+                            <div className="search-history" style={{flex: '1', maxWidth: '300px'}}>
+                                                            <input
+                                type="text"
+                                value={city}
+                                onChange={(e) => {
+                                    setCity(e.target.value);
+                                }}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
+                                placeholder={t('searchPlaceholder')}
+                                style={{width: '100%'}}
+                            />
                                 {/* History Dropdown */}
                                 {showHistory && (
                                     <div className="history-dropdown">
@@ -416,6 +441,8 @@ function Weather() {
                 </div>
             )}
 
+
+
             {weatherData && (
                 <div className="weather-data">
                     <div className="weather-left">
@@ -467,7 +494,8 @@ function Weather() {
             <OfflineIndicator />
             {/* Интерактивна карта най-отдолу */}
             <WeatherMap onLocationSelect={handleMapWeather} />
-        </div>
+            </div>
+        </>
     );
 }
 

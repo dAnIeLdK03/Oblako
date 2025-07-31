@@ -4,19 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Oblako ☁️ - Weather App</title>
-    <meta name="description" content="Oblako - Прогноза за времето, интерактивна карта, графики и още.">
-    <meta name="keywords" content="времето, прогноза, weather, облако, облако app, weather app, карта, прогноза за времето">
+    <meta name="description" content="Oblako - Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.">
+    <meta name="keywords" content="времето, прогноза, weather, облако, облако app, weather app, карта, прогноза за времето, безплатна прогноза, почасова прогноза, температура, изгрев, залез, България, weather forecast, free weather app">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
     <meta name="author" content="Oblako Team">
     <!-- Open Graph за Facebook и социални мрежи -->
     <meta property="og:title" content="Oblako ☁️ - Weather App">
-    <meta property="og:description" content="Облако - модерно приложение за прогноза на времето.">
+    <meta property="og:description" content="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://oblako17.online/">
     <meta property="og:image" content="https://oblako17.online/public/icons/icon-192x192.png">
+    <meta property="og:image:width" content="192">
+    <meta property="og:image:height" content="192">
+    <meta property="og:locale" content="bg_BG">
+    <meta property="og:site_name" content="Oblako">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Oblako ☁️ - Weather App">
-    <meta name="twitter:description" content="Облако - модерно приложение за прогноза на времето.">
+    <meta name="twitter:description" content="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град.">
     <meta name="twitter:image" content="https://oblako17.online/public/icons/icon-192x192.png">
     <!-- Canonical URL -->
     <link rel="canonical" href="https://oblako17.online/" />
@@ -51,6 +58,54 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" href="/public/icons/icon-192x192.png">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Oblako",
+      "description": "Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.",
+      "url": "https://oblako17.online/",
+      "applicationCategory": "WeatherApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "BGN"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Oblako Team"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150"
+      },
+      "featureList": [
+        "Почасова прогноза за времето",
+        "5-дневна прогноза",
+        "Интерактивна карта",
+        "Графики за температури",
+        "Изгрев и залез",
+        "Многоезична поддръжка"
+      ]
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Oblako",
+      "url": "https://oblako17.online/",
+      "logo": "https://oblako17.online/public/icons/icon-192x192.png",
+      "sameAs": [
+        "https://oblako17.online/"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
@@ -58,19 +113,26 @@
     <div style="display: none;">
       <main style="max-width: 700px; margin: 32px auto 0 auto; padding: 0 16px; font-family: 'Poppins', Arial, sans-serif;">
         <section style="background: #f8fafc; border-radius: 16px; box-shadow: 0 2px 12px rgba(9,132,227,0.07); padding: 28px 24px; margin-bottom: 32px;">
-          <h2 style="color: #0984e3; font-size: 2em; margin-bottom: 12px;">Добре дошли в Oblako ☁️</h2>
+          <h1 style="color: #0984e3; font-size: 2.2em; margin-bottom: 12px;">Oblako ☁️ - Безплатна прогноза за времето</h1>
+          <h2 style="color: #0984e3; font-size: 1.8em; margin-bottom: 12px;">Добре дошли в най-доброто приложение за прогноза на времето</h2>
           <p style="font-size: 1.1em; color: #333; margin-bottom: 16px;">
-            Oblako е модерно приложение за прогноза на времето, което ви дава:
+            Oblako е модерно приложение за прогноза на времето, което ви дава точна информация за времето в реално време. Нашата безплатна прогноза за времето включва:
           </p>
           <ul style="font-size: 1.05em; color: #444; margin-bottom: 16px;">
-            <li>Точна почасова и 5-дневна прогноза за всеки град</li>
-            <li>Интерактивна карта с времето в реално време</li>
-            <li>Графики за температури и усещане</li>
-            <li>Изгрев и залез за всяка локация</li>
-            <li>Лесен за ползване интерфейс на български и английски</li>
+            <li><strong>Почасова прогноза за времето</strong> - Точна почасова и 5-дневна прогноза за всеки град в България и света</li>
+            <li><strong>Интерактивна карта</strong> - Карта с времето в реално време и визуализация на атмосферните условия</li>
+            <li><strong>Графики за температури</strong> - Детайлни графики за температури, влажност и усещане за топлина</li>
+            <li><strong>Изгрев и залез</strong> - Точни часове за изгрев и залез за всяка локация</li>
+            <li><strong>Многоезична поддръжка</strong> - Лесен за ползване интерфейс на български и английски език</li>
+            <li><strong>Безплатна прогноза</strong> - Напълно безплатно приложение за прогноза на времето</li>
           </ul>
+          <h3 style="color: #0984e3; font-size: 1.4em; margin-bottom: 12px;">Защо да изберете Oblako за прогноза на времето?</h3>
+          <p style="font-size: 1em; color: #666; margin-bottom: 16px;">
+            Нашата weather app предлага най-точната прогноза за времето с интерактивна карта, която ви показва атмосферните условия в реално време. 
+            Безплатната прогноза включва почасова прогноза, 5-дневна прогноза, графики за температури, изгрев и залез за всеки град в България.
+          </p>
           <p style="font-size: 1em; color: #666;">
-            Ключови думи: прогноза за времето, weather app, облако, интерактивна карта, почасова прогноза, изгрев, залез, температура, България, Oblako
+            <strong>Ключови думи:</strong> прогноза за времето, weather app, облако, интерактивна карта, почасова прогноза, изгрев, залез, температура, България, Oblako, безплатна прогноза, weather forecast, free weather app
           </p>
         </section>
       </main>

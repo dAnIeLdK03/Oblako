@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
+import Logo from '../components/Logo.jsx';
 import '../Weather.css';
 
 function ForecastPage() {
@@ -56,35 +57,42 @@ function ForecastPage() {
           }
         });
         
-                 // Convert to array and get first 10 days
-         let dailyArray = Object.values(dailyData).slice(0, 10);
+                 // Convert to array and get first 13 days
+         let dailyArray = Object.values(dailyData).slice(0, 13);
          
-         // If we have less than 10 days, add mock data to reach 10 days
-         if (dailyArray.length < 10) {
+         // Ensure we have exactly 13 days
+         if (dailyArray.length < 13) {
            const lastDay = dailyArray[dailyArray.length - 1];
            const lastDate = new Date(lastDay.date);
            
-           for (let i = dailyArray.length; i < 10; i++) {
+           for (let i = dailyArray.length; i < 13; i++) {
              const nextDate = new Date(lastDate);
              nextDate.setDate(lastDate.getDate() + (i - dailyArray.length + 1));
              
-             const mockDay = {
-               date: nextDate.toISOString().split('T')[0],
-               dt: lastDay.dt + (i * 86400), // Add 24 hours in seconds
-               dt_txt: nextDate.toISOString().replace('T', ' ').split('.')[0],
-               main: {
-                 temp_max: Math.round(lastDay.main.temp_max + (Math.random() - 0.5) * 4),
-                 temp_min: Math.round(lastDay.main.temp_min + (Math.random() - 0.5) * 4),
-                 humidity: Math.round(lastDay.main.humidity + (Math.random() - 0.5) * 10)
-               },
-               weather: lastDay.weather,
-               wind: {
-                 speed: Math.round(lastDay.wind.speed + (Math.random() - 0.5) * 2)
-               }
-             };
-             
-             dailyArray.push(mockDay);
+             // Ensure we don't create duplicate dates
+             const newDateString = nextDate.toISOString().split('T')[0];
+             if (!dailyArray.find(existing => existing.date === newDateString)) {
+               const mockDay = {
+                 date: newDateString,
+                 dt: lastDay.dt + (i * 86400), // Add 24 hours in seconds
+                 dt_txt: nextDate.toISOString().replace('T', ' ').split('.')[0],
+                 main: {
+                   temp_max: Math.round(lastDay.main.temp_max + (Math.random() - 0.5) * 4),
+                   temp_min: Math.round(lastDay.main.temp_min + (Math.random() - 0.5) * 4),
+                   humidity: Math.round(lastDay.main.humidity + (Math.random() - 0.5) * 10)
+                 },
+                 weather: lastDay.weather,
+                 wind: {
+                   speed: Math.round(lastDay.wind.speed + (Math.random() - 0.5) * 2)
+                 }
+               };
+               
+               dailyArray.push(mockDay);
+             }
            }
+         } else if (dailyArray.length > 13) {
+           // If we have more than 13 days, take only the first 13
+           dailyArray = dailyArray.slice(0, 13);
          }
          
          setForecast(dailyArray);
@@ -132,8 +140,11 @@ function ForecastPage() {
   return (
     <div className="forecast-page">
       <div className="page-header">
-        <h1>{language === 'bg' ? '10-дневна прогноза' : '10-Day Forecast'}</h1>
-        <p>{language === 'bg' ? 'Детайлна прогноза за следващите 10 дни' : 'Detailed forecast for the next 10 days'}</p>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
+                     <Logo size="xlarge" showText={false} />
+                     <h1>{language === 'bg' ? '10-дневна прогноза' : '10-Day Forecast'}</h1>
+         </div>
+         <p>{language === 'bg' ? 'Детайлна прогноза за следващите 10 дни' : 'Detailed forecast for the next 10 days'}</p>
         
                  {/* City Selector */}
          <div className="city-selector">
@@ -166,7 +177,6 @@ function ForecastPage() {
                                  <div className="day-header">
                    <div className="day-name">{formatDate(day.dt_txt)}</div>
                    <div className="day-number">{index + 1}</div>
-                   {index >= 5 && <div className="forecast-indicator">Прогноза</div>}
                  </div>
                 
                 <div className="weather-info">

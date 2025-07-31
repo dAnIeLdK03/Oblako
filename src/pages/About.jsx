@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
+import Logo from '../components/Logo.jsx';
 import '../Weather.css';
 
 const About = () => {
@@ -165,9 +166,12 @@ const About = () => {
   return (
     <div className="about-page">
       <header className="about-header">
-        <h1 className="about-title">
-          {currentContent.title}
-        </h1>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
+          <Logo size="xlarge" showText={false} />
+          <h1 className="about-title">
+            {language === 'bg' ? 'За Oblako' : 'About Oblako'}
+          </h1>
+        </div>
         <p className="about-subtitle">
           {currentContent.subtitle}
         </p>

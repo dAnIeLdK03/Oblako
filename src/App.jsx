@@ -15,36 +15,39 @@ import About from './pages/About.jsx';
 import CookieConsent from './components/CookieConsent.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WeatherTips from './pages/WeatherTips.jsx';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   return (
-    <Router>
-    <ThemeProvider>
-    <LanguageProvider>
-      <HistoryProvider>
-        <div className="app-container">
-          <Navigation />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Weather />} />
-              <Route path="/forecast" element={<ForecastPage />} />
-              <Route path="/rain-chance" element={<RainChancePage />} />
-              <Route path="/air-quality" element={<AirQualityPage />} />
-              <Route path="/weather-tips" element={<WeatherTips />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/cookies" element={<Cookies />} />
-            </Routes>
-          </main>
-          <AdminStats />
-          <Footer />
-        </div>
-      </HistoryProvider>
-      <CookieConsent />
-    </LanguageProvider>
-    </ThemeProvider>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <ThemeProvider>
+          <LanguageProvider>
+            <HistoryProvider>
+              <div className="app-container">
+                <Navigation />
+                <main className="main-content">
+                  <Routes>
+                    <Route path="/" element={<Weather />} />
+                    <Route path="/forecast" element={<ForecastPage />} />
+                    <Route path="/rain-chance" element={<RainChancePage />} />
+                    <Route path="/air-quality" element={<AirQualityPage />} />
+                    <Route path="/weather-tips" element={<WeatherTips />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/cookies" element={<Cookies />} />
+                  </Routes>
+                </main>
+                <AdminStats />
+                <Footer />
+              </div>
+            </HistoryProvider>
+            <CookieConsent />
+          </LanguageProvider>
+        </ThemeProvider>
+      </Router>
+    </HelmetProvider>
   )
 }
 

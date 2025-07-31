@@ -29,6 +29,22 @@ function RainChance({ weatherData }) {
     ]
   };
 
+  // Ensure no duplicate hours in today's data
+  const uniqueTodayData = rainData.today.reduce((acc, item) => {
+    if (!acc.find(existing => existing.hour === item.hour)) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
+
+  // Ensure no duplicate days in week data
+  const uniqueWeekData = rainData.week.reduce((acc, item) => {
+    if (!acc.find(existing => existing.day === item.day)) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
+
   const getCurrentHour = () => {
     return new Date().getHours();
   };
@@ -72,7 +88,7 @@ function RainChance({ weatherData }) {
         <div className="rain-section">
           <h4>{language === 'bg' ? 'Днес по часове' : 'Today by hours'}</h4>
           <div className="rain-hours">
-            {rainData.today.map((item, index) => (
+            {uniqueTodayData.map((item, index) => (
               <div key={index} className="rain-hour-item">
                 <div className="rain-time">{item.hour}</div>
                 <div className="rain-icon">{getRainIcon(item.type, parseInt(item.hour.split(':')[0]))}</div>
@@ -95,7 +111,7 @@ function RainChance({ weatherData }) {
         <div className="rain-section">
           <h4>{language === 'bg' ? 'Седмична прогноза' : 'Weekly forecast'}</h4>
           <div className="rain-week">
-            {rainData.week.map((item, index) => (
+            {uniqueWeekData.map((item, index) => (
               <div key={index} className="rain-day-item">
                 <div className="rain-day">{item.day}</div>
                 <div className="rain-temp">{convertTemperature(item.temp)}{getTemperatureSymbol()}</div>

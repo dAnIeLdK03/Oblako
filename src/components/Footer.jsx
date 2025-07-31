@@ -1,19 +1,20 @@
 import React from 'react';
 import { useLanguage } from '../LanguageContext.jsx';
+import Logo from './Logo.jsx';
 
 function Footer() {
   const { language } = useLanguage();
 
   const content = {
     bg: {
-      copyright: `© ${new Date().getFullYear()} Oblako. Всички права запазени.`,
+      copyright: `© ${new Date().getFullYear()}`,
       terms: 'Условия за ползване',
       privacy: 'Правила за поверителност',
       cookies: 'Политика за бисквитки',
       weatherTips: 'Съвети за времето',
     },
     en: {
-      copyright: `© ${new Date().getFullYear()} Oblako. All rights reserved.`,
+      copyright: `© ${new Date().getFullYear()}`,
       terms: 'Terms of Use',
       privacy: 'Privacy Policy',
       cookies: 'Cookie Policy',
@@ -40,7 +41,10 @@ function Footer() {
       backdropFilter: 'blur(10px)',
       borderTop: '1px solid var(--border-color)'
     }}>
-      {t.copyright}<br />
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '5px'}}>
+        <Logo size="small" showText={false} />
+        <span>{language === 'bg' ? 'Всички права запазени.' : 'All rights reserved.'}</span>
+      </div>
       <span style={{fontWeight: 'bold'}}>
         <a href="/weather-tips" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.weatherTips}</a> |
         <a href="/terms" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.terms}</a> |

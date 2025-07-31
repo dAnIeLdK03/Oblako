@@ -1,12 +1,16 @@
 import React from 'react';
 import { useLanguage } from '../LanguageContext.jsx';
+import Logo from '../components/Logo.jsx';
 
 function WeatherTips() {
   const { language } = useLanguage();
   
   return (
     <div className="weather-tips">
-      <h1>{language === 'bg' ? 'Съвети за времето' : 'Weather Tips'}</h1>
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '30px'}}>
+        <Logo size="xlarge" showText={false} />
+        <h1>{language === 'bg' ? 'Съвети за времето' : 'Weather Tips'}</h1>
+      </div>
       
       {language === 'bg' ? (
         <div className="tips-content">

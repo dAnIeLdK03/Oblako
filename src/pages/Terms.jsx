@@ -1,9 +1,13 @@
 import React from 'react';
+import Logo from '../components/Logo.jsx';
 
 function Terms() {
   return (
     <div style={{maxWidth: 700, margin: '40px auto', padding: 20, background: '#fff', color: '#222', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)'}}>
-      <h2>Условия за ползване</h2>
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
+        <Logo size="xlarge" showText={false} />
+        <h2>Условия за ползване</h2>
+      </div>
       <p>Това приложение "Oblako" се предоставя с информационна цел. Използвайки приложението, Вие се съгласявате да не злоупотребявате с услугата и да спазвате добрите практики при използване на интернет.</p>
       <ul>
         <li>Не носим отговорност за точността на прогнозите.</li>

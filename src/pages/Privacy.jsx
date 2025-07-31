@@ -1,9 +1,13 @@
 import React from 'react';
+import Logo from '../components/Logo.jsx';
 
 function Privacy() {
   return (
     <div style={{maxWidth: 700, margin: '40px auto', padding: 20, background: '#fff', color: '#222', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)'}}>
-      <h2>Правила за поверителност</h2>
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
+        <Logo size="xlarge" showText={false} />
+        <h2>Правила за поверителност</h2>
+      </div>
       <p>Oblako не събира лични данни от потребителите, освен анонимна статистика за посещенията (дата, IP, браузър), която се използва само за подобряване на услугата и не се споделя с трети страни.</p>
       <ul>
         <li>Не събираме имена, имейли или друга лична информация.</li>
