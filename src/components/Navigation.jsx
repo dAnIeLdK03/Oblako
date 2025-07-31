@@ -199,8 +199,9 @@ function Navigation() {
            zIndex: 99999,
                        width: window.innerWidth <= 768 ? '45px' : '40px',
             height: window.innerWidth <= 768 ? '45px' : '40px',
-           background: 'var(--accent-color)',
-           border: '2px solid var(--border-color)',
+                       background: 'var(--accent-color)',
+            border: '2px solid var(--border-color)',
+            backdropFilter: 'blur(10px)',
            borderRadius: '12px',
            cursor: isDragging ? 'grabbing' : 'grab',
            display: 'flex',
@@ -208,7 +209,7 @@ function Navigation() {
            justifyContent: 'center',
            alignItems: 'center',
                        padding: window.innerWidth <= 768 ? '10px' : '8px',
-           boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                       boxShadow: '0 4px 20px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2)',
            userSelect: 'none',
            transition: 'all 0.2s ease',
            touchAction: 'none'
@@ -225,21 +226,24 @@ function Navigation() {
             height: window.innerWidth <= 768 ? '4px' : '3px', 
             background: 'white', 
             margin: '1px 0', 
-            borderRadius: '2px'
+            borderRadius: '2px',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.3)'
           }}></span>
           <span style={{
             width: '100%', 
             height: window.innerWidth <= 768 ? '4px' : '3px', 
             background: 'white', 
             margin: '1px 0', 
-            borderRadius: '2px'
+            borderRadius: '2px',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.3)'
           }}></span>
           <span style={{
             width: '100%', 
             height: window.innerWidth <= 768 ? '4px' : '3px', 
             background: 'white', 
             margin: '1px 0', 
-            borderRadius: '2px'
+            borderRadius: '2px',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.3)'
           }}></span>
        </div>
 

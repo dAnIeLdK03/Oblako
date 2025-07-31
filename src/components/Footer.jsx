@@ -36,7 +36,9 @@ function Footer() {
       fontWeight: 'normal',
       zIndex: 1000,
       boxShadow: '0 -1px 8px rgba(0,0,0,0.04)',
-      padding: '10px 0'
+      padding: '10px 0',
+      backdropFilter: 'blur(10px)',
+      borderTop: '1px solid var(--border-color)'
     }}>
       {t.copyright}<br />
       <span style={{fontWeight: 'bold'}}>
