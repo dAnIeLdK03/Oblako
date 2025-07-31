@@ -9,7 +9,7 @@ import OfflineIndicator from '../components/OfflineIndicator.jsx';
 import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 import WeatherMap from '../components/WeatherMap.jsx';
 import { useEffect } from 'react';
-import LocalClock from '../components/LocalClock.jsx';
+
 
 
 function useIsMobile() {
@@ -24,7 +24,7 @@ function useIsMobile() {
 
 function Weather() {
     const { language, changeLanguage, t } = useLanguage();
-    const { theme, toggleTheme } = useTheme();
+    const { theme, toggleTheme, temperatureUnit, toggleTemperatureUnit, convertTemperature, getTemperatureSymbol } = useTheme();
     const { searchHistory, addToHistory, clearHistory } = useHistory();
     const { saveWeatherData, saveForecastData } = useOfflineStorage();
 
@@ -35,6 +35,7 @@ function Weather() {
     const [weatherData, setWeatherData] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [mapSelectedCity, setMapSelectedCity] = useState(null);
 
     const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
 
@@ -222,10 +223,26 @@ function Weather() {
         setTimeout(() => setShowHistory(false), 200);
     };
 
-    // При клик на карта зареждам само данните, без да сменям града в търсачката
-    const handleMapWeather = (data) => {
+    // При клик на карта зареждам данните и показвам прогнозата
+    const handleMapWeather = async (data) => {
         setWeatherData(data);
         setError('');
+        setCity(data.name); // Обновяваме града в търсачката
+        setMapSelectedCity(data.name); // Запазваме града от картата
+        
+        // Добавяме в историята
+        addToHistory(data.name);
+        
+        // Показваме съобщение за успешно зареждане
+        console.log('Weather data loaded from map:', data.name);
+        
+        // Скриваме индикацията след 3 секунди
+        setTimeout(() => {
+            setMapSelectedCity(null);
+        }, 3000);
+        
+        // Прокрутваме до горната част на страницата за да се виждат данните
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const isMobile = useIsMobile();
@@ -249,17 +266,25 @@ function Weather() {
                             </select>
                             <button
                                 className="theme-toggle"
-                                onClick={toggleTheme}
+                                onClick={() => {
+                                    console.log('Theme toggle clicked, current theme:', theme);
+                                    toggleTheme();
+                                }}
                                 title={theme === 'dark' ? t('lightMode') : t('darkMode')}
                             >
                                 {theme === 'dark' ? '☀️' : '🌙'}
                             </button>
+                            <button
+                                className="temp-toggle"
+                                onClick={() => {
+                                    console.log('Temperature toggle clicked, current unit:', temperatureUnit);
+                                    toggleTemperatureUnit();
+                                }}
+                                title={temperatureUnit === 'celsius' ? 'Switch to Fahrenheit' : 'Switch to Celsius'}
+                            >
+                                🌡️ {temperatureUnit === 'celsius' ? '°F' : '°C'}
+                            </button>
                         </div>
-                        {weatherData && weatherData.timezone !== undefined && (
-                            <div className="header-clock">
-                                <LocalClock timezoneOffset={weatherData.timezone} />
-                            </div>
-                        )}
                     </div>
                     {/* 2-ри ред: Търсачка и бутон */}
                     <div className="header-row header-row-search">
@@ -306,17 +331,25 @@ function Weather() {
                         </div>
                         <button
                             className="theme-toggle"
-                            onClick={toggleTheme}
+                            onClick={() => {
+                                console.log('Theme toggle clicked, current theme:', theme);
+                                toggleTheme();
+                            }}
                             title={theme === 'dark' ? t('lightMode') : t('darkMode')}
                         >
                             {theme === 'dark' ? '☀️' : '🌙'}
                             {theme === 'dark' ? t('lightMode') : t('darkMode')}
                         </button>
-                        {weatherData && weatherData.timezone !== undefined && (
-                            <div className="header-clock">
-                                <LocalClock timezoneOffset={weatherData.timezone} />
-                            </div>
-                        )}
+                        <button
+                            className="temp-toggle"
+                            onClick={() => {
+                                console.log('Temperature toggle clicked, current unit:', temperatureUnit);
+                                toggleTemperatureUnit();
+                            }}
+                            title={temperatureUnit === 'celsius' ? 'Switch to Fahrenheit' : 'Switch to Celsius'}
+                        >
+                            🌡️ {temperatureUnit === 'celsius' ? '°F' : '°C'}
+                        </button>
                     </div>
                     <div className="weather-input">
                         <form onSubmit={getWeather} style={{display: 'flex', gap: '10px', position: 'relative'}}>
@@ -377,6 +410,11 @@ function Weather() {
 
             {loading && <div className="loading">{t('loading')}</div>}
             {error && <div className="error-message">{error}</div>}
+            {mapSelectedCity && (
+                <div className="map-selected-notification">
+                    📍 {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
+                </div>
+            )}
 
             {weatherData && (
                 <div className="weather-data">
@@ -385,7 +423,7 @@ function Weather() {
                             <div className="current-weather">
                                 <div className="details">
                                     <p>{t('now')}</p>
-                                    <h2>{Math.round(weatherData.main.temp)}°C</h2>
+                                    <h2>{convertTemperature(weatherData.main.temp)}{getTemperatureSymbol()}</h2>
                                     <p>{translateWeatherCondition(weatherData.weather[0].description)}</p>
                                 </div>
                                 <div className="weather-icon">
@@ -414,6 +452,7 @@ function Weather() {
 
                         {/* Sunrise & Sunset Component */}
                         <SunriseSunset weatherData={weatherData} />
+                        
                         {console.log('weatherData:', weatherData)}
                         {console.log('weatherData.timezone:', weatherData && weatherData.timezone)}
                     </div>

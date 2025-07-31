@@ -28,7 +28,7 @@ ChartJS.register(
 
 function TemperatureChart({ forecastData, type = 'hourly' }) {
   const { t } = useLanguage();
-  const { theme } = useTheme();
+  const { theme, convertTemperature, getTemperatureSymbol } = useTheme();
 
   if (!forecastData || !forecastData.list) {
     return (
@@ -71,8 +71,8 @@ function TemperatureChart({ forecastData, type = 'hourly' }) {
       }
     });
 
-    const temperatures = dataPoints.map(item => Math.round(item.main.temp));
-    const feelsLike = dataPoints.map(item => Math.round(item.main.feels_like));
+    const temperatures = dataPoints.map(item => convertTemperature(item.main.temp));
+    const feelsLike = dataPoints.map(item => convertTemperature(item.main.feels_like));
 
     return { labels, temperatures, feelsLike };
   };
@@ -156,7 +156,7 @@ function TemperatureChart({ forecastData, type = 'hourly' }) {
         displayColors: true,
         callbacks: {
           label: function(context) {
-            return `${context.dataset.label}: ${context.parsed.y}°C`;
+            return `${context.dataset.label}: ${context.parsed.y}${getTemperatureSymbol()}`;
           }
         }
       }
@@ -185,7 +185,7 @@ function TemperatureChart({ forecastData, type = 'hourly' }) {
             size: 11
           },
           callback: function(value) {
-            return value + '°C';
+            return value + getTemperatureSymbol();
           }
         }
       }

@@ -10,12 +10,14 @@ function Footer() {
       terms: 'Условия за ползване',
       privacy: 'Правила за поверителност',
       cookies: 'Политика за бисквитки',
+      weatherTips: 'Съвети за времето',
     },
     en: {
       copyright: `© ${new Date().getFullYear()} Oblako. All rights reserved.`,
       terms: 'Terms of Use',
       privacy: 'Privacy Policy',
       cookies: 'Cookie Policy',
+      weatherTips: 'Weather Tips',
     }
   };
 
@@ -38,6 +40,7 @@ function Footer() {
     }}>
       {t.copyright}<br />
       <span style={{fontWeight: 'bold'}}>
+        <a href="/weather-tips" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.weatherTips}</a> |
         <a href="/terms" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.terms}</a> |
         <a href="/privacy" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.privacy}</a> |
         <a href="/cookies" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.cookies}</a>

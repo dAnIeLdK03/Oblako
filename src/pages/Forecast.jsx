@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLanguage } from '../LanguageContext.jsx';
+import { useTheme } from '../ThemeContext.jsx';
 import TemperatureChart from '../components/TemperatureChart.jsx';
 import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 
 function Forecast({city}){
     const { t } = useLanguage();
+    const { convertTemperature, getTemperatureSymbol } = useTheme();
     const { saveForecastData } = useOfflineStorage();
     const [forecast, setForecast] = useState([]);
     const [forecastData, setForecastData] = useState(null); // Add this
@@ -99,7 +101,7 @@ function Forecast({city}){
                             src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}
                             alt={day.weather[0].description}
                         />
-                        <p className="forecast-temp">{Math.round(day.main.temp)}°C</p>
+                        <p>{convertTemperature(day.main.temp)}{getTemperatureSymbol()}</p>
                         <p>{day.weather[0].description}</p>
                     </div>
                 ))}
