@@ -170,6 +170,24 @@ function Navigation() {
     }
   }, [isMenuOpen]);
 
+  // Close menu when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile && isMenuOpen) {
+        const nav = document.querySelector('.navigation');
+        const button = document.querySelector('[style*="position: fixed"]');
+        
+        if (nav && !nav.contains(e.target) && button && !button.contains(e.target)) {
+          setIsMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMenuOpen]);
+
   return (
     <>
              {/* Draggable menu button */}
@@ -179,8 +197,8 @@ function Navigation() {
            top: `${buttonPosition.y}px`,
            left: `${buttonPosition.x}px`,
            zIndex: 99999,
-                       width: window.innerWidth <= 768 ? '60px' : '40px',
-            height: window.innerWidth <= 768 ? '60px' : '40px',
+                       width: window.innerWidth <= 768 ? '45px' : '40px',
+            height: window.innerWidth <= 768 ? '45px' : '40px',
            background: 'var(--accent-color)',
            border: '2px solid var(--border-color)',
            borderRadius: '12px',
@@ -189,7 +207,7 @@ function Navigation() {
            flexDirection: 'column',
            justifyContent: 'center',
            alignItems: 'center',
-                       padding: window.innerWidth <= 768 ? '15px' : '8px',
+                       padding: window.innerWidth <= 768 ? '10px' : '8px',
            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
            userSelect: 'none',
            transition: 'all 0.2s ease',
@@ -204,23 +222,23 @@ function Navigation() {
        >
                    <span style={{
             width: '100%', 
-            height: window.innerWidth <= 768 ? '5px' : '3px', 
+            height: window.innerWidth <= 768 ? '4px' : '3px', 
             background: 'white', 
-            margin: '2px 0', 
+            margin: '1px 0', 
             borderRadius: '2px'
           }}></span>
           <span style={{
             width: '100%', 
-            height: window.innerWidth <= 768 ? '5px' : '3px', 
+            height: window.innerWidth <= 768 ? '4px' : '3px', 
             background: 'white', 
-            margin: '2px 0', 
+            margin: '1px 0', 
             borderRadius: '2px'
           }}></span>
           <span style={{
             width: '100%', 
-            height: window.innerWidth <= 768 ? '5px' : '3px', 
+            height: window.innerWidth <= 768 ? '4px' : '3px', 
             background: 'white', 
-            margin: '2px 0', 
+            margin: '1px 0', 
             borderRadius: '2px'
           }}></span>
        </div>

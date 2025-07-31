@@ -2887,6 +2887,7 @@ body {
   .navigation {
     width: 100%;
     max-width: 320px;
+    z-index: 1001;
   }
   
   .nav-menu {
@@ -2921,6 +2922,16 @@ body {
   
   .nav-description {
     font-size: 0.8rem;
+  }
+  
+  /* Ensure main content is not covered by menu */
+  .main-content {
+    z-index: 1;
+  }
+  
+  /* Menu overlay should be behind navigation */
+  .nav-overlay {
+    z-index: 1000;
   }
 }
 
@@ -3191,6 +3202,8 @@ body {
     margin-left: 0 !important;
     padding: 15px;
     padding-top: 70px;
+    position: relative;
+    z-index: 1;
   }
   
   .app-container {
@@ -3202,6 +3215,12 @@ body {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+  }
+  
+  /* When menu is open, main content should still be visible */
+  .navigation.open + .main-content {
+    filter: blur(0);
+    pointer-events: auto;
   }
 }
 
@@ -3670,15 +3689,15 @@ body {
 /* Mobile button styles */
 @media (max-width: 768px) {
   .navigation div[style*="position: fixed"] {
-    min-width: 60px;
-    min-height: 60px;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    min-width: 45px;
+    min-height: 45px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     touch-action: manipulation;
   }
   
   .navigation div[style*="position: fixed"]:active {
-    transform: scale(0.9);
+    transform: scale(0.95);
     transition: transform 0.1s ease;
   }
   
