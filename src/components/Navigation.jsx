@@ -121,7 +121,6 @@ function Navigation() {
            transition: 'all 0.2s ease',
            touchAction: 'none'
          }} 
-                   onClick={undefined}
          onClick={toggleMenu}
          title={language === 'bg' ? 'Отвори меню' : 'Open menu'}
        >
