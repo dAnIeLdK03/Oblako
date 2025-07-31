@@ -3670,14 +3670,16 @@ body {
 /* Mobile button styles */
 @media (max-width: 768px) {
   .navigation div[style*="position: fixed"] {
-    min-width: 50px;
-    min-height: 50px;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    min-width: 60px;
+    min-height: 60px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    touch-action: manipulation;
   }
   
   .navigation div[style*="position: fixed"]:active {
-    transform: scale(0.95);
+    transform: scale(0.9);
+    transition: transform 0.1s ease;
   }
   
   /* Prevent text selection on mobile */
