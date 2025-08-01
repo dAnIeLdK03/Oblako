@@ -1,57 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Главна страница -->
   <url>
     <loc>https://oblako17.online/</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/?lang=en" />
   </url>
+  
+  <!-- Страница за прогноза -->
   <url>
     <loc>https://oblako17.online/forecast</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/forecast" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/forecast?lang=en" />
   </url>
+  
+  <!-- Страница за UV индекс -->
   <url>
-    <loc>https://oblako17.online/rain-chance</loc>
-    <lastmod>2024-01-15</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://oblako17.online/uv-index</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/uv-index" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/uv-index?lang=en" />
   </url>
+  
+  <!-- Страница за качество на въздуха -->
   <url>
     <loc>https://oblako17.online/air-quality</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/air-quality" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/air-quality?lang=en" />
   </url>
+  
+  <!-- Страница за вероятност за дъжд -->
+  <url>
+    <loc>https://oblako17.online/rain-chance</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/rain-chance" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/rain-chance?lang=en" />
+  </url>
+  
+  <!-- Страница за съвети за времето -->
   <url>
     <loc>https://oblako17.online/weather-tips</loc>
-    <lastmod>2024-01-15</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/weather-tips" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/weather-tips?lang=en" />
   </url>
+  
+  <!-- Страница "За нас" -->
   <url>
     <loc>https://oblako17.online/about</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/about?lang=en" />
   </url>
+  
+  <!-- Условия за ползване -->
   <url>
     <loc>https://oblako17.online/terms</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/terms?lang=en" />
   </url>
+  
+  <!-- Политика за поверителност -->
   <url>
     <loc>https://oblako17.online/privacy</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/privacy?lang=en" />
   </url>
+  
+  <!-- Политика за бисквитки -->
   <url>
     <loc>https://oblako17.online/cookies</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/cookies" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/cookies?lang=en" />
   </url>
+  
 </urlset> 

@@ -1,46 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="bg">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Oblako ☁️ - Weather App</title>
-    <meta name="description" content="Oblako - Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.">
-    <meta name="keywords" content="времето, прогноза, weather, облако, облако app, weather app, карта, прогноза за времето, безплатна прогноза, почасова прогноза, температура, изгрев, залез, България, weather forecast, free weather app">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Oblako ☁️ - Безплатна прогноза за времето в реално време</title>
+    <meta name="description" content="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.">
+    <meta name="keywords" content="времето, прогноза, weather, облако, облако app, weather app, карта, прогноза за времето, безплатна прогноза, почасова прогноза, температура, изгрев, залез, България, weather forecast, free weather app, метеорология, атмосферни условия">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow">
     <meta name="bingbot" content="index, follow">
     <meta name="author" content="Oblako Team">
+    <meta name="language" content="bg">
+    <meta http-equiv="content-language" content="bg">
+    <meta name="geo.region" content="BG">
+    <meta name="geo.country" content="Bulgaria">
+    
     <!-- Open Graph за Facebook и социални мрежи -->
-    <meta property="og:title" content="Oblako ☁️ - Weather App">
-    <meta property="og:description" content="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град.">
+    <meta property="og:title" content="Oblako ☁️ - Безплатна прогноза за времето в реално време">
+    <meta property="og:description" content="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://oblako17.online/">
-    <meta property="og:image" content="https://oblako17.online/public/icons/icon-192x192.png">
+    <meta property="og:image" content="https://oblako17.online/icons/icon-192x192.png">
     <meta property="og:image:width" content="192">
     <meta property="og:image:height" content="192">
+    <meta property="og:image:alt" content="Oblako Weather App Icon">
     <meta property="og:locale" content="bg_BG">
     <meta property="og:site_name" content="Oblako">
+    
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Oblako ☁️ - Weather App">
-    <meta name="twitter:description" content="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град.">
-    <meta name="twitter:image" content="https://oblako17.online/public/icons/icon-192x192.png">
+    <meta name="twitter:title" content="Oblako ☁️ - Безплатна прогноза за времето в реално време">
+    <meta name="twitter:description" content="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.">
+    <meta name="twitter:image" content="https://oblako17.online/icons/icon-192x192.png">
+    <meta name="twitter:image:alt" content="Oblako Weather App Icon">
+    
     <!-- Canonical URL -->
     <link rel="canonical" href="https://oblako17.online/" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
+    
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#74b9ff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Oblako">
-    <link rel="apple-touch-icon" href="/vite.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 
     <!-- Windows Tiles -->
-    <meta name="msapplication-TileImage" content="/vite.svg">
+    <meta name="msapplication-TileImage" content="/icons/icon-192x192.png">
     <meta name="msapplication-TileColor" content="#1a1a2e">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://api.openweathermap.org">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RKJ1SRJKBX"></script>
@@ -54,10 +68,14 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4447547385460819" crossorigin="anonymous"></script>
 
+    <!-- Fonts and Icons -->
     <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="apple-touch-icon" href="/public/icons/icon-192x192.png">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192x192.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -65,6 +83,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Oblako",
+      "alternateName": "Oblako Weather App",
       "description": "Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.",
       "url": "https://oblako17.online/",
       "applicationCategory": "WeatherApplication",
@@ -76,12 +95,15 @@
       },
       "author": {
         "@type": "Organization",
-        "name": "Oblako Team"
+        "name": "Oblako Team",
+        "url": "https://oblako17.online/"
       },
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "4.8",
-        "ratingCount": "150"
+        "ratingCount": "150",
+        "bestRating": "5",
+        "worstRating": "1"
       },
       "featureList": [
         "Почасова прогноза за времето",
@@ -89,8 +111,13 @@
         "Интерактивна карта",
         "Графики за температури",
         "Изгрев и залез",
-        "Многоезична поддръжка"
-      ]
+        "Многоезична поддръжка",
+        "Офлайн функционалност"
+      ],
+      "screenshot": "https://oblako17.online/icons/icon-192x192.png",
+      "softwareVersion": "1.0.0",
+      "datePublished": "2024-01-01",
+      "dateModified": "2024-12-19"
     }
     </script>
     
@@ -100,9 +127,66 @@
       "@type": "Organization",
       "name": "Oblako",
       "url": "https://oblako17.online/",
-      "logo": "https://oblako17.online/public/icons/icon-192x192.png",
+      "logo": "https://oblako17.online/icons/icon-192x192.png",
+      "description": "Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.",
       "sameAs": [
         "https://oblako17.online/"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "oblako997@gmail.bg",
+        "contactType": "customer service"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Oblako",
+      "url": "https://oblako17.online/",
+      "description": "Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://oblako17.online/?city={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Какво е Oblako?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oblako е безплатно приложение за прогноза на времето, което предоставя точна информация за времето в реално време с интерактивна карта и графики."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Безплатно ли е приложението?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Да, Oblako е напълно безплатно приложение за прогноза на времето без скрити такси."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "За кои градове има прогноза?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oblako предоставя прогноза за времето за всички градове в България и по целия свят."
+          }
+        }
       ]
     }
     </script>
@@ -132,7 +216,7 @@
             Безплатната прогноза включва почасова прогноза, 5-дневна прогноза, графики за температури, изгрев и залез за всеки град в България.
           </p>
           <p style="font-size: 1em; color: #666;">
-            <strong>Ключови думи:</strong> прогноза за времето, weather app, облако, интерактивна карта, почасова прогноза, изгрев, залез, температура, България, Oblako, безплатна прогноза, weather forecast, free weather app
+            <strong>Ключови думи:</strong> прогноза за времето, weather app, облако, интерактивна карта, почасова прогноза, изгрев, залез, температура, България, Oblako, безплатна прогноза, weather forecast, free weather app, метеорология, атмосферни условия
           </p>
         </section>
       </main>
