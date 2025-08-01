@@ -12,6 +12,9 @@ import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 import WeatherMap from '../components/WeatherMap.jsx';
 import WorldClock from '../components/WorldClock.jsx';
 import { useEffect } from 'react';
+import SkeletonLoading from '../components/SkeletonLoading.jsx';
+import PullToRefresh from '../components/PullToRefresh.jsx';
+
 
 
 
@@ -249,6 +252,12 @@ function Weather() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const handleRefresh = async () => {
+        if (city) {
+            await getWeather(null, city);
+        }
+    };
+
     const isMobile = useIsMobile();
 
     return (
@@ -433,17 +442,16 @@ function Weather() {
                 </div>
             )}
 
-            {loading && <div className="loading">{t('loading')}</div>}
-            {error && <div className="error-message">{error}</div>}
-            {mapSelectedCity && (
-                <div className="map-selected-notification">
-                    📍 {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
-                </div>
-            )}
+            <PullToRefresh onRefresh={handleRefresh}>
+                {loading && <SkeletonLoading />}
+                {error && <div className="error-message">{error}</div>}
+                {mapSelectedCity && (
+                    <div className="map-selected-notification">
+                        📍 {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
+                    </div>
+                )}
 
-
-
-            {weatherData && (
+                {weatherData && (
                 <div className="weather-data">
                     <div className="weather-left">
                         <div className="card">
@@ -494,6 +502,7 @@ function Weather() {
             <OfflineIndicator />
             {/* Интерактивна карта най-отдолу */}
             <WeatherMap onLocationSelect={handleMapWeather} />
+            </PullToRefresh>
             </div>
         </>
     );

@@ -2,6 +2,7 @@ import Weather from './pages/Wheater'
 import ForecastPage from './pages/ForecastPage.jsx';
 import RainChancePage from './pages/RainChancePage.jsx';
 import AirQualityPage from './pages/AirQualityPage.jsx';
+import UVIndexPage from './pages/UVIndexPage.jsx';
 import Navigation from './components/Navigation.jsx';
 import { LanguageProvider } from './LanguageContext.jsx'
 import { ThemeProvider } from './ThemeContext.jsx'
@@ -32,6 +33,7 @@ function App() {
                     <Route path="/forecast" element={<ForecastPage />} />
                     <Route path="/rain-chance" element={<RainChancePage />} />
                     <Route path="/air-quality" element={<AirQualityPage />} />
+                    <Route path="/uv-index" element={<UVIndexPage />} />
                     <Route path="/weather-tips" element={<WeatherTips />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/terms" element={<Terms />} />

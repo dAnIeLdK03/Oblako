@@ -36,6 +36,12 @@ function Navigation() {
       description: language === 'bg' ? 'Индекс на качеството' : 'Air quality index'
     },
     {
+      path: '/uv-index',
+      icon: '☀️',
+      label: language === 'bg' ? 'UV Индекс' : 'UV Index',
+      description: language === 'bg' ? 'Ултравиолетово лъчение' : 'Ultraviolet radiation'
+    },
+    {
       path: '/weather-tips',
       icon: '💡',
       label: language === 'bg' ? 'Съвети' : 'Tips',

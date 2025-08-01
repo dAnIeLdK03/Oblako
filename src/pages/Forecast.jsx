@@ -36,17 +36,9 @@ function Forecast({city}){
                 // Save to offline storage
                 saveForecastData(data, city);
 
-                // Filter for cards display - get unique days only
-                const daily = data.list.filter(item => item.dt_txt.includes('12:00:00'));
-                // Remove duplicates by date to avoid showing the same day multiple times
-                const uniqueDays = daily.reduce((acc, item) => {
-                    const date = new Date(item.dt_txt).toDateString();
-                    if (!acc.find(existing => new Date(existing.dt_txt).toDateString() === date)) {
-                        acc.push(item);
-                    }
-                    return acc;
-                }, []);
-                setForecast(uniqueDays.slice(0, 5));
+                // Filter for hourly display - get next 18 hours (6 data points * 3 hours = 18 hours)
+                const hourlyData = data.list.slice(0, 6); // Get next 18 hours
+                setForecast(hourlyData);
             } catch (err) {
                 console.error('Forecast error:', err);
                 setError(err.message);
@@ -60,6 +52,15 @@ function Forecast({city}){
         fetchForecast();
 
     }, [city, t]);
+
+    const formatTime = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+    };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -77,7 +78,7 @@ function Forecast({city}){
         <div className="card">
             <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px'}}>
                 <Logo size="small" showText={false} />
-                <h3>{t('forecastTitle')} {city} 🌦️</h3>
+                <h3>{t('hourlyForecast')} {city} ⏰</h3>
             </div>
             
             {/* Chart Toggle */}
@@ -104,20 +105,22 @@ function Forecast({city}){
               />
             </div>
             
-            {/* Existing forecast cards */}
+            {/* Hourly forecast cards */}
             <div className="forecast-container">
-                {forecast.map(day => (
-                    <div key={day.dt} className="forecast-item">
-                        <p>{formatDate(day.dt_txt)}</p>
+                {forecast.map((hour, index) => (
+                    <div key={hour.dt} className="forecast-item">
+                        <p className="hour-time">{formatTime(hour.dt_txt)}</p>
                         <img 
-                            src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}
-                            alt={day.weather[0].description}
+                            src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`}
+                            alt={hour.weather[0].description}
                         />
-                        <p>{convertTemperature(day.main.temp)}{getTemperatureSymbol()}</p>
-                        <p>{day.weather[0].description}</p>
+                        <p className="hour-temp">{convertTemperature(hour.main.temp)}{getTemperatureSymbol()}</p>
+                        <p className="hour-desc">{hour.weather[0].description}</p>
+                        <p className="hour-humidity">💧 {hour.main.humidity}%</p>
                     </div>
                 ))}
             </div>
+
         </div>
     );
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
+import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
 import '../Weather.css';
 
 function ForecastPage() {
@@ -12,6 +13,7 @@ function ForecastPage() {
   const [error, setError] = useState('');
   const [selectedCity, setSelectedCity] = useState('Sofia');
   const [searchCity, setSearchCity] = useState('Sofia');
+  const [selectedDay, setSelectedDay] = useState(null);
 
   const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
 
@@ -173,49 +175,65 @@ function ForecastPage() {
         {!loading && !error && (
           <div className="ten-day-forecast">
             {forecast.map((day, index) => (
-              <div key={day.dt} className="forecast-day-card">
-                                 <div className="day-header">
-                   <div className="day-name">{formatDate(day.dt_txt)}</div>
-                   <div className="day-number">{index + 1}</div>
+              <div 
+                key={day.dt} 
+                className="forecast-day-card clickable"
+                onClick={() => setSelectedDay(day)}
+              >
+                <div className="day-header">
+                  <div className="day-name">{formatDate(day.dt_txt)}</div>
+                  <div className="day-number">{index + 1}</div>
+                </div>
+               
+               <div className="weather-info">
+                 <div className="weather-icon">
+                   <img 
+                     src={getWeatherIcon(day.weather[0].icon)} 
+                     alt={day.weather[0].description}
+                   />
                  </div>
-                
-                <div className="weather-info">
-                  <div className="weather-icon">
-                    <img 
-                      src={getWeatherIcon(day.weather[0].icon)} 
-                      alt={day.weather[0].description}
-                    />
-                  </div>
-                  
-                  <div className="temperature-info">
-                    <div className="temp-max">
-                      {convertTemperature(day.main.temp_max)}{getTemperatureSymbol()}
-                    </div>
-                    <div className="temp-min">
-                      {convertTemperature(day.main.temp_min)}{getTemperatureSymbol()}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="weather-details">
-                  <div className="weather-desc">
-                    {getWeatherDescription(day.weather[0].description)}
-                  </div>
-                  
-                  <div className="additional-info">
-                    <div className="humidity">
-                      💧 {day.main.humidity}%
-                    </div>
-                    <div className="wind">
-                      💨 {Math.round(day.wind.speed)} m/s
-                    </div>
-                  </div>
-                </div>
+                 
+                 <div className="temperature-info">
+                   <div className="temp-max">
+                     {convertTemperature(day.main.temp_max)}{getTemperatureSymbol()}
+                   </div>
+                   <div className="temp-min">
+                     {convertTemperature(day.main.temp_min)}{getTemperatureSymbol()}
+                   </div>
+                 </div>
+               </div>
+               
+               <div className="weather-details">
+                 <div className="weather-desc">
+                   {getWeatherDescription(day.weather[0].description)}
+                 </div>
+                 
+                 <div className="additional-info">
+                   <div className="humidity">
+                     💧 {day.main.humidity}%
+                   </div>
+                   <div className="wind">
+                     💨 {Math.round(day.wind.speed)} m/s
+                   </div>
+                 </div>
+               </div>
+               
+               <div className="click-hint">
+                 {language === 'bg' ? 'Кликнете за подробности' : 'Click for details'}
+               </div>
               </div>
             ))}
           </div>
         )}
       </div>
+      
+      {/* Detailed Day Forecast Modal */}
+      {selectedDay && (
+        <DetailedDayForecast 
+          day={selectedDay} 
+          onClose={() => setSelectedDay(null)} 
+        />
+      )}
     </div>
   );
 }
