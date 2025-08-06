@@ -48,6 +48,12 @@ function Navigation() {
       description: language === 'bg' ? 'Полезни съвети' : 'Useful tips'
     },
     {
+      path: '/blog',
+      icon: '📝',
+      label: language === 'bg' ? 'Блог' : 'Blog',
+      description: language === 'bg' ? 'Метеорологични статии' : 'Weather articles'
+    },
+    {
       path: '/about',
       icon: 'ℹ️',
       label: language === 'bg' ? 'За нас' : 'About',

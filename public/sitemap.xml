@@ -62,6 +62,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/weather-tips?lang=en" />
   </url>
   
+  <!-- Метеорологичен блог -->
+  <url>
+    <loc>https://oblako17.online/blog</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://oblako17.online/blog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://oblako17.online/blog?lang=en" />
+  </url>
+  
   <!-- Страница "За нас" -->
   <url>
     <loc>https://oblako17.online/about</loc>
