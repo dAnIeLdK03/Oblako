@@ -4,7 +4,6 @@ import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
 import Navigation from '../components/Navigation.jsx';
 import Footer from '../components/Footer.jsx';
-import SEOHead from '../components/SEOHead.jsx';
 
 const UVIndexPage = () => {
   const { language, t } = useLanguage();
@@ -48,12 +47,6 @@ const UVIndexPage = () => {
 
   return (
     <>
-      <SEOHead 
-        title="UV Индекс - Oblako ☁️"
-        description="Информация за ултравиолетовото лъчение и съвети за защита от слънцето"
-        keywords="UV индекс, ултравиолетово лъчение, слънцезащитен крем, защита от слънцето"
-        url="https://oblako17.online/uv-index"
-      />
       
       <div className={`app-container ${theme}`}>
         <Navigation />

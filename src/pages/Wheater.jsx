@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import Forecast from './Forecast';
 import { useLanguage } from '../LanguageContext.jsx';
-import SEOHead from '../components/SEOHead.jsx';
 import Logo from '../components/Logo.jsx';
 import '../Weather.css';
 import {useTheme} from '../ThemeContext.jsx';
 import { useHistory } from '../HistoryContext.jsx';
 import SunriseSunset from '../components/SunriseSunset.jsx';
-import OfflineIndicator from '../components/OfflineIndicator.jsx';
-import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 import WeatherMap from '../components/WeatherMap.jsx';
 import WorldClock from '../components/WorldClock.jsx';
 import { useEffect } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
+
 
 
 
@@ -32,9 +30,8 @@ function Weather() {
     const { language, changeLanguage, t } = useLanguage();
     const { theme, toggleTheme, temperatureUnit, toggleTemperatureUnit, convertTemperature, getTemperatureSymbol } = useTheme();
     const { searchHistory, addToHistory, clearHistory } = useHistory();
-    const { saveWeatherData, saveForecastData } = useOfflineStorage();
 
-    // Добавете нови state-ове
+    
     const [showHistory, setShowHistory] = useState(false);
     
     const [city, setCity] = useState('');
@@ -47,12 +44,9 @@ function Weather() {
     const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
 
     async function getWeather(e, searchCity = null){
-        console.log('getWeather called with:', { e, searchCity, city }); // Debug
         if (e) e.preventDefault();
         const cityToSearch = searchCity || city;
-        console.log('cityToSearch:', cityToSearch); // Debug
         if (!cityToSearch.trim()) {
-            console.log('No city to search'); // Debug
             return;
         }
 
@@ -65,11 +59,9 @@ function Weather() {
             );
             if(!res.ok) throw new Error(t('cityNotFound'));
             const data = await res.json();
-            console.log('Weather API response:', data); // Debug
+            console.log('Weather API response:', data);
             setWeatherData(data);
 
-            // Save to offline storage
-            saveWeatherData(data, data.name);
 
             addToHistory(data.name);
             setCity(data.name);
@@ -172,7 +164,6 @@ function Weather() {
         }
     };
 
-    // Можете да създадете функция за SVG икони:
     const getWeatherSVG = (iconCode) => {
         const iconMap = {
             '01d': '☀️', // clear sky day
@@ -191,10 +182,8 @@ function Weather() {
     };
 
     const getWeatherTheme = (iconCode, main) => {
-        console.log('Weather data:', { iconCode, main }); // Debug
 
         if (iconCode.includes('n')) {
-            console.log('Night theme applied');
             return 'night';
         }
 
@@ -209,12 +198,10 @@ function Weather() {
             default: theme = 'default';
         }
 
-        console.log('Applied theme:', theme);
         return theme;
     };
 
     const containerClass = `weather-container ${weatherData ? getWeatherTheme(weatherData.weather[0].icon, weatherData.weather[0].main) : ''}`;
-    console.log('Container className:', containerClass); // Debug
 
     const handleHistoryClick = (historyCity) => {
         setCity(historyCity);
@@ -241,7 +228,6 @@ function Weather() {
         addToHistory(data.name);
         
         // Показваме съобщение за успешно зареждане
-        console.log('Weather data loaded from map:', data.name);
         
         // Скриваме индикацията след 3 секунди
         setTimeout(() => {
@@ -262,12 +248,7 @@ function Weather() {
 
     return (
         <>
-            <SEOHead 
-                title="Oblako ☁️ - Безплатна прогноза за времето в реално време"
-                description="Безплатна прогноза за времето в реално време. Точна почасова и 5-дневна прогноза, интерактивна карта, графики за температури, изгрев и залез за всеки град в България и света."
-                keywords="времето, прогноза, weather, облако, облако app, weather app, карта, прогноза за времето, безплатна прогноза, почасова прогноза, температура, изгрев, залез, България, weather forecast, free weather app"
-                url="https://oblako17.online/"
-            />
+            
             <div className={containerClass}>
             {isMobile ? (
                 <div className="header">
@@ -488,6 +469,8 @@ function Weather() {
                         {/* Sunrise & Sunset Component */}
                         <SunriseSunset weatherData={weatherData} />
                         
+
+                        
                         {console.log('weatherData:', weatherData)}
                         {console.log('weatherData.timezone:', weatherData && weatherData.timezone)}
                     </div>
@@ -498,8 +481,6 @@ function Weather() {
                 </div>
             )}
 
-            {/* PWA Components */}
-            <OfflineIndicator />
             {/* Интерактивна карта най-отдолу */}
             <WeatherMap onLocationSelect={handleMapWeather} />
             </PullToRefresh>

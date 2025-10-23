@@ -30,12 +30,6 @@ function Navigation() {
       description: language === 'bg' ? 'Вероятност за валежи' : 'Precipitation probability'
     },
     {
-      path: '/air-quality',
-      icon: '🌬️',
-      label: language === 'bg' ? 'Качество на въздуха' : 'Air Quality',
-      description: language === 'bg' ? 'Индекс на качеството' : 'Air quality index'
-    },
-    {
       path: '/uv-index',
       icon: '☀️',
       label: language === 'bg' ? 'UV Индекс' : 'UV Index',
@@ -47,18 +41,6 @@ function Navigation() {
       label: language === 'bg' ? 'Съвети' : 'Tips',
       description: language === 'bg' ? 'Полезни съвети' : 'Useful tips'
     },
-    {
-      path: '/blog',
-      icon: '📝',
-      label: language === 'bg' ? 'Блог' : 'Blog',
-      description: language === 'bg' ? 'Метеорологични статии' : 'Weather articles'
-    },
-    {
-      path: '/about',
-      icon: 'ℹ️',
-      label: language === 'bg' ? 'За нас' : 'About',
-      description: language === 'bg' ? 'Информация за приложението' : 'App information'
-    }
   ];
 
   const isActive = (path) => {

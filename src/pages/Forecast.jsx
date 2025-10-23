@@ -3,17 +3,15 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import TemperatureChart from '../components/TemperatureChart.jsx';
-import { useOfflineStorage } from '../hooks/useOfflineStorage.js';
 
 function Forecast({city}){
     const { t } = useLanguage();
     const { convertTemperature, getTemperatureSymbol } = useTheme();
-    const { saveForecastData } = useOfflineStorage();
     const [forecast, setForecast] = useState([]);
-    const [forecastData, setForecastData] = useState(null); // Add this
+    const [forecastData, setForecastData] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [chartType, setChartType] = useState('hourly'); // Add this
+    const [chartType, setChartType] = useState('hourly'); 
     const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
 
     useEffect(() => {
@@ -33,8 +31,6 @@ function Forecast({city}){
                 // Store full data for chart
                 setForecastData(data);
 
-                // Save to offline storage
-                saveForecastData(data, city);
 
                 // Filter for hourly display - get next 18 hours (6 data points * 3 hours = 18 hours)
                 const hourlyData = data.list.slice(0, 6); // Get next 18 hours

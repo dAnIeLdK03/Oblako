@@ -1,49 +1,106 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 
 function RainChance({ weatherData }) {
   const { language } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
+  const [rainData, setRainData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Mock data - в реалност това ще идва от API
-  const rainData = {
-    today: [
-      { hour: '00:00', chance: 5, type: 'clear', temp: 8 },
-      { hour: '03:00', chance: 8, type: 'clear', temp: 6 },
-      { hour: '06:00', chance: 15, type: 'rain', temp: 9 },
-      { hour: '09:00', chance: 25, type: 'rain', temp: 12 },
-      { hour: '12:00', chance: 45, type: 'rain', temp: 16 },
-      { hour: '15:00', chance: 70, type: 'storm', temp: 18 },
-      { hour: '18:00', chance: 60, type: 'rain', temp: 15 },
-      { hour: '21:00', chance: 35, type: 'rain', temp: 11 }
-    ],
-    week: [
-      { day: language === 'bg' ? 'Пон' : 'Mon', chance: 20, type: 'rain', temp: 18 },
-      { day: language === 'bg' ? 'Вто' : 'Tue', chance: 45, type: 'rain', temp: 16 },
-      { day: language === 'bg' ? 'Сря' : 'Wed', chance: 80, type: 'storm', temp: 14 },
-      { day: language === 'bg' ? 'Чет' : 'Thu', chance: 60, type: 'rain', temp: 17 },
-      { day: language === 'bg' ? 'Пет' : 'Fri', chance: 15, type: 'rain', temp: 20 },
-      { day: language === 'bg' ? 'Съб' : 'Sat', chance: 5, type: 'clear', temp: 22 },
-      { day: language === 'bg' ? 'Нед' : 'Sun', chance: 10, type: 'clear', temp: 24 }
-    ]
+  const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
+
+  useEffect(() => {
+    const fetchRainData = async () => {
+      if (weatherData && weatherData.coord) {
+        setLoading(true);
+        try {
+          console.log('Fetching rain data for:', weatherData.coord);
+          const res = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&units=metric&appid=${API_KEY}`
+          );
+          if (!res.ok) throw new Error('Failed to fetch forecast data');
+          const forecastData = await res.json();
+          console.log('Forecast data received:', forecastData);
+          
+          // Process forecast data for rain chances
+          const processedData = processForecastData(forecastData);
+          console.log('Processed rain data:', processedData);
+          setRainData(processedData);
+        } catch (err) {
+          console.error('Error fetching rain data:', err);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchRainData();
+  }, [weatherData]);
+
+  const processForecastData = (forecastData) => {
+    const today = [];
+    const week = [];
+    
+    // Process hourly data for today
+    forecastData.list.slice(0, 8).forEach((item, index) => {
+      const date = new Date(item.dt * 1000);
+      const hour = date.getHours();
+      const pop = Math.round((item.pop || 0) * 100);
+      
+      today.push({
+        hour: `${hour.toString().padStart(2, '0')}:00`,
+        chance: pop,
+        type: getWeatherType(item.weather[0].main),
+        temp: Math.round(item.main.temp)
+      });
+    });
+
+    // Process daily data for week
+    const days = ['Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб', 'Нед'];
+    const daysEn = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    
+    for (let i = 0; i < 7; i++) {
+      const dayData = forecastData.list[i * 8] || forecastData.list[forecastData.list.length - 1];
+      const pop = Math.round((dayData.pop || 0) * 100);
+      
+      week.push({
+        day: language === 'bg' ? days[i] : daysEn[i],
+        chance: pop,
+        type: getWeatherType(dayData.weather[0].main),
+        temp: Math.round(dayData.main.temp)
+      });
+    }
+
+    return { today, week };
+  };
+
+  const getWeatherType = (main) => {
+    switch(main.toLowerCase()) {
+      case 'rain': return 'rain';
+      case 'thunderstorm': return 'storm';
+      case 'snow': return 'snow';
+      case 'clear': return 'clear';
+      case 'clouds': return 'clouds';
+      default: return 'clear';
+    }
   };
 
   // Ensure no duplicate hours in today's data
-  const uniqueTodayData = rainData.today.reduce((acc, item) => {
+  const uniqueTodayData = rainData?.today?.reduce((acc, item) => {
     if (!acc.find(existing => existing.hour === item.hour)) {
       acc.push(item);
     }
     return acc;
-  }, []);
+  }, []) || [];
 
   // Ensure no duplicate days in week data
-  const uniqueWeekData = rainData.week.reduce((acc, item) => {
+  const uniqueWeekData = rainData?.week?.reduce((acc, item) => {
     if (!acc.find(existing => existing.day === item.day)) {
       acc.push(item);
     }
     return acc;
-  }, []);
+  }, []) || [];
 
   const getCurrentHour = () => {
     return new Date().getHours();
@@ -78,6 +135,25 @@ function RainChance({ weatherData }) {
     if (chance < 80) return language === 'bg' ? 'Висока вероятност' : 'High chance';
     return language === 'bg' ? 'Много вероятно' : 'Very likely';
   };
+
+  if (loading) {
+    return (
+      <div className="rain-chance">
+        <div className="loading">
+          <div className="loading-spinner"></div>
+          <p>{language === 'bg' ? 'Зареждане на данни за валежи...' : 'Loading rain data...'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!rainData) {
+    return (
+      <div className="rain-chance">
+        <p>{language === 'bg' ? 'Няма данни за валежи' : 'No rain data available'}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="rain-chance">

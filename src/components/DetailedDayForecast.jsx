@@ -178,14 +178,6 @@ function DetailedDayForecast({ day, onClose }) {
     return { level: language === 'bg' ? 'Екстремно' : 'Extreme', color: '#800080' };
   };
 
-  const getAirQuality = (aqi) => {
-    if (aqi <= 50) return { level: language === 'bg' ? 'Добро' : 'Good', color: '#00ff00' };
-    if (aqi <= 100) return { level: language === 'bg' ? 'Умерено' : 'Moderate', color: '#ffff00' };
-    if (aqi <= 150) return { level: language === 'bg' ? 'Лошо за чувствителни' : 'Unhealthy for Sensitive', color: '#ff8000' };
-    if (aqi <= 200) return { level: language === 'bg' ? 'Лошо' : 'Unhealthy', color: '#ff0000' };
-    if (aqi <= 300) return { level: language === 'bg' ? 'Много лошо' : 'Very Unhealthy', color: '#800080' };
-    return { level: language === 'bg' ? 'Опасно' : 'Hazardous', color: '#800000' };
-  };
 
   return (
     <div className="detailed-forecast-overlay">

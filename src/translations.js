@@ -92,7 +92,6 @@ darkMode: "Тъмен режим",
     installApp: "Инсталирай Облако",
     installDescription: "Добави Облако на началния си екран",
     install: "Инсталирай",
-    offlineMode: "Офлайн режим",
     cachedData: "Кеширани данни",
     lastUpdated: "Последно обновяване"
   },
@@ -189,7 +188,6 @@ darkMode: "Тъмен режим",
     installApp: "Install Oblako",
     installDescription: "Add Oblako to your home screen",
     install: "Install",
-    offlineMode: "Offline Mode",
     cachedData: "Cached Data",
     lastUpdated: "Last Updated"
   }

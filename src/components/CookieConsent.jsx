@@ -11,7 +11,7 @@ function CookieConsent() {
   const acceptAll = () => {
     localStorage.setItem('oblako_cookie_consent', 'all');
     setVisible(false);
-    // Тук можеш да инициализираш рекламните скриптове при нужда
+    
   };
 
   const acceptFunctional = () => {
