@@ -14,6 +14,7 @@ import CookieConsent from './components/CookieConsent.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WeatherTips from './pages/WeatherTips.jsx';
 
+
 function App() {
   return (
     <Router>
