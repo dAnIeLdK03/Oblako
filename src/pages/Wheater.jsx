@@ -27,6 +27,7 @@ function useIsMobile() {
 }
 
 function Weather() {
+    const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
     const { language, changeLanguage, t } = useLanguage();
     const { theme, toggleTheme, temperatureUnit, toggleTemperatureUnit, convertTemperature, getTemperatureSymbol } = useTheme();
     const { searchHistory, addToHistory, clearHistory } = useHistory();
@@ -40,8 +41,6 @@ function Weather() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [mapSelectedCity, setMapSelectedCity] = useState(null);
-
-    const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
 
     async function getWeather(e, searchCity = null){
         if (e) e.preventDefault();
