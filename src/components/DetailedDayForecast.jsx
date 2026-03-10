@@ -35,7 +35,6 @@ function DetailedDayForecast({ day, onClose }) {
       'few clouds': language === 'bg' ? 'Леки облаци' : 'Few clouds',
       'scattered clouds': language === 'bg' ? 'Разпръснати облаци' : 'Scattered clouds',
       'broken clouds': language === 'bg' ? 'Разкъсани облаци' : 'Broken clouds',
-      'shower rain': language === 'bg' ? 'Дъжд' : 'Shower rain',
       'rain': language === 'bg' ? 'Дъжд' : 'Rain',
       'thunderstorm': language === 'bg' ? 'Буря' : 'Thunderstorm',
       'snow': language === 'bg' ? 'Сняг' : 'Snow',
