@@ -12,7 +12,7 @@ function Forecast({city}){
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [chartType, setChartType] = useState('hourly'); 
-    const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
+    const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
     useEffect(() => {
         if (!city) return;

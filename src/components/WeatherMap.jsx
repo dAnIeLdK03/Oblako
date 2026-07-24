@@ -4,7 +4,7 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import 'leaflet/dist/leaflet.css';
 
-const API_KEY = "b5b3e21a258778d1168e59c1ccb83609";
+const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
 // Fix for default markers
 import L from 'leaflet';
