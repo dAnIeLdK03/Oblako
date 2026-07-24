@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Forecast from './Forecast';
 import { useLanguage } from '../LanguageContext.jsx';
-import Logo from '../components/Logo.jsx';
 import '../Weather.css';
 import {useTheme} from '../ThemeContext.jsx';
 import { useHistory } from '../HistoryContext.jsx';
@@ -11,20 +10,8 @@ import WorldClock from '../components/WorldClock.jsx';
 import { useEffect } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
+import WeatherHero from '../components/WeatherHero.jsx';
 
-
-
-
-
-function useIsMobile() {
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth <= 768);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-    return isMobile;
-}
 
 function Weather() {
     const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
@@ -32,15 +19,17 @@ function Weather() {
     const { theme, toggleTheme, temperatureUnit, toggleTemperatureUnit, convertTemperature, getTemperatureSymbol } = useTheme();
     const { searchHistory, addToHistory, clearHistory } = useHistory();
 
-    
-    const [showHistory, setShowHistory] = useState(false);
-    
     const [city, setCity] = useState('');
 
     const [weatherData, setWeatherData] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [mapSelectedCity, setMapSelectedCity] = useState(null);
+
+    useEffect(() => {
+        getWeather(null, 'Sofia');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     async function getWeather(e, searchCity = null){
         if (e) e.preventDefault();
@@ -64,7 +53,6 @@ function Weather() {
 
             addToHistory(data.name);
             setCity(data.name);
-            setShowHistory(false);
 
         }catch(err){
             setError(err.message);
@@ -207,15 +195,6 @@ function Weather() {
         getWeather(null, historyCity);
     };
 
-    const handleInputFocus = () => {
-        setShowHistory(true);
-    };
-
-    const handleInputBlur = () => {
-        // Delay to allow click on history items
-        setTimeout(() => setShowHistory(false), 200);
-    };
-
     // При клик на карта зареждам данните и показвам прогнозата
     const handleMapWeather = async (data) => {
         setWeatherData(data);
@@ -243,184 +222,36 @@ function Weather() {
         }
     };
 
-    const isMobile = useIsMobile();
-
     return (
         <>
-            
+
             <div className={containerClass}>
-            {isMobile ? (
-                <div className="header">
-                    {/* 1-ви ред: Лого центрирано */}
-                    <div className="header-row header-row-logo" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: '-10px', paddingTop: '0'}}>
-                        <Logo size="xxlarge" showText={false} />
-                    </div>
-                    {/* 2-ри ред: Контроли */}
-                    <div className="header-row header-row-controls" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '15px'}}>
-                        <select 
-                            className="language-dropdown"
-                            value={language}
-                            onChange={(e) => changeLanguage(e.target.value)}
-                        >
-                            <option value="bg">🇧🇬 БГ</option>
-                            <option value="en">🇺🇸 EN</option>
-                        </select>
-                        <button
-                            className="theme-toggle"
-                            onClick={() => {
-                                console.log('Theme toggle clicked, current theme:', theme);
-                                toggleTheme();
-                            }}
-                            title={theme === 'dark' ? t('lightMode') : t('darkMode')}
-                        >
-                            {theme === 'dark' ? '☀️' : '🌙'}
-                        </button>
-                        <button
-                            className="temp-toggle"
-                            onClick={() => {
-                                console.log('Temperature toggle clicked, current unit:', temperatureUnit);
-                                toggleTemperatureUnit();
-                            }}
-                            title={temperatureUnit === 'celsius' ? 'Switch to Fahrenheit' : 'Switch to Celsius'}
-                        >
-                            🌡️ {temperatureUnit === 'celsius' ? '°F' : '°C'}
-                        </button>
-                    </div>
-                    {/* 3-ти ред: Търсачка и бутон */}
-                    <div className="header-row header-row-search" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px'}}>
-                        <form onSubmit={getWeather} className="search-form" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', width: '100%', maxWidth: '500px'}}>
-                            <input
-                                type="text"
-                                value={city}
-                                onChange={(e) => {
-                                    setCity(e.target.value);
-                                }}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                placeholder={t('searchPlaceholder')}
-                                className="search-input"
-                                style={{flex: '1', maxWidth: '300px'}}
-                            />
-                            <button type="submit" className="search-btn" disabled={loading}>
-                                {t('searchButton')}
-                            </button>
-                        </form>
-                    </div>
-                    {/* 4-ти ред: Бутон за текущо местоположение (само на мобилни) */}
-                    <div className="header-row header-row-location" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px'}}>
-                        <button
-                            type="button"
-                            className="location-btn"
-                            onClick={getCurrentLocation}
-                            disabled={loading}
-                        >
-                            {t('currentLocation')}
-                        </button>
-                    </div>
-                </div>
-            ) : (
-                <div className="header">
-                    {/* Лого центрирано */}
-                    <div className="desktop-logo" style={{position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: '0'}}>
-                        <Logo size="xxlarge" showText={false} />
-                    </div>
-                    {/* Контроли */}
-                    <div className="header-controls" style={{position: 'relative', display: 'flex', alignItems: 'center', gap: '25px', marginTop: '20px', marginBottom: '20px'}}>
-                        <select 
-                            className="language-dropdown"
-                            value={language}
-                            onChange={(e) => changeLanguage(e.target.value)}
-                        >
-                            <option value="bg">🇧🇬 БГ</option>
-                            <option value="en">🇺🇸 EN</option>
-                        </select>
-                        <button
-                            className="theme-toggle"
-                            onClick={() => {
-                                console.log('Theme toggle clicked, current theme:', theme);
-                                toggleTheme();
-                            }}
-                            title={theme === 'dark' ? t('lightMode') : t('darkMode')}
-                        >
-                            {theme === 'dark' ? '☀️' : '🌙'}
-                            {theme === 'dark' ? t('lightMode') : t('darkMode')}
-                        </button>
-                        <button
-                            className="temp-toggle"
-                            onClick={() => {
-                                console.log('Temperature toggle clicked, current unit:', temperatureUnit);
-                                toggleTemperatureUnit();
-                            }}
-                            title={temperatureUnit === 'celsius' ? 'Switch to Fahrenheit' : 'Switch to Celsius'}
-                        >
-                            🌡️ {temperatureUnit === 'celsius' ? '°F' : '°C'}
-                        </button>
-                    </div>
-                    
-                    {/* World Clock - винаги видим в desktop версията */}
-                    <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '10px', marginBottom: '10px', marginLeft: '20px'}}>
-                        <WorldClock city="Sofia" language={language} hasError={false} />
-                    </div>
-                    
-                    <div className="weather-input" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px'}}>
-                        <form onSubmit={getWeather} style={{display: 'flex', gap: '10px', position: 'relative', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '600px'}}>
-                            <div className="search-history" style={{flex: '1', maxWidth: '300px'}}>
-                                                            <input
-                                type="text"
-                                value={city}
-                                onChange={(e) => {
-                                    setCity(e.target.value);
-                                }}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                placeholder={t('searchPlaceholder')}
-                                style={{width: '100%'}}
-                            />
-                                {/* History Dropdown */}
-                                {showHistory && (
-                                    <div className="history-dropdown">
-                                        {searchHistory.length > 0 ? (
-                                            <>
-                                                {searchHistory.map((historyCity, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="history-item"
-                                                        onClick={() => handleHistoryClick(historyCity)}
-                                                    >
-                                                        <span className="history-item-text">{historyCity}</span>
-                                                        <span className="history-icon">🕒</span>
-                                                    </div>
-                                                ))}
-                                                <div 
-                                                    className="clear-history"
-                                                    onClick={clearHistory}
-                                                >
-                                                    {t('clearHistory')}
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="no-history">
-                                                {t('noHistory')}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                            <button type="submit" className="search-btn" disabled={loading}>
-                                {t('searchButton')}
-                            </button>
-                            <button
-                                type="button"
-                                className="location-btn"
-                                onClick={getCurrentLocation}
-                                disabled={loading}
-                            >
-                                {t('currentLocation')}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )}
+            <WeatherHero
+                weatherData={weatherData}
+                loading={loading}
+                error={error}
+                city={city}
+                setCity={setCity}
+                onSearchSubmit={getWeather}
+                onLocationClick={getCurrentLocation}
+                language={language}
+                changeLanguage={changeLanguage}
+                theme={theme}
+                toggleTheme={toggleTheme}
+                temperatureUnit={temperatureUnit}
+                toggleTemperatureUnit={toggleTemperatureUnit}
+                convertTemperature={convertTemperature}
+                getTemperatureSymbol={getTemperatureSymbol}
+                translateWeatherCondition={translateWeatherCondition}
+                searchHistory={searchHistory}
+                onHistoryClick={handleHistoryClick}
+                clearHistory={clearHistory}
+                t={t}
+            />
+
+            <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '20px', marginBottom: '10px', marginLeft: '20px'}}>
+                <WorldClock city="Sofia" language={language} hasError={false} />
+            </div>
 
             <PullToRefresh onRefresh={handleRefresh}>
                 {loading && <SkeletonLoading />}
@@ -435,20 +266,6 @@ function Weather() {
                 <div className="weather-data">
                     <div className="weather-left">
                         <div className="card">
-                            <div className="current-weather">
-                                <div className="details">
-                                    <p>{t('now')}</p>
-                                    <h2>{convertTemperature(weatherData.main.temp)}{getTemperatureSymbol()}</h2>
-                                    <p>{translateWeatherCondition(weatherData.weather[0].description)}</p>
-                                </div>
-                                <div className="weather-icon">
-                                    <img
-                                        src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
-                                        alt={weatherData.weather[0].description}
-                                    />
-                                </div>
-                            </div>
-                            <hr />
                             <div className="card-footer">
                                 <p>
                                     📅 {formatDate(weatherData.dt)}
