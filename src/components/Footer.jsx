@@ -26,19 +26,14 @@ function Footer() {
 
   return (
     <footer style={{
-      position: 'fixed',
-      left: 0,
-      bottom: 0,
       width: '100%',
       background: 'var(--bg-color1)',
       color: '#888',
       fontSize: '14px',
       textAlign: 'center',
       fontWeight: 'normal',
-      zIndex: 1000,
       boxShadow: '0 -1px 8px rgba(0,0,0,0.04)',
-      padding: '10px 0',
-      backdropFilter: 'blur(10px)',
+      padding: '16px 0',
       borderTop: '1px solid var(--border-color)'
     }}>
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '5px'}}>

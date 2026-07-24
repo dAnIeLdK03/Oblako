@@ -15,6 +15,7 @@ export const translations = {
     forecastTitle: "5-дневна прогноза за",
     temperature: "Температура",
     feelsLike: "Усеща се като",
+    wind: "Вятър",
     hourlyForecast: "Почасова прогноза",
     dailyForecast: "Дневна прогноза",
     hourlyChart: "По часове",
@@ -77,6 +78,8 @@ darkMode: "Тъмен режим",
     // History
     clearHistory: "Изчисти историята",
     noHistory: "Няма история на търсения",
+
+    overview: "Общ преглед",
 
     // Sunrise & Sunset
     sunriseSunset: "Изгрев & Залез",
@@ -160,6 +163,7 @@ darkMode: "Тъмен режим",
     // Chart
     temperature: "Temperature",
     feelsLike: "Feels like",
+    wind: "Wind",
     hourlyForecast: "Hourly Forecast",
     dailyForecast: "Daily Forecast",
     hourlyChart: "Hourly",
@@ -173,6 +177,8 @@ darkMode: "Тъмен режим",
     // History
     clearHistory: "Clear History",
     noHistory: "No search history",
+
+    overview: "Overview",
 
     // Sunrise & Sunset
     sunriseSunset: "Sunrise & Sunset",

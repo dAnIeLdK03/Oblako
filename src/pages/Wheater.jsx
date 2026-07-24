@@ -249,56 +249,67 @@ function Weather() {
                 t={t}
             />
 
-            <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '20px', marginBottom: '10px', marginLeft: '20px'}}>
-                <WorldClock city="Sofia" language={language} hasError={false} />
-            </div>
-
             <PullToRefresh onRefresh={handleRefresh}>
                 {loading && <SkeletonLoading />}
-                {error && <div className="error-message">{error}</div>}
+                {error && <div className="wp-error">{error}</div>}
                 {mapSelectedCity && (
-                    <div className="map-selected-notification">
+                    <div className="wp-toast">
                         📍 {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
                     </div>
                 )}
 
                 {weatherData && (
-                <div className="weather-data">
-                    <div className="weather-left">
-                        <div className="card">
-                            <div className="card-footer">
-                                <p>
-                                    📅 {formatDate(weatherData.dt)}
-                                </p>
-                                <p>
-                                    📍 {weatherData.name}, {weatherData.sys.country}
-                                </p>
-                                <p>
-                                    👁️ {t('visibility')}: {weatherData.visibility / 1000} km
-                                </p>
-                                <p>
-                                    💧 {t('humidity')}: {weatherData.main.humidity}%
-                                </p>
+                <div className="wp-content">
+                    <div className="wp-grid">
+                        <div className="wp-card">
+                            <h3 className="wp-card-title">📊 {t('overview')}</h3>
+                            <div className="wp-stat-list">
+                                <div className="wp-stat">
+                                    <span className="wp-stat-icon">📅</span>
+                                    <span>{formatDate(weatherData.dt)}</span>
+                                </div>
+                                <div className="wp-stat">
+                                    <span className="wp-stat-icon">📍</span>
+                                    <span>{weatherData.name}, {weatherData.sys.country}</span>
+                                </div>
+                                <div className="wp-stat">
+                                    <span className="wp-stat-icon">👁️</span>
+                                    <span>{t('visibility')}: {weatherData.visibility / 1000} km</span>
+                                </div>
+                                <div className="wp-stat">
+                                    <span className="wp-stat-icon">💧</span>
+                                    <span>{t('humidity')}: {weatherData.main.humidity}%</span>
+                                </div>
+                                <div className="wp-stat">
+                                    <span className="wp-stat-icon">🌡️</span>
+                                    <span>{t('feelsLike')}: {convertTemperature(weatherData.main.feels_like)}{getTemperatureSymbol()}</span>
+                                </div>
+                                <div className="wp-stat">
+                                    <span className="wp-stat-icon">💨</span>
+                                    <span>{t('wind')}: {Math.round(weatherData.wind.speed * 3.6)} km/h</span>
+                                </div>
+                            </div>
+
+                            <div className="wp-clock-wrap">
+                                <WorldClock city="Sofia" language={language} hasError={false} />
                             </div>
                         </div>
 
-                        {/* Sunrise & Sunset Component */}
                         <SunriseSunset weatherData={weatherData} />
-                        
-
-                        
-                        {console.log('weatherData:', weatherData)}
-                        {console.log('weatherData.timezone:', weatherData && weatherData.timezone)}
                     </div>
 
-                    <div className="weather-right">
-                        {city && <Forecast city={city} />}
-                    </div>
+                    {city && (
+                        <div className="wp-section">
+                            <Forecast city={city} />
+                        </div>
+                    )}
                 </div>
             )}
 
             {/* Интерактивна карта най-отдолу */}
-            <WeatherMap onLocationSelect={handleMapWeather} />
+            <div className="wp-section">
+                <WeatherMap onLocationSelect={handleMapWeather} />
+            </div>
             </PullToRefresh>
             </div>
         </>
