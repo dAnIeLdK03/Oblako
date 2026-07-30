@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import websocket\")",
+      "Bash(pip3 show *)",
+      "Bash(npm run *)",
+      "Bash(nohup npm run dev -- --port 5183)",
+      "Bash(timeout 20 bash -c 'until curl -sf http://localhost:5183/ >/dev/null; do sleep 0.5; done')",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

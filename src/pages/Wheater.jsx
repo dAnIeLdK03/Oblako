@@ -7,7 +7,7 @@ import { useHistory } from '../HistoryContext.jsx';
 import SunriseSunset from '../components/SunriseSunset.jsx';
 import WeatherMap from '../components/WeatherMap.jsx';
 import WorldClock from '../components/WorldClock.jsx';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
@@ -25,11 +25,7 @@ function Weather() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [mapSelectedCity, setMapSelectedCity] = useState(null);
-
-    useEffect(() => {
-        getWeather(null, 'Sofia');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const didInitLocation = useRef(false);
 
     async function getWeather(e, searchCity = null){
         if (e) e.preventDefault();
@@ -62,9 +58,10 @@ function Weather() {
         }
     }
 
-    const getCurrentLocation = async () => {
+    const getCurrentLocation = async (fallbackCity = null) => {
         if (!navigator.geolocation) {
-            setError(t('locationError') + ': ' + t('locationNotSupported'));
+            if (fallbackCity) getWeather(null, fallbackCity);
+            else setError(t('locationError') + ': ' + t('locationNotSupported'));
             return;
         }
         setLoading(true);
@@ -74,7 +71,8 @@ function Weather() {
             try {
                 const status = await navigator.permissions.query({ name: 'geolocation' });
                 if (status.state === 'denied') {
-                    setError(t('locationError') + ': ' + t('locationPermissionDenied') + '. ' + t('locationEnableInstructions'));
+                    if (fallbackCity) getWeather(null, fallbackCity);
+                    else setError(t('locationError') + ': ' + t('locationPermissionDenied') + '. ' + t('locationEnableInstructions'));
                     setLoading(false);
                     return;
                 }
@@ -95,12 +93,18 @@ function Weather() {
                     setCity(data.name);
                     setError('');
                 } catch (err) {
-                    setError(t('locationError'));
+                    if (fallbackCity) getWeather(null, fallbackCity);
+                    else setError(t('locationError'));
                 } finally {
                     setLoading(false);
                 }
             },
             (geoError) => {
+                if (fallbackCity) {
+                    getWeather(null, fallbackCity);
+                    setLoading(false);
+                    return;
+                }
                 let msg = t('locationError');
                 if (geoError.code === 1) msg += ': ' + t('locationPermissionDenied') + '. ' + t('locationEnableInstructions');
                 else if (geoError.code === 2) msg += ': ' + t('locationUnavailable');
@@ -111,7 +115,14 @@ function Weather() {
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
     };
-    
+
+    useEffect(() => {
+        if (didInitLocation.current) return;
+        didInitLocation.current = true;
+        getCurrentLocation('Sofia');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
 
     // Функция за превод на weather условията
     const translateWeatherCondition = (condition) => {
@@ -233,7 +244,7 @@ function Weather() {
                 city={city}
                 setCity={setCity}
                 onSearchSubmit={getWeather}
-                onLocationClick={getCurrentLocation}
+                onLocationClick={() => getCurrentLocation()}
                 language={language}
                 changeLanguage={changeLanguage}
                 theme={theme}
