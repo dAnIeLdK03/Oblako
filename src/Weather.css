@@ -1,26 +1,26 @@
 :root {
     /* Light Theme Variables */
-    --bg-color1-light: #f8f9fa;
-    --bg-color2-light: #ffffff;
-    --bg-color3-light: #e9ecef;
-    --text-color-light: #212529;
-    --text-secondary-light: #495057;
-    --border-color-light: #dee2e6;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --button-bg-light: #007bff;
-    --button-hover-light: #0056b3;
+    --bg-color1-light: #fdf6ee;
+    --bg-color2-light: #fffdfa;
+    --bg-color3-light: #f5e8d8;
+    --text-color-light: #3a2c22;
+    --text-secondary-light: #7a6a5c;
+    --border-color-light: #ecdcc8;
+    --shadow-light: rgba(150, 90, 40, 0.12);
+    --button-bg-light: #f3a35e;
+    --button-hover-light: #e08a3c;
     --accent-light: #ea6e4b;
 
     /* Dark Theme Variables */
-    --bg-color1-dark: #212529;
-    --bg-color2-dark: #2a2b2d;
-    --bg-color3-dark: #343a40;
-    --text-color-dark: #ffffff;
-    --text-secondary-dark: #adb5bd;
-    --border-color-dark: #495057;
-    --shadow-dark: rgba(0, 0, 0, 0.3);
-    --button-bg-dark: #495057;
-    --button-hover-dark: #6c757d;
+    --bg-color1-dark: #241d18;
+    --bg-color2-dark: #2e2620;
+    --bg-color3-dark: #3a3028;
+    --text-color-dark: #fbf3ea;
+    --text-secondary-dark: #c9b8a8;
+    --border-color-dark: #4a3d33;
+    --shadow-dark: rgba(0, 0, 0, 0.35);
+    --button-bg-dark: #a85f38;
+    --button-hover-dark: #c47444;
     --accent-dark: #ea6e4b;
 }
 
