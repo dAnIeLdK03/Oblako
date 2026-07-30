@@ -1,7 +1,7 @@
 export const translations = {
   bg: {
     // Header
-    appTitle: "Облако ☁️",
+    appTitle: "Облако",
     searchPlaceholder: "Въведете име на град",
     searchButton: "Търсене",
     currentLocation: "Текущо местоположение",
@@ -101,7 +101,7 @@ darkMode: "Тъмен режим",
   
   en: {
     // Header
-    appTitle: "Oblako ☁️",
+    appTitle: "Oblako",
     searchPlaceholder: "Enter city name",
     searchButton: "Search",
     currentLocation: "Current Location",

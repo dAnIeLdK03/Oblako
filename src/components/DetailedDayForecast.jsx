@@ -1,4 +1,5 @@
 import React from 'react';
+import { Droplet, Wind, Gauge, Eye, Compass, CloudRain, Snowflake } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 
@@ -218,7 +219,7 @@ function DetailedDayForecast({ day, onClose }) {
             <div className="weather-parameters">
               <div className="parameter-grid">
                 <div className="parameter-item">
-                  <div className="parameter-icon">💧</div>
+                  <div className="parameter-icon"><Droplet size={22} /></div>
                   <div className="parameter-info">
                     <div className="parameter-label">{language === 'bg' ? 'Влажност' : 'Humidity'}</div>
                     <div className="parameter-value">{day.main.humidity}%</div>
@@ -226,7 +227,7 @@ function DetailedDayForecast({ day, onClose }) {
                 </div>
 
                 <div className="parameter-item">
-                  <div className="parameter-icon">💨</div>
+                  <div className="parameter-icon"><Wind size={22} /></div>
                   <div className="parameter-info">
                     <div className="parameter-label">{language === 'bg' ? 'Вятър' : 'Wind'}</div>
                     <div className="parameter-value">
@@ -237,7 +238,7 @@ function DetailedDayForecast({ day, onClose }) {
 
                 {day.main.pressure && (
                   <div className="parameter-item">
-                    <div className="parameter-icon">📊</div>
+                    <div className="parameter-icon"><Gauge size={22} /></div>
                     <div className="parameter-info">
                       <div className="parameter-label">{language === 'bg' ? 'Налягане' : 'Pressure'}</div>
                       <div className="parameter-value">{day.main.pressure} hPa</div>
@@ -247,7 +248,7 @@ function DetailedDayForecast({ day, onClose }) {
 
                 {day.visibility && (
                   <div className="parameter-item">
-                    <div className="parameter-icon">👁️</div>
+                    <div className="parameter-icon"><Eye size={22} /></div>
                     <div className="parameter-info">
                       <div className="parameter-label">{language === 'bg' ? 'Видимост' : 'Visibility'}</div>
                       <div className="parameter-value">{Math.round(day.visibility / 1000)} km</div>
@@ -263,7 +264,7 @@ function DetailedDayForecast({ day, onClose }) {
                <h3>{language === 'bg' ? 'Детайли за вятъра' : 'Wind Details'}</h3>
                <div className="wind-details-grid">
                  <div className="wind-detail-item">
-                   <div className="wind-icon">💨</div>
+                   <div className="wind-icon"><Wind size={20} /></div>
                    <div className="wind-info">
                      <div className="wind-label">{language === 'bg' ? 'Скорост' : 'Speed'}</div>
                      <div className="wind-value">{Math.round(day.wind.speed)} m/s</div>
@@ -272,7 +273,7 @@ function DetailedDayForecast({ day, onClose }) {
 
                  {day.wind.deg && (
                    <div className="wind-detail-item">
-                     <div className="wind-icon">🧭</div>
+                     <div className="wind-icon"><Compass size={20} /></div>
                      <div className="wind-info">
                        <div className="wind-label">{language === 'bg' ? 'Посока' : 'Direction'}</div>
                        <div className="wind-value">{day.wind.deg}° ({getWindDirectionFull(day.wind.deg)})</div>
@@ -291,7 +292,7 @@ function DetailedDayForecast({ day, onClose }) {
               <h3>{language === 'bg' ? 'Валежи' : 'Precipitation'}</h3>
               <div className="precipitation-details">
                 <div className="precipitation-item">
-                  <div className="precipitation-icon">🌧️</div>
+                  <div className="precipitation-icon"><CloudRain size={22} /></div>
                   <div className="precipitation-info">
                     <div className="precipitation-label">{language === 'bg' ? 'Вероятност' : 'Probability'}</div>
                     <div className="precipitation-value">{Math.round(day.pop * 100)}%</div>
@@ -300,7 +301,7 @@ function DetailedDayForecast({ day, onClose }) {
 
                 {day.rain && (
                   <div className="precipitation-item">
-                    <div className="precipitation-icon">💧</div>
+                    <div className="precipitation-icon"><Droplet size={22} /></div>
                     <div className="precipitation-info">
                       <div className="precipitation-label">{language === 'bg' ? 'Дъжд (3ч)' : 'Rain (3h)'}</div>
                       <div className="precipitation-value">{day.rain['3h'] || day.rain} mm</div>
@@ -310,7 +311,7 @@ function DetailedDayForecast({ day, onClose }) {
 
                 {day.snow && (
                   <div className="precipitation-item">
-                    <div className="precipitation-icon">❄️</div>
+                    <div className="precipitation-icon"><Snowflake size={22} /></div>
                     <div className="precipitation-info">
                       <div className="precipitation-label">{language === 'bg' ? 'Сняг (3ч)' : 'Snow (3h)'}</div>
                       <div className="precipitation-value">{day.snow['3h'] || day.snow} mm</div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Droplet } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
@@ -112,7 +113,7 @@ function Forecast({city}){
                         />
                         <p className="hour-temp">{convertTemperature(hour.main.temp)}{getTemperatureSymbol()}</p>
                         <p className="hour-desc">{hour.weather[0].description}</p>
-                        <p className="hour-humidity">💧 {hour.main.humidity}%</p>
+                        <p className="hour-humidity"><Droplet size={14} className="hour-humidity-icon" /> {hour.main.humidity}%</p>
                     </div>
                 ))}
             </div>

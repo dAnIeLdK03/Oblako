@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Sunrise, Sunset, Sun } from 'lucide-react';
 import { useLanguage} from '../LanguageContext.jsx';
 
 function SunriseSunset({weatherData}){
@@ -72,13 +73,13 @@ function SunriseSunset({weatherData}){
     return(
         <div className = "sunrise-sunset-container">
             <h3 className = "sun-title">
-                🌅 {t('sunriseSunset')}
+                <Sunrise size={20} className="sun-title-icon" /> {t('sunriseSunset')}
             </h3>
 
             <div className = "sun-info-grid">
                 {/*Sunrise*/}
                 <div className = "sun-info-item">
-                    <div className = "sun-icon sunrise-icon">🌅</div>
+                    <div className = "sun-icon sunrise-icon"><Sunrise size={24} /></div>
                     <div className = "sun-details">
                         <span className = "sun-label">{t('sunrise')}</span>
                         <span className = "sun-time">{formatTime(sunrise)}</span>
@@ -87,7 +88,7 @@ function SunriseSunset({weatherData}){
 
                 {/*Sunset*/}
                 <div className = "sun-info-item">
-                    <div className = "sun-icon sunset-icon">🌇</div>
+                    <div className = "sun-icon sunset-icon"><Sunset size={24} /></div>
                     <div className = "sun-details">
                         <span className = "sun-label">{t('sunset')}</span>
                         <span className = "sun-time">{formatTime(sunset)}</span>
@@ -99,7 +100,7 @@ function SunriseSunset({weatherData}){
             <div className = "countdown-container">
                 <div className = "countdown-header">
                     <span className = "countdown-label">
-                        {nextEvent === 'sunrise'? '🌅' : '🌇'} {t('nextEvent')}:
+                        {nextEvent === 'sunrise'? <Sunrise size={16} /> : <Sunset size={16} />} {t('nextEvent')}:
                     </span>
                     <span className = "next-event-name">
                         {nextEvent === 'sunrise' ? t('sunrise') : t('sunset')}
@@ -120,7 +121,7 @@ function SunriseSunset({weatherData}){
 
             {/*Day Length*/}
             <div className = "day-length">
-                <span className = "day-length-label">☀️ {t('dayLength')}:</span>
+                <span className = "day-length-label"><Sun size={16} /> {t('dayLength')}:</span>
                 <span className = "day-length-value">
                     {(() => {
                         const dayLengthSeconds = sunset - sunrise;

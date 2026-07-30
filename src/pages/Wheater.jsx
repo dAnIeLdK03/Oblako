@@ -11,6 +11,7 @@ import { useEffect, useRef } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
+import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 
 
 function Weather() {
@@ -162,23 +163,6 @@ function Weather() {
         }
     };
 
-    const getWeatherSVG = (iconCode) => {
-        const iconMap = {
-            '01d': '☀️', // clear sky day
-            '01n': '🌙', // clear sky night
-            '02d': '⛅', // few clouds day
-            '02n': '☁️', // few clouds night
-            '03d': '☁️', // scattered clouds
-            '04d': '☁️', // broken clouds
-            '09d': '🌧️', // shower rain
-            '10d': '🌦️', // rain day
-            '11d': '⛈️', // thunderstorm
-            '13d': '❄️', // snow
-            '50d': '🌫️'  // mist
-        };
-        return iconMap[iconCode] || '🌤️';
-    };
-
     const getWeatherTheme = (iconCode, main) => {
 
         if (iconCode.includes('n')) {
@@ -265,7 +249,7 @@ function Weather() {
                 {error && <div className="wp-error">{error}</div>}
                 {mapSelectedCity && (
                     <div className="wp-toast">
-                        📍 {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
+                        <MapPin size={16} className="wp-toast-icon" /> {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
                     </div>
                 )}
 
@@ -273,30 +257,30 @@ function Weather() {
                 <div className="wp-content">
                     <div className="wp-grid">
                         <div className="wp-card">
-                            <h3 className="wp-card-title">📊 {t('overview')}</h3>
+                            <h3 className="wp-card-title"><BarChart3 size={20} className="wp-card-title-icon" /> {t('overview')}</h3>
                             <div className="wp-stat-list">
                                 <div className="wp-stat">
-                                    <span className="wp-stat-icon">📅</span>
+                                    <Calendar size={16} className="wp-stat-icon" />
                                     <span>{formatDate(weatherData.dt)}</span>
                                 </div>
                                 <div className="wp-stat">
-                                    <span className="wp-stat-icon">📍</span>
+                                    <MapPin size={16} className="wp-stat-icon" />
                                     <span>{weatherData.name}, {weatherData.sys.country}</span>
                                 </div>
                                 <div className="wp-stat">
-                                    <span className="wp-stat-icon">👁️</span>
+                                    <Eye size={16} className="wp-stat-icon" />
                                     <span>{t('visibility')}: {weatherData.visibility / 1000} km</span>
                                 </div>
                                 <div className="wp-stat">
-                                    <span className="wp-stat-icon">💧</span>
+                                    <Droplet size={16} className="wp-stat-icon" />
                                     <span>{t('humidity')}: {weatherData.main.humidity}%</span>
                                 </div>
                                 <div className="wp-stat">
-                                    <span className="wp-stat-icon">🌡️</span>
+                                    <Thermometer size={16} className="wp-stat-icon" />
                                     <span>{t('feelsLike')}: {convertTemperature(weatherData.main.feels_like)}{getTemperatureSymbol()}</span>
                                 </div>
                                 <div className="wp-stat">
-                                    <span className="wp-stat-icon">💨</span>
+                                    <Wind size={16} className="wp-stat-icon" />
                                     <span>{t('wind')}: {Math.round(weatherData.wind.speed * 3.6)} km/h</span>
                                 </div>
                             </div>

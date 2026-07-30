@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Droplet, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
@@ -210,10 +211,10 @@ function ForecastPage() {
                  
                  <div className="additional-info">
                    <div className="humidity">
-                     💧 {day.main.humidity}%
+                     <Droplet size={14} /> {day.main.humidity}%
                    </div>
                    <div className="wind">
-                     💨 {Math.round(day.wind.speed)} m/s
+                     <Wind size={14} /> {Math.round(day.wind.speed)} m/s
                    </div>
                  </div>
                </div>

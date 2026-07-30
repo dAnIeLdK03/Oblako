@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ArrowDown } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 
 const PullToRefresh = ({ onRefresh, children }) => {
@@ -74,8 +75,8 @@ const PullToRefresh = ({ onRefresh, children }) => {
             {isRefreshing ? (
               <div className="spinner"></div>
             ) : (
-              <div className="pull-arrow" style={{ transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)` }}>
-                ↓
+              <div className="pull-arrow" style={{ transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)`, display: 'flex' }}>
+                <ArrowDown size={20} />
               </div>
             )}
           </div>

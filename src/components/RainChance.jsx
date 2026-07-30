@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CloudLightning, CloudRain, Sun, Moon, Cloud } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 
@@ -109,16 +110,16 @@ function RainChance({ weatherData }) {
   const getRainIcon = (type, hour) => {
     const currentHour = hour || getCurrentHour();
     const isNight = currentHour < 6 || currentHour >= 20;
-    
+
     switch(type) {
       case 'storm':
-        return isNight ? '⛈️' : '⛈️';
+        return <CloudLightning size={22} />;
       case 'rain':
-        return isNight ? '🌧️' : '🌧️';
+        return <CloudRain size={22} />;
       case 'clear':
-        return isNight ? '🌙' : '☀️';
+        return isNight ? <Moon size={22} /> : <Sun size={22} />;
       default:
-        return isNight ? '🌤️' : '🌤️';
+        return <Cloud size={22} />;
     }
   };
 

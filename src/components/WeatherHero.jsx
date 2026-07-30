@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Search } from 'lucide-react';
 import { getCityPhoto } from '../utils/cityPhotos';
 
 function WeatherHero({
@@ -83,7 +84,7 @@ function WeatherHero({
                     onClick={() => setSearchOpen((v) => !v)}
                     aria-label={t('searchButton')}
                 >
-                    🔍
+                    <Search size={20} />
                 </button>
 
                 {searchOpen && (

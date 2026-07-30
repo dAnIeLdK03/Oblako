@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import { Map, Satellite, Mountain, Trash2, MapPin, LoaderCircle, XCircle, Droplet, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import 'leaflet/dist/leaflet.css';
@@ -105,12 +106,12 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
         <div style={{minWidth: 150, textAlign: 'center'}}>
           {marker.loading && (
             <div>
-              <span>⏳ {language === 'bg' ? 'Зареждане...' : 'Loading...'}</span>
+              <span style={{display: 'inline-flex', alignItems: 'center', gap: 6}}><LoaderCircle size={14} /> {language === 'bg' ? 'Зареждане...' : 'Loading...'}</span>
             </div>
           )}
           {marker.error && (
             <div>
-              <span style={{color: 'red'}}>❌ {marker.error}</span>
+              <span style={{color: 'red', display: 'inline-flex', alignItems: 'center', gap: 6}}><XCircle size={14} /> {marker.error}</span>
             </div>
           )}
           {marker.weather && (
@@ -129,10 +130,10 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
                 alt="weather" 
                 style={{width: 50, height: 50}}
               />
-              <div style={{marginTop: '8px', fontSize: '12px', color: '#888'}}>
-                💧 {marker.weather.main.humidity}% | 🌪️ {marker.weather.wind?.speed || 0} km/h
+              <div style={{marginTop: '8px', fontSize: '12px', color: '#888', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6}}>
+                <Droplet size={14} /> {marker.weather.main.humidity}% | <Wind size={14} /> {marker.weather.wind?.speed || 0} km/h
               </div>
-              <button 
+              <button
                 onClick={() => onRemove(marker.id)}
                 style={{
                   marginTop: '8px',
@@ -142,10 +143,13 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
                   border: 'none',
                   borderRadius: '4px',
                   cursor: 'pointer',
-                  fontSize: '12px'
+                  fontSize: '12px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
                 }}
               >
-                ❌ {language === 'bg' ? 'Премахни' : 'Remove'}
+                <XCircle size={14} /> {language === 'bg' ? 'Премахни' : 'Remove'}
               </button>
             </div>
           )}
@@ -222,10 +226,13 @@ function WeatherMap({ onLocationSelect }) {
               border: '1px solid #ddd',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '11px'
+              fontSize: '11px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            🗺️ {language === 'bg' ? 'Улица' : 'Street'}
+            <Map size={14} /> {language === 'bg' ? 'Улица' : 'Street'}
           </button>
           <button
             onClick={() => setMapType('satellite')}
@@ -236,10 +243,13 @@ function WeatherMap({ onLocationSelect }) {
               border: '1px solid #ddd',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '11px'
+              fontSize: '11px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            🛰️ {language === 'bg' ? 'Сателит' : 'Satellite'}
+            <Satellite size={14} /> {language === 'bg' ? 'Сателит' : 'Satellite'}
           </button>
           <button
             onClick={() => setMapType('terrain')}
@@ -250,10 +260,13 @@ function WeatherMap({ onLocationSelect }) {
               border: '1px solid #ddd',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '11px'
+              fontSize: '11px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            🏔️ {language === 'bg' ? 'Терен' : 'Terrain'}
+            <Mountain size={14} /> {language === 'bg' ? 'Терен' : 'Terrain'}
           </button>
           <button
             onClick={clearAllMarkers}
@@ -264,10 +277,13 @@ function WeatherMap({ onLocationSelect }) {
               border: '1px solid #dc3545',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '11px'
+              fontSize: '11px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            🗑️ {language === 'bg' ? 'Изчисти' : 'Clear'}
+            <Trash2 size={14} /> {language === 'bg' ? 'Изчисти' : 'Clear'}
           </button>
         </div>
       )}
@@ -283,9 +299,12 @@ function WeatherMap({ onLocationSelect }) {
         padding: '8px 12px',
         fontSize: '12px',
         color: '#666',
-        maxWidth: '200px'
+        maxWidth: '200px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px'
       }}>
-        📍 {language === 'bg' ? 'Кликнете на картата за да добавите маркер' : 'Click on map to add marker'}
+        <MapPin size={14} /> {language === 'bg' ? 'Кликнете на картата за да добавите маркер' : 'Click on map to add marker'}
       </div>
 
       <MapContainer 

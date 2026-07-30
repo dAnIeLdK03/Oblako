@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from './Logo.jsx';
+import { Home, CalendarDays, CloudRain, Sun, Moon, Lightbulb } from 'lucide-react';
 
 function Navigation() {
   const { language } = useLanguage();
@@ -13,31 +14,31 @@ function Navigation() {
   const menuItems = [
     {
       path: '/',
-      icon: '🌤️',
+      icon: Home,
       label: language === 'bg' ? 'Начало' : 'Home',
       description: language === 'bg' ? 'Текущо време' : 'Current weather'
     },
     {
       path: '/forecast',
-      icon: '📅',
+      icon: CalendarDays,
       label: language === 'bg' ? 'Прогноза' : 'Forecast',
       description: language === 'bg' ? 'Детайлна прогноза' : 'Detailed forecast'
     },
     {
       path: '/rain-chance',
-      icon: '🌧️',
+      icon: CloudRain,
       label: language === 'bg' ? 'Валежи' : 'Rain Chance',
       description: language === 'bg' ? 'Вероятност за валежи' : 'Precipitation probability'
     },
     {
       path: '/uv-index',
-      icon: '☀️',
+      icon: Sun,
       label: language === 'bg' ? 'UV Индекс' : 'UV Index',
       description: language === 'bg' ? 'Ултравиолетово лъчение' : 'Ultraviolet radiation'
     },
     {
       path: '/weather-tips',
-      icon: '💡',
+      icon: Lightbulb,
       label: language === 'bg' ? 'Съвети' : 'Tips',
       description: language === 'bg' ? 'Полезни съвети' : 'Useful tips'
     },
@@ -162,7 +163,7 @@ function Navigation() {
                 className="nav-link"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <div className="nav-icon">{item.icon}</div>
+                <div className="nav-icon"><item.icon size={20} /></div>
                 <div className="nav-content">
                   <div className="nav-label">{item.label}</div>
                   <div className="nav-description">{item.description}</div>
@@ -179,7 +180,7 @@ function Navigation() {
           <div className="nav-theme">
             <span>{language === 'bg' ? 'Тема:' : 'Theme:'}</span>
             <span className="theme-indicator">
-              {theme === 'dark' ? '🌙' : '☀️'}
+              {theme === 'dark' ? <Moon size={16} /> : <Sun size={16} />}
             </span>
           </div>
         </div>
