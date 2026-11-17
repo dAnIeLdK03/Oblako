@@ -11,6 +11,7 @@ import { useEffect, useRef } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
+import { reverseGeocode, verifyLocation } from '../utils/location.js';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 
 
@@ -26,6 +27,7 @@ function Weather() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [mapSelectedCity, setMapSelectedCity] = useState(null);
+    const [locationWarning, setLocationWarning] = useState(null);
     const didInitLocation = useRef(false);
 
     async function getWeather(e, searchCity = null){
@@ -38,6 +40,7 @@ function Weather() {
         setLoading(true);
         try{
             setError('');
+            setLocationWarning(null);
             const encodedCity = encodeURIComponent(cityToSearch);
             const res = await fetch(
                 `https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&units=metric&appid=${API_KEY}`
@@ -85,11 +88,17 @@ function Weather() {
             async (position) => {
                 const { latitude, longitude } = position.coords;
                 try {
+                    // Допълнителна проверка на точността на позицията
+                    const place = await reverseGeocode(latitude, longitude, API_KEY);
+                    const check = verifyLocation(position);
+                    setLocationWarning(check.ok ? null : check);
                     const res = await fetch(
                         `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
                     );
                     if (!res.ok) throw new Error(t('locationError'));
                     const data = await res.json();
+                    // Предпочитаме реалното име на населеното място пред името на метеостанцията
+                    if (place?.name) data.name = place.name;
                     setWeatherData(data);
                     setCity(data.name);
                     setError('');
@@ -247,6 +256,13 @@ function Weather() {
             <PullToRefresh onRefresh={handleRefresh}>
                 {loading && <SkeletonLoading />}
                 {error && <div className="wp-error">{error}</div>}
+                {locationWarning && (
+                    <div className="wp-error">
+                        {language === 'bg'
+                            ? 'Локацията е с ниска точност. Проверете дали е правилна или потърсете града ръчно.'
+                            : 'Location accuracy is low. Please verify it or search for your city manually.'}
+                    </div>
+                )}
                 {mapSelectedCity && (
                     <div className="wp-toast">
                         <MapPin size={16} className="wp-toast-icon" /> {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
