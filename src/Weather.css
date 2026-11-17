@@ -3427,6 +3427,37 @@ button, input, select, .language-dropdown, .theme-toggle, .temp-toggle, .search-
   transition: background 0.2s ease, color 0.2s ease;
 }
 
+.nav-language {
+  margin-bottom: 12px;
+}
+
+.lang-switch {
+  display: flex;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.lang-btn {
+  padding: 7px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lang-btn:hover {
+  color: var(--text-primary, inherit);
+}
+
+.lang-btn.active {
+  background: var(--accent-color);
+  color: white;
+}
+
 .theme-indicator:hover {
   background: var(--accent-color);
   color: white;

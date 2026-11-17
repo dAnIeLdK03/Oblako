@@ -6,7 +6,7 @@ import Logo from './Logo.jsx';
 import { Home, CalendarDays, CloudRain, Sun, Moon, Lightbulb } from 'lucide-react';
 
 function Navigation() {
-  const { language } = useLanguage();
+  const { language, changeLanguage } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -177,6 +177,22 @@ function Navigation() {
         </ul>
 
         <div className="nav-footer">
+          <div className="nav-theme nav-language">
+            <span>{language === 'bg' ? 'Език:' : 'Language:'}</span>
+            <div className="lang-switch" role="group" aria-label={language === 'bg' ? 'Език' : 'Language'}>
+              {['bg', 'en'].map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  className={`lang-btn ${language === code ? 'active' : ''}`}
+                  onClick={() => changeLanguage(code)}
+                  aria-pressed={language === code}
+                >
+                  {code.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="nav-theme">
             <span>{language === 'bg' ? 'Тема:' : 'Theme:'}</span>
             <button
