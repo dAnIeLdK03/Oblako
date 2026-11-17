@@ -309,9 +309,9 @@ function Weather() {
                         <SunriseSunset weatherData={weatherData} />
                     </div>
 
-                    {city && (
+                    {weatherData.coord && (
                         <div className="wp-section">
-                            <Forecast city={city} />
+                            <Forecast city={weatherData.name} coord={weatherData.coord} />
                         </div>
                     )}
                 </div>

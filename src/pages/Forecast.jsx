@@ -5,7 +5,7 @@ import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import TemperatureChart from '../components/TemperatureChart.jsx';
 
-function Forecast({city}){
+function Forecast({city, coord}){
     const { t } = useLanguage();
     const { convertTemperature, getTemperatureSymbol } = useTheme();
     const [forecast, setForecast] = useState([]);
@@ -16,15 +16,14 @@ function Forecast({city}){
     const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
     useEffect(() => {
-        if (!city) return;
+        if (!coord) return;
         
         async function fetchForecast(){
             setLoading(true);
             setError('');
             try {
-                const encodedCity = encodeURIComponent(city);
                 const res = await fetch(
-                    `https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&units=metric&appid=${API_KEY}`
+                    `https://api.openweathermap.org/data/2.5/forecast?lat=${coord.lat}&lon=${coord.lon}&units=metric&appid=${API_KEY}`
                 );
                 if (!res.ok) throw new Error(t('forecastError'));
                 const data = await res.json();
@@ -48,7 +47,7 @@ function Forecast({city}){
 
         fetchForecast();
 
-    }, [city, t]);
+    }, [coord?.lat, coord?.lon, t]);
 
     const formatTime = (dateString) => {
         const date = new Date(dateString);
