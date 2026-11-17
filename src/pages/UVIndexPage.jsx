@@ -4,7 +4,6 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
 import Navigation from '../components/Navigation.jsx';
-import Footer from '../components/Footer.jsx';
 
 const UVIndexPage = () => {
   const { language, t } = useLanguage();
@@ -144,7 +143,6 @@ const UVIndexPage = () => {
           </div>
         </div>
         
-        <Footer />
       </div>
     </>
   );
