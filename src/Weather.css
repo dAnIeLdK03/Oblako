@@ -3413,7 +3413,23 @@ button, input, select, .language-dropdown, .theme-toggle, .temp-toggle, .search-
 }
 
 .theme-indicator {
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.theme-indicator:hover {
+  background: var(--accent-color);
+  color: white;
 }
 
 .nav-overlay {

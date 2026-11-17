@@ -7,7 +7,7 @@ import { Home, CalendarDays, CloudRain, Sun, Moon, Lightbulb } from 'lucide-reac
 
 function Navigation() {
   const { language } = useLanguage();
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -179,9 +179,19 @@ function Navigation() {
         <div className="nav-footer">
           <div className="nav-theme">
             <span>{language === 'bg' ? 'Тема:' : 'Theme:'}</span>
-            <span className="theme-indicator">
-              {theme === 'dark' ? <Moon size={16} /> : <Sun size={16} />}
-            </span>
+            <button
+              type="button"
+              className="theme-indicator"
+              onClick={toggleTheme}
+              aria-label={theme === 'dark'
+                ? (language === 'bg' ? 'Превключи към светла тема' : 'Switch to light theme')
+                : (language === 'bg' ? 'Превключи към тъмна тема' : 'Switch to dark theme')}
+              title={theme === 'dark'
+                ? (language === 'bg' ? 'Светла тема' : 'Light theme')
+                : (language === 'bg' ? 'Тъмна тема' : 'Dark theme')}
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
           </div>
         </div>
       </div>
