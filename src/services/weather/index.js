@@ -5,6 +5,11 @@ import { reverseGeocode } from './reverseGeocode.js';
 export { getIconUrl } from './codes.js';
 export { WeatherError } from './errors.js';
 
+// Списък от съвпадения { name, country, region, lat, lon } — за търсачка с предложения.
+export function searchCity(text, opts) {
+    return openmeteo.searchCity(text, opts);
+}
+
 // query: { city } или { lat, lon }
 export async function getCurrentWeather(query) {
     if (query.city) return openmeteo.getCurrent(query);

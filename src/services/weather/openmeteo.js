@@ -18,18 +18,28 @@ async function getJson(url) {
     return res.json();
 }
 
+// Търсене на населени места по текст. Връща до `count` резултата.
+export async function searchCity(text, { count = 5 } = {}) {
+    const name = text.trim();
+    if (!name) return [];
+    const data = await getJson(`${GEOCODING_URL}?name=${encodeURIComponent(name)}&count=${count}&language=en&format=json`);
+    return (data.results || []).map((r) => ({
+        name: r.name,
+        country: r.country_code || '',
+        region: r.admin1 || '',
+        lat: r.latitude,
+        lon: r.longitude,
+    }));
+}
+
 // "Sofia" или "Sofia, BG" / "Sofia, Bulgaria"
 async function geocode(city) {
     const [name, ...rest] = city.split(',').map((s) => s.trim());
     const hint = rest.join(' ').toLowerCase();
-    const count = hint ? 10 : 1;
-    const data = await getJson(`${GEOCODING_URL}?name=${encodeURIComponent(name)}&count=${count}&language=en&format=json`);
-    const results = data.results || [];
+    const results = await searchCity(name, { count: hint ? 10 : 1 });
     if (!results.length) throw new WeatherError('NOT_FOUND', 'City not found', { status: 404, provider: PROVIDER });
-    const match = hint
-        && results.find((r) => [r.country_code, r.country, r.admin1].some((v) => v && v.toLowerCase() === hint));
-    const r = match || results[0];
-    return { name: r.name, country: r.country_code || '', lat: r.latitude, lon: r.longitude };
+    const r = (hint && results.find((x) => [x.country, x.region].some((v) => v && v.toLowerCase() === hint))) || results[0];
+    return { name: r.name, country: r.country, lat: r.lat, lon: r.lon };
 }
 
 async function resolve(query) {
