@@ -113,4 +113,3 @@ export async function getForecast(query, { days = 5 } = {}) {
     };
 }
 
-export const isAvailable = () => true;
