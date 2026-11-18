@@ -4,6 +4,7 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import TemperatureChart from '../components/TemperatureChart.jsx';
+import { getForecast, getIconUrl } from '../services/weather';
 
 function Forecast({city, coord}){
     const { t } = useLanguage();
@@ -13,7 +14,6 @@ function Forecast({city, coord}){
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [chartType, setChartType] = useState('hourly'); 
-    const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
     useEffect(() => {
         if (!coord) return;
@@ -22,11 +22,12 @@ function Forecast({city, coord}){
             setLoading(true);
             setError('');
             try {
-                const res = await fetch(
-                    `https://api.openweathermap.org/data/2.5/forecast?lat=${coord.lat}&lon=${coord.lon}&units=metric&appid=${API_KEY}`
-                );
-                if (!res.ok) throw new Error(t('forecastError'));
-                const data = await res.json();
+                let data;
+                try {
+                    data = await getForecast({ lat: coord.lat, lon: coord.lon });
+                } catch {
+                    throw new Error(t('forecastError'));
+                }
                 
                 // Store full data for chart
                 setForecastData(data);
@@ -107,7 +108,7 @@ function Forecast({city, coord}){
                     <div key={hour.dt} className="forecast-item">
                         <p className="hour-time">{formatTime(hour.dt_txt)}</p>
                         <img 
-                            src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`}
+                            src={getIconUrl(hour.weather[0].icon)}
                             alt={hour.weather[0].description}
                         />
                         <p className="hour-temp">{convertTemperature(hour.main.temp)}{getTemperatureSymbol()}</p>

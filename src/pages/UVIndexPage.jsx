@@ -4,6 +4,7 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
 import Navigation from '../components/Navigation.jsx';
+import { getCurrentWeather } from '../services/weather';
 
 const UVIndexPage = () => {
   const { language, t } = useLanguage();
@@ -12,8 +13,6 @@ const UVIndexPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
-
   useEffect(() => {
     // Get current location weather for UV index
     const getCurrentWeather = async () => {
@@ -21,13 +20,12 @@ const UVIndexPage = () => {
       try {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(async (position) => {
-            const { latitude, longitude } = position.coords;
-            const res = await fetch(
-              `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
-            );
-            if (!res.ok) throw new Error('Failed to fetch weather data');
-            const data = await res.json();
-            setWeatherData(data);
+            try {
+              const { latitude, longitude } = position.coords;
+              setWeatherData(await getCurrentWeather({ lat: latitude, lon: longitude }));
+            } catch (err) {
+              setError(err.message);
+            }
           }, (error) => {
             console.error('Geolocation error:', error);
             setError(language === 'bg' ? 'Грешка при получаване на местоположението' : 'Error getting location');

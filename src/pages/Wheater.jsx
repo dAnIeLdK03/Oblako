@@ -11,12 +11,12 @@ import { useEffect, useRef } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
-import { reverseGeocode, verifyLocation } from '../utils/location.js';
+import { verifyLocation } from '../utils/location.js';
+import { getCurrentWeather } from '../services/weather';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 
 
 function Weather() {
-    const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
     const { language, changeLanguage, t } = useLanguage();
     const { theme, toggleTheme, temperatureUnit, toggleTemperatureUnit, convertTemperature, getTemperatureSymbol } = useTheme();
     const { searchHistory, addToHistory, clearHistory } = useHistory();
@@ -41,13 +41,12 @@ function Weather() {
         try{
             setError('');
             setLocationWarning(null);
-            const encodedCity = encodeURIComponent(cityToSearch);
-            const res = await fetch(
-                `https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&units=metric&appid=${API_KEY}`
-            );
-            if(!res.ok) throw new Error(t('cityNotFound'));
-            const data = await res.json();
-            console.log('Weather API response:', data);
+            let data;
+            try {
+                data = await getCurrentWeather({ city: cityToSearch });
+            } catch (err) {
+                throw new Error(err.code === 'NOT_FOUND' ? t('cityNotFound') : t('forecastError'));
+            }
             setWeatherData(data);
 
 
@@ -89,16 +88,10 @@ function Weather() {
                 const { latitude, longitude } = position.coords;
                 try {
                     // Допълнителна проверка на точността на позицията
-                    const place = await reverseGeocode(latitude, longitude, API_KEY);
                     const check = verifyLocation(position);
                     setLocationWarning(check.ok ? null : check);
-                    const res = await fetch(
-                        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
-                    );
-                    if (!res.ok) throw new Error(t('locationError'));
-                    const data = await res.json();
-                    // Предпочитаме реалното име на населеното място пред името на метеостанцията
-                    if (place?.name) data.name = place.name;
+                    // Услугата връща и реалното име на населеното място
+                    const data = await getCurrentWeather({ lat: latitude, lon: longitude });
                     setWeatherData(data);
                     setCity(data.name);
                     setError('');

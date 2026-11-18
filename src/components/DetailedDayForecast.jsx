@@ -2,6 +2,7 @@ import React from 'react';
 import { Droplet, Wind, Gauge, Eye, Compass, CloudRain, Snowflake } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
+import { getIconUrl } from '../services/weather';
 
 function DetailedDayForecast({ day, onClose }) {
   const { language } = useLanguage();
@@ -27,7 +28,7 @@ function DetailedDayForecast({ day, onClose }) {
   };
 
   const getWeatherIcon = (iconCode) => {
-    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    return getIconUrl(iconCode);
   };
 
   const getWeatherDescription = (description) => {

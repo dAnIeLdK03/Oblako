@@ -5,6 +5,7 @@ import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
 import '../Weather.css';
+import { getForecast, getIconUrl } from '../services/weather';
 
 function ForecastPage() {
   const { language } = useLanguage();
@@ -16,7 +17,6 @@ function ForecastPage() {
   const [searchCity, setSearchCity] = useState('Sofia');
   const [selectedDay, setSelectedDay] = useState(null);
 
-  const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
   useEffect(() => {
     if (!selectedCity) return;
@@ -25,12 +25,12 @@ function ForecastPage() {
       setLoading(true);
       setError('');
       try {
-        const encodedCity = encodeURIComponent(selectedCity);
-        const res = await fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&units=metric&appid=${API_KEY}`
-        );
-        if (!res.ok) throw new Error(language === 'bg' ? 'Грешка при зареждане на прогнозата' : 'Error loading forecast');
-        const data = await res.json();
+        let data;
+        try {
+          data = await getForecast({ city: selectedCity }, { days: 14 });
+        } catch {
+          throw new Error(language === 'bg' ? 'Грешка при зареждане на прогнозата' : 'Error loading forecast');
+        }
         
         // Group data by day and get unique days
         const dailyData = {};
@@ -122,7 +122,7 @@ function ForecastPage() {
   };
 
   const getWeatherIcon = (iconCode) => {
-    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    return getIconUrl(iconCode);
   };
 
   const getWeatherDescription = (description) => {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { getCityPhoto } from '../utils/cityPhotos';
+import { getForecast, getIconUrl } from '../services/weather';
 
 function WeatherHero({
     weatherData,
@@ -27,19 +28,12 @@ function WeatherHero({
     const [searchOpen, setSearchOpen] = useState(false);
     const [dailyForecast, setDailyForecast] = useState([]);
 
-    const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
-
     useEffect(() => {
-        if (!weatherData?.name) return;
+        if (!weatherData?.coord) return;
 
         async function fetchDailyForecast() {
             try {
-                const encodedCity = encodeURIComponent(weatherData.name);
-                const res = await fetch(
-                    `https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&units=metric&appid=${API_KEY}`
-                );
-                if (!res.ok) return;
-                const data = await res.json();
+                const data = await getForecast({ lat: weatherData.coord.lat, lon: weatherData.coord.lon });
 
                 const byDay = new Map();
                 data.list.forEach((entry) => {
@@ -58,7 +52,7 @@ function WeatherHero({
         }
 
         fetchDailyForecast();
-    }, [weatherData?.name, API_KEY]);
+    }, [weatherData?.coord?.lat, weatherData?.coord?.lon]);
 
     const weekdayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
@@ -128,7 +122,7 @@ function WeatherHero({
                                         {t(weekdayKeys[new Date(day.dt * 1000).getDay()])}
                                     </span>
                                     <img
-                                        src={`https://openweathermap.org/img/wn/${day.weather[0].icon}.png`}
+                                        src={getIconUrl(day.weather[0].icon, { large: false })}
                                         alt={day.weather[0].description}
                                     />
                                     <span className="hero-forecast-temp">

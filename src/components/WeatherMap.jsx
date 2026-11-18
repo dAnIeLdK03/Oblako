@@ -4,8 +4,7 @@ import { Map, Satellite, Mountain, Trash2, MapPin, LoaderCircle, XCircle, Drople
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import 'leaflet/dist/leaflet.css';
-
-const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+import { getCurrentWeather, getIconUrl } from '../services/weather';
 
 // Fix for default markers
 import L from 'leaflet';
@@ -33,11 +32,7 @@ function MapController({ onLocationSelect, markers, setMarkers }) {
       setMarkers(prev => [...prev, newMarker]);
       
       try {
-        const res = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${e.latlng.lat}&lon=${e.latlng.lng}&units=metric&appid=${API_KEY}`
-        );
-        if (!res.ok) throw new Error('No weather data');
-        const data = await res.json();
+        const data = await getCurrentWeather({ lat: e.latlng.lat, lon: e.latlng.lng });
         
         setMarkers(prev => prev.map(marker => 
           marker.id === newMarker.id 
@@ -63,7 +58,7 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
   const { language } = useLanguage();
   
   const getWeatherIcon = (iconCode) => {
-    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    return getIconUrl(iconCode);
   };
 
   const getWeatherColor = (temp) => {

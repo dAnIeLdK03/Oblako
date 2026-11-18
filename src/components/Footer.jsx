@@ -46,6 +46,10 @@ function Footer() {
         <a href="/privacy" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.privacy}</a> |
         <a href="/cookies" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.cookies}</a>
       </span>
+      <div style={{marginTop: '6px', fontSize: '12px'}}>
+        {language === 'bg' ? 'Метеорологични данни от ' : 'Weather data by '}
+        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" style={{color: '#888', textDecoration: 'underline'}}>Open-Meteo.com</a>
+      </div>
     </footer>
   );
 }

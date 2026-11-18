@@ -3,6 +3,7 @@ import RainChance from '../components/RainChance';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
 import '../Weather.css';
+import { getCurrentWeather } from '../services/weather';
 
 function RainChancePage() {
   const { language } = useLanguage();
@@ -10,7 +11,6 @@ function RainChancePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
   useEffect(() => {
     setLoading(true);
@@ -19,12 +19,7 @@ function RainChancePage() {
         navigator.geolocation.getCurrentPosition(async (position) => {
           try {
             const { latitude, longitude } = position.coords;
-            const res = await fetch(
-              `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
-            );
-            if(!res.ok) throw new Error("Failed to fetch weather data");
-            const data = await res.json();
-            setWeatherData(data);
+            setWeatherData(await getCurrentWeather({ lat: latitude, lon: longitude }));
           } catch (err) {
             setError(err.message);
           }

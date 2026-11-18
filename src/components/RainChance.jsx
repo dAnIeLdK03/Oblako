@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CloudLightning, CloudRain, Sun, Moon, Cloud } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
+import { getForecast } from '../services/weather';
 
 function RainChance({ weatherData }) {
   const { language } = useLanguage();
@@ -9,19 +10,13 @@ function RainChance({ weatherData }) {
   const [rainData, setRainData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
-
   useEffect(() => {
     const fetchRainData = async () => {
       if (weatherData && weatherData.coord) {
         setLoading(true);
         try {
           console.log('Fetching rain data for:', weatherData.coord);
-          const res = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&units=metric&appid=${API_KEY}`
-          );
-          if (!res.ok) throw new Error('Failed to fetch forecast data');
-          const forecastData = await res.json();
+          const forecastData = await getForecast({ lat: weatherData.coord.lat, lon: weatherData.coord.lon });
           console.log('Forecast data received:', forecastData);
           
           // Process forecast data for rain chances
