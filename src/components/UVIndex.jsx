@@ -1,53 +1,10 @@
 import React from 'react';
 import { Sun } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
-import { useTheme } from '../ThemeContext.jsx';
 
 const UVIndex = ({ weatherData }) => {
   const { language } = useLanguage();
-  const { convertTemperature, getTemperatureSymbol } = useTheme();
-
-  // Calculate UV index based on time of day and weather conditions
-  const calculateUVIndex = () => {
-    if (!weatherData) return null;
-
-    const hour = new Date(weatherData.dt * 1000).getHours();
-    const weatherMain = weatherData.weather[0]?.main?.toLowerCase();
-    const clouds = weatherData.clouds?.all || 0;
-
-    // Base UV calculation (simplified)
-    let baseUV = 0;
-    
-    // Time-based UV (highest at noon)
-    if (hour >= 10 && hour <= 16) {
-      baseUV = 8; // High UV during peak hours
-    } else if (hour >= 7 && hour <= 9 || hour >= 17 && hour <= 19) {
-      baseUV = 5; // Medium UV during morning/evening
-    } else {
-      baseUV = 2; // Low UV during early morning/late evening
-    }
-
-    // Weather condition adjustments
-    if (weatherMain === 'clear' || weatherMain === 'clear sky') {
-      baseUV = Math.round(baseUV * 1.2);
-    } else if (weatherMain === 'clouds' || weatherMain === 'scattered clouds') {
-      baseUV = Math.round(baseUV * 0.8);
-    } else if (weatherMain === 'rain' || weatherMain === 'drizzle') {
-      baseUV = Math.round(baseUV * 0.6);
-    } else if (weatherMain === 'snow') {
-      baseUV = Math.round(baseUV * 0.4);
-    }
-
-    // Cloud coverage adjustment
-    if (clouds > 80) {
-      baseUV = Math.round(baseUV * 0.7);
-    } else if (clouds > 50) {
-      baseUV = Math.round(baseUV * 0.85);
-    }
-
-    return Math.max(0, Math.min(11, baseUV));
-  };
-
+  
   const getUVLevel = (uvIndex) => {
     if (uvIndex <= 2) return { level: 'low', color: '#4CAF50' };
     if (uvIndex <= 5) return { level: 'moderate', color: '#FF9800' };
@@ -82,8 +39,10 @@ const UVIndex = ({ weatherData }) => {
     return advice[level];
   };
 
-  const uvIndex = calculateUVIndex();
-  if (!uvIndex) return null;
+  if (!weatherData?.current) return null;
+  const { current } = weatherData;
+  // Реален UV индекс от доставчика (0 нощем)
+  const uvIndex = Math.round(current.uv * 10) / 10;
 
   const uvLevel = getUVLevel(uvIndex);
   const uvAdvice = getUVAdvice(uvIndex, uvLevel.level);
@@ -118,7 +77,7 @@ const UVIndex = ({ weatherData }) => {
           <div 
             className="uv-bar-fill" 
             style={{ 
-              width: `${(uvIndex / 11) * 100}%`,
+              width: `${Math.min(uvIndex / 11, 1) * 100}%`,
               backgroundColor: uvLevel.color 
             }}
           ></div>
@@ -132,15 +91,15 @@ const UVIndex = ({ weatherData }) => {
         <div className="uv-details">
           <div className="detail-item">
             <span className="detail-label">{language === 'bg' ? 'Време' : 'Time'}</span>
-            <span className="detail-value">{new Date(weatherData.dt * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+            <span className="detail-value">{new Date(current.localTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
           </div>
           <div className="detail-item">
             <span className="detail-label">{language === 'bg' ? 'Времето' : 'Weather'}</span>
-            <span className="detail-value">{weatherData.weather[0]?.description}</span>
+            <span className="detail-value">{current.condition.description}</span>
           </div>
           <div className="detail-item">
             <span className="detail-label">{language === 'bg' ? 'Облаци' : 'Clouds'}</span>
-            <span className="detail-value">{weatherData.clouds?.all || 0}%</span>
+            <span className="detail-value">{current.cloudCover ?? 0}%</span>
           </div>
         </div>
       </div>

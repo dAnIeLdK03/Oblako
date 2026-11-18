@@ -8,14 +8,14 @@ function SunriseSunset({weatherData}){
     const [nextEvent, setNextEvent] = useState('');
 
     useEffect(() => {
-        if(!weatherData || !weatherData.sys) return;
+        if(!weatherData?.current) return;
 
         const updateCountdown = () => {
             const now = new Date();
             const currentTime = Math.floor(now.getTime() / 1000);
         
-        const sunrise = weatherData.sys.sunrise;
-        const sunset = weatherData.sys.sunset;
+        const sunrise = weatherData.current.sunrise;
+        const sunset = weatherData.current.sunset;
 
         let targetTime, eventType;
 
@@ -56,7 +56,7 @@ function SunriseSunset({weatherData}){
         return () => clearInterval(interval);
     }, [weatherData]);
 
-    if(!weatherData || !weatherData.sys) return null;
+    if(!weatherData?.current) return null;
 
     const formatTime = (timestamp) => {
         const date = new Date(timestamp * 1000);
@@ -67,8 +67,8 @@ function SunriseSunset({weatherData}){
         });
     };
 
-    const sunrise = weatherData.sys.sunrise;
-    const sunset = weatherData.sys.sunset;
+    const sunrise = weatherData.current.sunrise;
+    const sunset = weatherData.current.sunset;
 
     return(
         <div className = "sunrise-sunset-container">

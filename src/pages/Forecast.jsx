@@ -1,54 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Droplet } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import TemperatureChart from '../components/TemperatureChart.jsx';
-import { getForecast, getIconUrl } from '../services/weather';
+import { getIconUrl } from '../services/weather';
 
-function Forecast({city, coord}){
+function Forecast({ weather }){
     const { t } = useLanguage();
     const { convertTemperature, getTemperatureSymbol } = useTheme();
-    const [forecast, setForecast] = useState([]);
-    const [forecastData, setForecastData] = useState(null); 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
     const [chartType, setChartType] = useState('hourly'); 
 
-    useEffect(() => {
-        if (!coord) return;
-        
-        async function fetchForecast(){
-            setLoading(true);
-            setError('');
-            try {
-                let data;
-                try {
-                    data = await getForecast({ lat: coord.lat, lon: coord.lon });
-                } catch {
-                    throw new Error(t('forecastError'));
-                }
-                
-                // Store full data for chart
-                setForecastData(data);
-
-
-                // Filter for hourly display - get next 18 hours (6 data points * 3 hours = 18 hours)
-                const hourlyData = data.list.slice(0, 6); // Get next 18 hours
-                setForecast(hourlyData);
-            } catch (err) {
-                console.error('Forecast error:', err);
-                setError(err.message);
-                setForecast([]);
-                setForecastData(null);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchForecast();
-
-    }, [coord?.lat, coord?.lon, t]);
+    // Следващите 18 часа, през 3 часа
+    const forecast = weather.hourly.filter((_, i) => i % 3 === 0).slice(0, 6);
 
     const formatTime = (dateString) => {
         const date = new Date(dateString);
@@ -68,14 +32,11 @@ function Forecast({city, coord}){
         });
     };
 
-    if (loading) return <div className="loading">{t('loadingForecast')}</div>;
-    if (error) return <div className="error-message">{error}</div>;
-
     return (
         <div className="card">
             <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px'}}>
                 <Logo size="small" showText={false} />
-                <h3>{t('hourlyForecast')} {city} ⏰</h3>
+                <h3>{t('hourlyForecast')} {weather.place.name} ⏰</h3>
             </div>
             
             {/* Chart Toggle */}
@@ -97,7 +58,7 @@ function Forecast({city, coord}){
             {/* Temperature Chart */}
             <div className="scroll-x">
               <TemperatureChart 
-                  forecastData={forecastData} 
+                  weather={weather} 
                   type={chartType}
               />
             </div>
@@ -105,15 +66,15 @@ function Forecast({city, coord}){
             {/* Hourly forecast cards */}
             <div className="forecast-container">
                 {forecast.map((hour, index) => (
-                    <div key={hour.dt} className="forecast-item">
-                        <p className="hour-time">{formatTime(hour.dt_txt)}</p>
+                    <div key={hour.time} className="forecast-item">
+                        <p className="hour-time">{formatTime(hour.localTime)}</p>
                         <img 
-                            src={getIconUrl(hour.weather[0].icon)}
-                            alt={hour.weather[0].description}
+                            src={getIconUrl(hour.condition.icon)}
+                            alt={hour.condition.description}
                         />
-                        <p className="hour-temp">{convertTemperature(hour.main.temp)}{getTemperatureSymbol()}</p>
-                        <p className="hour-desc">{hour.weather[0].description}</p>
-                        <p className="hour-humidity"><Droplet size={14} className="hour-humidity-icon" /> {hour.main.humidity}%</p>
+                        <p className="hour-temp">{convertTemperature(hour.temp)}{getTemperatureSymbol()}</p>
+                        <p className="hour-desc">{hour.condition.description}</p>
+                        <p className="hour-humidity"><Droplet size={14} className="hour-humidity-icon" /> {hour.humidity}%</p>
                     </div>
                 ))}
             </div>

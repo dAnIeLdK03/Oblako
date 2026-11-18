@@ -1,34 +1,66 @@
-// Единна входна точка за данни за времето (Open-Meteo, без API ключ).
-import * as openmeteo from './openmeteo.js';
-import { reverseGeocode } from './reverseGeocode.js';
+// Единна входна точка за данни за времето. UI-ът ползва САМО този модул и модела по-долу.
+// Конкретният API живее в ./openmeteo.js — за смяна се подменя само импортът по-долу.
+//
+// Модел (единици: °C, m/s, hPa, метри, unix секунди):
+//   getWeather() -> {
+//     provider, utcOffset,
+//     place:   { name, country, lat, lon, utcOffset },
+//     current: { time, localTime, temp, feelsLike, humidity, pressure, visibility,
+//                windSpeed, windDeg, cloudCover, uv, sunrise, sunset, condition },
+//     hourly:  [{ time, localTime, hour, temp, feelsLike, humidity, pressure, visibility,
+//                 windSpeed, windDeg, precipProbability (0-100), condition }]   // стъпка 1 час
+//     daily:   [{ date 'YYYY-MM-DD', tempMax, tempMin, feelsLikeMax, feelsLikeMin, humidity,
+//                 pressure, visibility, windSpeed (макс.), windDeg, precipProbability (0-100),
+//                 precipSum (mm), uvMax, sunrise, sunset, condition }]
+//   }
+//   condition: { group: clear|clouds|drizzle|rain|snow|thunderstorm|fog,
+//                description (англ. текст), icon, isDay }
+//   localTime е "YYYY-MM-DDTHH:mm" по часа на самото място (new Date(localTime) го показва правилно).
+import * as provider from './openmeteo.js';
+import { WeatherError } from './errors.js';
 
-export { getIconUrl } from './codes.js';
-export { WeatherError } from './errors.js';
+export { getIconUrl } from './icons.js';
+export { WeatherError };
 
-// Списък от съвпадения { name, country, region, lat, lon } — за търсачка с предложения.
-export function searchCity(text, opts) {
-    return openmeteo.searchCity(text, opts);
+export const searchCity = (text, opts) => provider.searchCity(text, opts);
+
+// "Sofia" или "Sofia, BG" / "Sofia, Bulgaria"
+async function geocode(city) {
+    const [name, ...rest] = city.split(',').map((s) => s.trim());
+    const hint = rest.join(' ').toLowerCase();
+    const results = await provider.searchCity(name, { count: hint ? 10 : 1 });
+    if (!results.length) throw new WeatherError('NOT_FOUND', 'City not found', { status: 404 });
+    const match = hint && results.find((r) => [r.country, r.region].some((v) => v && v.toLowerCase() === hint));
+    return match || results[0];
 }
 
-// query: { city } или { lat, lon }
-export async function getCurrentWeather(query) {
-    if (query.city) return openmeteo.getCurrent(query);
-
-    // По координати: добавяме реалното име на мястото.
-    const [data, place] = await Promise.all([
-        openmeteo.getCurrent(query),
-        reverseGeocode(query.lat, query.lon),
-    ]);
-    if (place) {
-        data.name = place.name;
-        data.sys = { ...data.sys, country: place.country || data.sys?.country || '' };
-    } else if (!data.name) {
-        data.name = `${Number(query.lat).toFixed(2)}, ${Number(query.lon).toFixed(2)}`;
+// query: { city } или { lat, lon }.  opts.days — дни напред (по подразбиране 7, до 16).
+export async function getWeather(query, { days = 7 } = {}) {
+    let place;
+    let weather;
+    if (query.city) {
+        place = await geocode(query.city);
+        weather = await provider.fetchWeather(place, { days });
+    } else {
+        // По координати: името на мястото се търси паралелно с времето.
+        const [found, data] = await Promise.all([
+            provider.reverseGeocode(query.lat, query.lon),
+            provider.fetchWeather(query, { days }),
+        ]);
+        place = {
+            name: found?.name || `${Number(query.lat).toFixed(2)}, ${Number(query.lon).toFixed(2)}`,
+            country: found?.country || '',
+            lat: query.lat,
+            lon: query.lon,
+        };
+        weather = data;
     }
-    return data;
-}
-
-// opts.days — колко дни напред (до 16)
-export function getForecast(query, opts) {
-    return openmeteo.getForecast(query, opts);
+    return {
+        provider: provider.NAME,
+        utcOffset: weather.utcOffset,
+        place: { name: place.name, country: place.country, lat: place.lat, lon: place.lon, utcOffset: weather.utcOffset },
+        current: weather.current,
+        hourly: weather.hourly,
+        daily: weather.daily,
+    };
 }

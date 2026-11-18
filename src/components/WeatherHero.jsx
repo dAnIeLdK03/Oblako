@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { getCityPhoto } from '../utils/cityPhotos';
-import { getForecast, getIconUrl } from '../services/weather';
+import { getIconUrl } from '../services/weather';
 
 function WeatherHero({
     weatherData,
@@ -26,34 +26,6 @@ function WeatherHero({
     t,
 }) {
     const [searchOpen, setSearchOpen] = useState(false);
-    const [dailyForecast, setDailyForecast] = useState([]);
-
-    useEffect(() => {
-        if (!weatherData?.coord) return;
-
-        async function fetchDailyForecast() {
-            try {
-                const data = await getForecast({ lat: weatherData.coord.lat, lon: weatherData.coord.lon });
-
-                const byDay = new Map();
-                data.list.forEach((entry) => {
-                    const dayKey = entry.dt_txt.split(' ')[0];
-                    const hour = entry.dt_txt.split(' ')[1];
-                    const existing = byDay.get(dayKey);
-                    if (!existing || Math.abs(parseInt(hour) - 12) < Math.abs(parseInt(existing.dt_txt.split(' ')[1]) - 12)) {
-                        byDay.set(dayKey, entry);
-                    }
-                });
-
-                setDailyForecast(Array.from(byDay.values()).slice(0, 5));
-            } catch {
-                setDailyForecast([]);
-            }
-        }
-
-        fetchDailyForecast();
-    }, [weatherData?.coord?.lat, weatherData?.coord?.lon]);
-
     const weekdayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
     const handleSubmit = (e) => {
@@ -61,8 +33,9 @@ function WeatherHero({
         setSearchOpen(false);
     };
 
-    const cityName = weatherData?.name;
-    const weekday = weatherData ? t(weekdayKeys[new Date(weatherData.dt * 1000).getDay()]) : '';
+    const cityName = weatherData?.place.name;
+    const weekday = weatherData ? t(weekdayKeys[new Date(weatherData.current.localTime).getDay()]) : '';
+    const dailyForecast = weatherData ? weatherData.daily.slice(0, 5) : [];
 
     return (
         <section
@@ -109,24 +82,24 @@ function WeatherHero({
                         <h1>{cityName},</h1>
                         <h1>{weekday},</h1>
                         <h1>
-                            {convertTemperature(weatherData.main.temp)}{getTemperatureSymbol()},
+                            {convertTemperature(weatherData.current.temp)}{getTemperatureSymbol()},
                         </h1>
-                        <h1>{translateWeatherCondition(weatherData.weather[0].description)}</h1>
+                        <h1>{translateWeatherCondition(weatherData.current.condition.description)}</h1>
                     </div>
 
                     {dailyForecast.length > 0 && (
                         <div className="hero-forecast-strip">
                             {dailyForecast.map((day) => (
-                                <div key={day.dt} className="hero-forecast-item">
+                                <div key={day.date} className="hero-forecast-item">
                                     <span className="hero-forecast-day">
-                                        {t(weekdayKeys[new Date(day.dt * 1000).getDay()])}
+                                        {t(weekdayKeys[new Date(`${day.date}T12:00:00`).getDay()])}
                                     </span>
                                     <img
-                                        src={getIconUrl(day.weather[0].icon)}
-                                        alt={day.weather[0].description}
+                                        src={getIconUrl(day.condition.icon)}
+                                        alt={day.condition.description}
                                     />
                                     <span className="hero-forecast-temp">
-                                        {translateWeatherCondition(day.weather[0].description)}, {convertTemperature(day.main.temp)}{getTemperatureSymbol()}
+                                        {translateWeatherCondition(day.condition.description)}, {convertTemperature(day.tempMax)}{getTemperatureSymbol()}
                                     </span>
                                 </div>
                             ))}

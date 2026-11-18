@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droplet, Wind, Gauge, Eye, Compass, CloudRain, Snowflake } from 'lucide-react';
+import { Droplet, Wind, Gauge, Eye, Compass, CloudRain } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import { getIconUrl } from '../services/weather';
@@ -80,68 +80,6 @@ function DetailedDayForecast({ day, onClose }) {
     return descriptions[description.toLowerCase()] || description;
   };
 
-  const getWeatherCategory = (id) => {
-    // Weather condition codes from OpenWeatherMap
-    const categories = {
-      200: language === 'bg' ? 'Буря с леки дъждове' : 'Thunderstorm with light rain',
-      201: language === 'bg' ? 'Буря с дъжд' : 'Thunderstorm with rain',
-      202: language === 'bg' ? 'Буря със силни дъждове' : 'Thunderstorm with heavy rain',
-      210: language === 'bg' ? 'Лека буря' : 'Light thunderstorm',
-      211: language === 'bg' ? 'Буря' : 'Thunderstorm',
-      212: language === 'bg' ? 'Силна буря' : 'Heavy thunderstorm',
-      221: language === 'bg' ? 'Рагнати бури' : 'Ragged thunderstorm',
-      230: language === 'bg' ? 'Буря с лека суграшица' : 'Thunderstorm with light drizzle',
-      231: language === 'bg' ? 'Буря със суграшица' : 'Thunderstorm with drizzle',
-      232: language === 'bg' ? 'Буря със силна суграшица' : 'Thunderstorm with heavy drizzle',
-      300: language === 'bg' ? 'Лека суграшица' : 'Light intensity drizzle',
-      301: language === 'bg' ? 'Суграшица' : 'Drizzle',
-      302: language === 'bg' ? 'Силна суграшица' : 'Heavy intensity drizzle',
-      310: language === 'bg' ? 'Лека суграшица с дъжд' : 'Light intensity drizzle rain',
-      311: language === 'bg' ? 'Суграшица с дъжд' : 'Drizzle rain',
-      312: language === 'bg' ? 'Силна суграшица с дъжд' : 'Heavy intensity drizzle rain',
-      313: language === 'bg' ? 'Превалявания със суграшица' : 'Shower rain and drizzle',
-      314: language === 'bg' ? 'Силни превалявания със суграшица' : 'Heavy shower rain and drizzle',
-      321: language === 'bg' ? 'Суграшица' : 'Shower drizzle',
-      500: language === 'bg' ? 'Леки дъждове' : 'Light rain',
-      501: language === 'bg' ? 'Умерени дъждове' : 'Moderate rain',
-      502: language === 'bg' ? 'Силни дъждове' : 'Heavy intensity rain',
-      503: language === 'bg' ? 'Много силни дъждове' : 'Very heavy rain',
-      504: language === 'bg' ? 'Екстремни дъждове' : 'Extreme rain',
-      511: language === 'bg' ? 'Замръзващ дъжд' : 'Freezing rain',
-      520: language === 'bg' ? 'Леки превалявания' : 'Light intensity shower rain',
-      521: language === 'bg' ? 'Превалявания' : 'Shower rain',
-      522: language === 'bg' ? 'Силни превалявания' : 'Heavy intensity shower rain',
-      531: language === 'bg' ? 'Неправилни превалявания' : 'Ragged shower rain',
-      600: language === 'bg' ? 'Леки снегове' : 'Light snow',
-      601: language === 'bg' ? 'Сняг' : 'Snow',
-      602: language === 'bg' ? 'Силни снегове' : 'Heavy snow',
-      611: language === 'bg' ? 'Суграшица' : 'Sleet',
-      612: language === 'bg' ? 'Лека суграшица' : 'Light shower sleet',
-      613: language === 'bg' ? 'Суграшица' : 'Shower sleet',
-      615: language === 'bg' ? 'Леки дъждове и сняг' : 'Light rain and snow',
-      616: language === 'bg' ? 'Дъжд и сняг' : 'Rain and snow',
-      620: language === 'bg' ? 'Леки снежни превалявания' : 'Light shower snow',
-      621: language === 'bg' ? 'Снежни превалявания' : 'Shower snow',
-      622: language === 'bg' ? 'Силни снежни превалявания' : 'Heavy shower snow',
-      701: language === 'bg' ? 'Мъгла' : 'Mist',
-      711: language === 'bg' ? 'Дим' : 'Smoke',
-      721: language === 'bg' ? 'Мъгла' : 'Haze',
-      731: language === 'bg' ? 'Пясъчни вихри' : 'Sand/dust whirls',
-      741: language === 'bg' ? 'Мъгла' : 'Fog',
-      751: language === 'bg' ? 'Пясък' : 'Sand',
-      761: language === 'bg' ? 'Прах' : 'Dust',
-      762: language === 'bg' ? 'Вулканичен пепел' : 'Volcanic ash',
-      771: language === 'bg' ? 'Шквали' : 'Squalls',
-      781: language === 'bg' ? 'Торнадо' : 'Tornado',
-      800: language === 'bg' ? 'Ясно' : 'Clear sky',
-      801: language === 'bg' ? 'Леки облаци' : 'Few clouds',
-      802: language === 'bg' ? 'Разпръснати облаци' : 'Scattered clouds',
-      803: language === 'bg' ? 'Разкъсани облаци' : 'Broken clouds',
-      804: language === 'bg' ? 'Пълна облачност' : 'Overcast clouds'
-    };
-    return categories[id] || language === 'bg' ? 'Неизвестно' : 'Unknown';
-  };
-
   const getWindDirection = (degrees) => {
     const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
     const index = Math.round(degrees / 22.5) % 16;
@@ -184,7 +122,7 @@ function DetailedDayForecast({ day, onClose }) {
     <div className="detailed-forecast-overlay">
       <div className="detailed-forecast-modal">
         <div className="detailed-forecast-header">
-          <h2>{formatDate(day.dt_txt)}</h2>
+          <h2>{formatDate(`${day.date}T12:00:00`)}</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
 
@@ -193,24 +131,24 @@ function DetailedDayForecast({ day, onClose }) {
           <div className="main-weather-section">
             <div className="weather-icon-large">
               <img 
-                src={getWeatherIcon(day.weather[0].icon)} 
-                alt={day.weather[0].description}
+                src={getWeatherIcon(day.condition.icon)} 
+                alt={day.condition.description}
               />
             </div>
             
             <div className="weather-main-info">
               <div className="weather-description">
-                {getWeatherDescription(day.weather[0].description)}
+                {getWeatherDescription(day.condition.description)}
               </div>
               
               <div className="temperature-range">
                 <div className="temp-max">
                   <span className="temp-label">{language === 'bg' ? 'Максимум' : 'Max'}</span>
-                  <span className="temp-value">{convertTemperature(day.main.temp_max)}{getTemperatureSymbol()}</span>
+                  <span className="temp-value">{convertTemperature(day.tempMax)}{getTemperatureSymbol()}</span>
                 </div>
                 <div className="temp-min">
                   <span className="temp-label">{language === 'bg' ? 'Минимум' : 'Min'}</span>
-                  <span className="temp-value">{convertTemperature(day.main.temp_min)}{getTemperatureSymbol()}</span>
+                  <span className="temp-value">{convertTemperature(day.tempMin)}{getTemperatureSymbol()}</span>
                 </div>
               </div>
             </div>
@@ -223,7 +161,7 @@ function DetailedDayForecast({ day, onClose }) {
                   <div className="parameter-icon"><Droplet size={22} /></div>
                   <div className="parameter-info">
                     <div className="parameter-label">{language === 'bg' ? 'Влажност' : 'Humidity'}</div>
-                    <div className="parameter-value">{day.main.humidity}%</div>
+                    <div className="parameter-value">{day.humidity}%</div>
                   </div>
                 </div>
 
@@ -232,22 +170,22 @@ function DetailedDayForecast({ day, onClose }) {
                   <div className="parameter-info">
                     <div className="parameter-label">{language === 'bg' ? 'Вятър' : 'Wind'}</div>
                     <div className="parameter-value">
-                      {Math.round(day.wind.speed)} m/s {day.wind.deg ? getWindDirection(day.wind.deg) : ''}
+                      {Math.round(day.windSpeed)} m/s {day.windDeg ? getWindDirection(day.windDeg) : ''}
                     </div>
                   </div>
                 </div>
 
-                {day.main.pressure && (
+                {day.pressure > 0 && (
                   <div className="parameter-item">
                     <div className="parameter-icon"><Gauge size={22} /></div>
                     <div className="parameter-info">
                       <div className="parameter-label">{language === 'bg' ? 'Налягане' : 'Pressure'}</div>
-                      <div className="parameter-value">{day.main.pressure} hPa</div>
+                      <div className="parameter-value">{day.pressure} hPa</div>
                     </div>
                   </div>
                 )}
 
-                {day.visibility && (
+                {day.visibility > 0 && (
                   <div className="parameter-item">
                     <div className="parameter-icon"><Eye size={22} /></div>
                     <div className="parameter-info">
@@ -260,7 +198,7 @@ function DetailedDayForecast({ day, onClose }) {
             </div>
 
                      {/* Wind Details */}
-           {day.wind && (
+           {day.windSpeed != null && (
              <div className="wind-details-section">
                <h3>{language === 'bg' ? 'Детайли за вятъра' : 'Wind Details'}</h3>
                <div className="wind-details-grid">
@@ -268,16 +206,16 @@ function DetailedDayForecast({ day, onClose }) {
                    <div className="wind-icon"><Wind size={20} /></div>
                    <div className="wind-info">
                      <div className="wind-label">{language === 'bg' ? 'Скорост' : 'Speed'}</div>
-                     <div className="wind-value">{Math.round(day.wind.speed)} m/s</div>
+                     <div className="wind-value">{Math.round(day.windSpeed)} m/s</div>
                    </div>
                  </div>
 
-                 {day.wind.deg && (
+                 {day.windDeg > 0 && (
                    <div className="wind-detail-item">
                      <div className="wind-icon"><Compass size={20} /></div>
                      <div className="wind-info">
                        <div className="wind-label">{language === 'bg' ? 'Посока' : 'Direction'}</div>
-                       <div className="wind-value">{day.wind.deg}° ({getWindDirectionFull(day.wind.deg)})</div>
+                       <div className="wind-value">{day.windDeg}° ({getWindDirectionFull(day.windDeg)})</div>
                      </div>
                    </div>
                  )}
@@ -288,40 +226,28 @@ function DetailedDayForecast({ day, onClose }) {
                      
 
           {/* Precipitation Details */}
-          {day.pop && (
-            <div className="precipitation-section">
-              <h3>{language === 'bg' ? 'Валежи' : 'Precipitation'}</h3>
-              <div className="precipitation-details">
+          <div className="precipitation-section">
+            <h3>{language === 'bg' ? 'Валежи' : 'Precipitation'}</h3>
+            <div className="precipitation-details">
+              <div className="precipitation-item">
+                <div className="precipitation-icon"><CloudRain size={22} /></div>
+                <div className="precipitation-info">
+                  <div className="precipitation-label">{language === 'bg' ? 'Вероятност' : 'Probability'}</div>
+                  <div className="precipitation-value">{Math.round(day.precipProbability)}%</div>
+                </div>
+              </div>
+
+              {day.precipSum > 0 && (
                 <div className="precipitation-item">
-                  <div className="precipitation-icon"><CloudRain size={22} /></div>
+                  <div className="precipitation-icon"><Droplet size={22} /></div>
                   <div className="precipitation-info">
-                    <div className="precipitation-label">{language === 'bg' ? 'Вероятност' : 'Probability'}</div>
-                    <div className="precipitation-value">{Math.round(day.pop * 100)}%</div>
+                    <div className="precipitation-label">{language === 'bg' ? 'Общо за деня' : 'Daily total'}</div>
+                    <div className="precipitation-value">{day.precipSum.toFixed(1)} mm</div>
                   </div>
                 </div>
-
-                {day.rain && (
-                  <div className="precipitation-item">
-                    <div className="precipitation-icon"><Droplet size={22} /></div>
-                    <div className="precipitation-info">
-                      <div className="precipitation-label">{language === 'bg' ? 'Дъжд (3ч)' : 'Rain (3h)'}</div>
-                      <div className="precipitation-value">{day.rain['3h'] || day.rain} mm</div>
-                    </div>
-                  </div>
-                )}
-
-                {day.snow && (
-                  <div className="precipitation-item">
-                    <div className="precipitation-icon"><Snowflake size={22} /></div>
-                    <div className="precipitation-info">
-                      <div className="precipitation-label">{language === 'bg' ? 'Сняг (3ч)' : 'Snow (3h)'}</div>
-                      <div className="precipitation-value">{day.snow['3h'] || day.snow} mm</div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
-          )}
+          </div>
 
           
 

@@ -4,7 +4,7 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
 import Navigation from '../components/Navigation.jsx';
-import { getCurrentWeather } from '../services/weather';
+import { getWeather } from '../services/weather';
 
 const UVIndexPage = () => {
   const { language, t } = useLanguage();
@@ -22,7 +22,7 @@ const UVIndexPage = () => {
           navigator.geolocation.getCurrentPosition(async (position) => {
             try {
               const { latitude, longitude } = position.coords;
-              setWeatherData(await getCurrentWeather({ lat: latitude, lon: longitude }));
+              setWeatherData(await getWeather({ lat: latitude, lon: longitude }, { days: 1 }));
             } catch (err) {
               setError(err.message);
             }

@@ -26,11 +26,11 @@ ChartJS.register(
   Filler
 );
 
-function TemperatureChart({ forecastData, type = 'hourly' }) {
+function TemperatureChart({ weather, type = 'hourly' }) {
   const { t } = useLanguage();
   const { theme, convertTemperature, getTemperatureSymbol } = useTheme();
 
-  if (!forecastData || !forecastData.list) {
+  if (!weather?.hourly?.length) {
     return (
       <div className="chart-container">
         <div className="no-chart-data">
@@ -42,20 +42,21 @@ function TemperatureChart({ forecastData, type = 'hourly' }) {
 
   // Prepare data based on type (hourly or daily)
   const prepareChartData = () => {
-    let dataPoints = [];
+    // Всеки запис се свежда до { label-време, temp, feelsLike }
+    let dataPoints;
     
     if (type === 'hourly') {
-      // Show next 24 hours (8 data points, every 3 hours)
-      dataPoints = forecastData.list.slice(0, 8);
+      // Next 24 hours (8 data points, every 3 hours)
+      dataPoints = weather.hourly.filter((_, i) => i % 3 === 0).slice(0, 8)
+        .map(h => ({ at: h.localTime, temp: h.temp, feelsLike: h.feelsLike }));
     } else {
-      // Show 5 days (one point per day at 12:00)
-      dataPoints = forecastData.list.filter(item => 
-        item.dt_txt.includes('12:00:00')
-      ).slice(0, 5);
+      // 5 days, daily maximum
+      dataPoints = weather.daily.slice(0, 5)
+        .map(d => ({ at: `${d.date}T12:00`, temp: d.tempMax, feelsLike: d.feelsLikeMax }));
     }
 
     const labels = dataPoints.map(item => {
-      const date = new Date(item.dt * 1000);
+      const date = new Date(item.at);
       
       if (type === 'hourly') {
         return date.toLocaleTimeString('en-US', { 
@@ -71,8 +72,8 @@ function TemperatureChart({ forecastData, type = 'hourly' }) {
       }
     });
 
-    const temperatures = dataPoints.map(item => convertTemperature(item.main.temp));
-    const feelsLike = dataPoints.map(item => convertTemperature(item.main.feels_like));
+    const temperatures = dataPoints.map(item => convertTemperature(item.temp));
+    const feelsLike = dataPoints.map(item => convertTemperature(item.feelsLike));
 
     return { labels, temperatures, feelsLike };
   };

@@ -12,7 +12,7 @@ import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
 import { verifyLocation } from '../utils/location.js';
-import { getCurrentWeather } from '../services/weather';
+import { getWeather as fetchWeather } from '../services/weather';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 
 
@@ -43,15 +43,15 @@ function Weather() {
             setLocationWarning(null);
             let data;
             try {
-                data = await getCurrentWeather({ city: cityToSearch });
+                data = await fetchWeather({ city: cityToSearch });
             } catch (err) {
                 throw new Error(err.code === 'NOT_FOUND' ? t('cityNotFound') : t('forecastError'));
             }
             setWeatherData(data);
 
 
-            addToHistory(data.name);
-            setCity(data.name);
+            addToHistory(data.place.name);
+            setCity(data.place.name);
 
         }catch(err){
             setError(err.message);
@@ -91,9 +91,9 @@ function Weather() {
                     const check = verifyLocation(position);
                     setLocationWarning(check.ok ? null : check);
                     // Услугата връща и реалното име на населеното място
-                    const data = await getCurrentWeather({ lat: latitude, lon: longitude });
+                    const data = await fetchWeather({ lat: latitude, lon: longitude });
                     setWeatherData(data);
-                    setCity(data.name);
+                    setCity(data.place.name);
                     setError('');
                 } catch (err) {
                     if (fallbackCity) getWeather(null, fallbackCity);
@@ -165,14 +165,14 @@ function Weather() {
         }
     };
 
-    const getWeatherTheme = (iconCode, main) => {
+    const getWeatherTheme = (condition) => {
 
-        if (iconCode.includes('n')) {
+        if (!condition.isDay) {
             return 'night';
         }
 
         let theme;
-        switch (main.toLowerCase()) {
+        switch (condition.group) {
             case 'clear': theme = 'sunny'; break;
             case 'clouds': theme = 'cloudy'; break;
             case 'rain':
@@ -185,7 +185,7 @@ function Weather() {
         return theme;
     };
 
-    const containerClass = `weather-container ${weatherData ? getWeatherTheme(weatherData.weather[0].icon, weatherData.weather[0].main) : ''}`;
+    const containerClass = `weather-container ${weatherData ? getWeatherTheme(weatherData.current.condition) : ''}`;
 
     const handleHistoryClick = (historyCity) => {
         setCity(historyCity);
@@ -196,11 +196,11 @@ function Weather() {
     const handleMapWeather = async (data) => {
         setWeatherData(data);
         setError('');
-        setCity(data.name); // Обновяваме града в търсачката
-        setMapSelectedCity(data.name); // Запазваме града от картата
+        setCity(data.place.name); // Обновяваме града в търсачката
+        setMapSelectedCity(data.place.name); // Запазваме града от картата
         
         // Добавяме в историята
-        addToHistory(data.name);
+        addToHistory(data.place.name);
         
         // Показваме съобщение за успешно зареждане
         
@@ -270,27 +270,27 @@ function Weather() {
                             <div className="wp-stat-list">
                                 <div className="wp-stat">
                                     <Calendar size={16} className="wp-stat-icon" />
-                                    <span>{formatDate(weatherData.dt)}</span>
+                                    <span>{formatDate(weatherData.current.time)}</span>
                                 </div>
                                 <div className="wp-stat">
                                     <MapPin size={16} className="wp-stat-icon" />
-                                    <span>{weatherData.name}, {weatherData.sys.country}</span>
+                                    <span>{weatherData.place.name}, {weatherData.place.country}</span>
                                 </div>
                                 <div className="wp-stat">
                                     <Eye size={16} className="wp-stat-icon" />
-                                    <span>{t('visibility')}: {weatherData.visibility / 1000} km</span>
+                                    <span>{t('visibility')}: {weatherData.current.visibility / 1000} km</span>
                                 </div>
                                 <div className="wp-stat">
                                     <Droplet size={16} className="wp-stat-icon" />
-                                    <span>{t('humidity')}: {weatherData.main.humidity}%</span>
+                                    <span>{t('humidity')}: {weatherData.current.humidity}%</span>
                                 </div>
                                 <div className="wp-stat">
                                     <Thermometer size={16} className="wp-stat-icon" />
-                                    <span>{t('feelsLike')}: {convertTemperature(weatherData.main.feels_like)}{getTemperatureSymbol()}</span>
+                                    <span>{t('feelsLike')}: {convertTemperature(weatherData.current.feelsLike)}{getTemperatureSymbol()}</span>
                                 </div>
                                 <div className="wp-stat">
                                     <Wind size={16} className="wp-stat-icon" />
-                                    <span>{t('wind')}: {Math.round(weatherData.wind.speed * 3.6)} km/h</span>
+                                    <span>{t('wind')}: {Math.round(weatherData.current.windSpeed * 3.6)} km/h</span>
                                 </div>
                             </div>
 
@@ -302,11 +302,9 @@ function Weather() {
                         <SunriseSunset weatherData={weatherData} />
                     </div>
 
-                    {weatherData.coord && (
-                        <div className="wp-section">
-                            <Forecast city={weatherData.name} coord={weatherData.coord} />
-                        </div>
-                    )}
+                    <div className="wp-section">
+                        <Forecast weather={weatherData} />
+                    </div>
                 </div>
             )}
 

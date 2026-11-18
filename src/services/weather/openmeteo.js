@@ -1,24 +1,67 @@
+// ЕДИНСТВЕНИЯТ файл, който знае за конкретния доставчик (Open-Meteo + BigDataCloud).
+// За смяна на API се пренаписва само той — трябва да експортира:
+//   NAME, searchCity(text, {count}), reverseGeocode(lat, lon), fetchWeather({lat, lon}, {days})
+// и да връща данни в собствения модел (виж index.js). Единици: °C, m/s, hPa, метри, unix секунди.
 import { WeatherError } from './errors.js';
-import { wmoToCondition } from './codes.js';
 
-const PROVIDER = 'openmeteo';
+export const NAME = 'openmeteo';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+const REVERSE_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client';
 
 async function getJson(url) {
     let res;
     try {
         res = await fetch(url);
     } catch (err) {
-        throw new WeatherError('UNAVAILABLE', err.message, { provider: PROVIDER });
+        throw new WeatherError('UNAVAILABLE', err.message, { provider: NAME });
     }
     if (!res.ok) {
-        throw new WeatherError('UNAVAILABLE', `Open-Meteo HTTP ${res.status}`, { status: res.status, provider: PROVIDER });
+        throw new WeatherError('UNAVAILABLE', `${NAME} HTTP ${res.status}`, { status: res.status, provider: NAME });
     }
     return res.json();
 }
 
-// Търсене на населени места по текст. Връща до `count` резултата.
+// ---- Състояния: WMO код -> собствен модел { group, description, icon, isDay } ----
+// group: clear | clouds | drizzle | rain | snow | thunderstorm | fog
+// icon: име на файл в public/weather-icons (без d/n за иконите, които нямат нощен вариант)
+const WMO = {
+    0: ['clear', 'clear sky', '01'],
+    1: ['clouds', 'few clouds', '02'],
+    2: ['clouds', 'scattered clouds', '03'],
+    3: ['clouds', 'overcast clouds', '04'],
+    45: ['fog', 'fog', '50'],
+    48: ['fog', 'fog', '50'],
+    51: ['drizzle', 'light intensity drizzle', '09'],
+    53: ['drizzle', 'drizzle', '09'],
+    55: ['drizzle', 'heavy intensity drizzle', '09'],
+    56: ['rain', 'freezing rain', '13'],
+    57: ['rain', 'freezing rain', '13'],
+    61: ['rain', 'light rain', '10'],
+    63: ['rain', 'moderate rain', '10'],
+    65: ['rain', 'heavy intensity rain', '10'],
+    66: ['rain', 'freezing rain', '13'],
+    67: ['rain', 'freezing rain', '13'],
+    71: ['snow', 'light snow', '13'],
+    73: ['snow', 'snow', '13'],
+    75: ['snow', 'heavy snow', '13'],
+    77: ['snow', 'light snow', '13'],
+    80: ['rain', 'light intensity shower rain', '09'],
+    81: ['rain', 'shower rain', '09'],
+    82: ['rain', 'heavy intensity shower rain', '09'],
+    85: ['snow', 'light shower snow', '13'],
+    86: ['snow', 'heavy shower snow', '13'],
+    95: ['thunderstorm', 'thunderstorm', '11'],
+    96: ['thunderstorm', 'thunderstorm with rain', '11'],
+    99: ['thunderstorm', 'thunderstorm with heavy rain', '11'],
+};
+
+function condition(code, isDay = true) {
+    const [group, description, base] = WMO[code] || WMO[0];
+    return { group, description, icon: `${base}${isDay ? 'd' : 'n'}`, isDay };
+}
+
+// ---- Геокодиране ----
 export async function searchCity(text, { count = 5 } = {}) {
     const name = text.trim();
     if (!name) return [];
@@ -32,94 +75,93 @@ export async function searchCity(text, { count = 5 } = {}) {
     }));
 }
 
-// "Sofia" или "Sofia, BG" / "Sofia, Bulgaria"
-async function geocode(city) {
-    const [name, ...rest] = city.split(',').map((s) => s.trim());
-    const hint = rest.join(' ').toLowerCase();
-    const results = await searchCity(name, { count: hint ? 10 : 1 });
-    if (!results.length) throw new WeatherError('NOT_FOUND', 'City not found', { status: 404, provider: PROVIDER });
-    const r = (hint && results.find((x) => [x.country, x.region].some((v) => v && v.toLowerCase() === hint))) || results[0];
-    return { name: r.name, country: r.country, lat: r.lat, lon: r.lon };
+export async function reverseGeocode(lat, lon) {
+    try {
+        const d = await getJson(`${REVERSE_URL}?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+        const name = d.city || d.locality || d.principalSubdivision;
+        return name ? { name, country: d.countryCode || '' } : null;
+    } catch {
+        return null;
+    }
 }
 
-async function resolve(query) {
-    if (query.city) return geocode(query.city);
-    return { name: '', country: '', lat: query.lat, lon: query.lon };
-}
+// ---- Времето ----
+const mean = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
 
-export async function getCurrent(query) {
-    const place = await resolve(query);
+export async function fetchWeather({ lat, lon }, { days = 7 } = {}) {
     const data = await getJson(
-        `${FORECAST_URL}?latitude=${place.lat}&longitude=${place.lon}` +
-        '&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,visibility' +
-        '&daily=sunrise,sunset&wind_speed_unit=ms&timeformat=unixtime&timezone=auto&forecast_days=1'
-    );
-    const c = data.current;
-    if (!c) throw new WeatherError('UNAVAILABLE', 'Open-Meteo: no current data', { provider: PROVIDER });
-    return {
-        provider: PROVIDER,
-        coord: { lat: place.lat, lon: place.lon },
-        weather: [wmoToCondition(c.weather_code, c.is_day === 1)],
-        main: {
-            temp: c.temperature_2m,
-            feels_like: c.apparent_temperature,
-            humidity: c.relative_humidity_2m,
-            pressure: c.pressure_msl,
-        },
-        visibility: c.visibility ?? 10000,
-        wind: { speed: c.wind_speed_10m, deg: c.wind_direction_10m },
-        clouds: { all: c.cloud_cover },
-        dt: c.time,
-        sys: {
-            country: place.country,
-            sunrise: data.daily?.sunrise?.[0] ?? c.time,
-            sunset: data.daily?.sunset?.[0] ?? c.time,
-        },
-        name: place.name,
-    };
-}
-
-// Връща 3-часови записи във формата на OpenWeather /forecast (list[]), по локално време.
-export async function getForecast(query, { days = 5 } = {}) {
-    const place = await resolve(query);
-    const data = await getJson(
-        `${FORECAST_URL}?latitude=${place.lat}&longitude=${place.lon}` +
+        `${FORECAST_URL}?latitude=${lat}&longitude=${lon}` +
+        '&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,visibility,uv_index' +
         '&hourly=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation_probability,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,visibility,is_day' +
+        '&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_direction_10m_dominant,uv_index_max,sunrise,sunset' +
         `&wind_speed_unit=ms&timeformat=unixtime&timezone=auto&forecast_days=${days}`
     );
-    const h = data.hourly;
-    if (!h?.time) throw new WeatherError('UNAVAILABLE', 'Open-Meteo: no forecast data', { provider: PROVIDER });
+    const { current: c, hourly: h, daily: d } = data;
+    if (!c || !h?.time || !d?.time) {
+        throw new WeatherError('UNAVAILABLE', `${NAME}: incomplete data`, { provider: NAME });
+    }
 
-    const offset = data.utc_offset_seconds || 0;
-    const now = Math.floor(Date.now() / 1000);
-    const list = [];
-    h.time.forEach((t, i) => {
-        const local = new Date((t + offset) * 1000);
-        if (local.getUTCHours() % 3 !== 0) return; // 3-часова стъпка като OpenWeather
-        if (t + 3600 <= now) return; // само бъдещи
-        const temp = h.temperature_2m[i];
-        list.push({
-            dt: t,
-            dt_txt: local.toISOString().replace('T', ' ').slice(0, 19),
-            main: {
-                temp,
-                feels_like: h.apparent_temperature[i],
-                temp_min: temp,
-                temp_max: temp,
-                humidity: h.relative_humidity_2m[i],
-                pressure: h.pressure_msl[i],
-            },
-            weather: [wmoToCondition(h.weather_code[i], h.is_day[i] === 1)],
-            wind: { speed: h.wind_speed_10m[i], deg: h.wind_direction_10m[i] },
-            visibility: h.visibility[i],
-            pop: (h.precipitation_probability[i] ?? 0) / 100,
-        });
+    const utcOffset = data.utc_offset_seconds || 0;
+    const localIso = (t) => new Date((t + utcOffset) * 1000).toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
+
+    const allHourly = h.time.map((t, i) => ({
+        time: t,
+        localTime: localIso(t),
+        hour: new Date((t + utcOffset) * 1000).getUTCHours(),
+        temp: h.temperature_2m[i],
+        feelsLike: h.apparent_temperature[i],
+        humidity: h.relative_humidity_2m[i],
+        pressure: h.pressure_msl[i],
+        visibility: h.visibility[i],
+        windSpeed: h.wind_speed_10m[i],
+        windDeg: h.wind_direction_10m[i],
+        precipProbability: h.precipitation_probability[i] ?? 0,
+        condition: condition(h.weather_code[i], h.is_day[i] === 1),
+    }));
+
+    const daily = d.time.map((t, i) => {
+        const date = localIso(t).slice(0, 10);
+        const hours = allHourly.filter((x) => x.localTime.startsWith(date));
+        return {
+            date,
+            tempMax: d.temperature_2m_max[i],
+            tempMin: d.temperature_2m_min[i],
+            feelsLikeMax: d.apparent_temperature_max[i],
+            feelsLikeMin: d.apparent_temperature_min[i],
+            humidity: Math.round(mean(hours.map((x) => x.humidity)) ?? 0),
+            pressure: Math.round(mean(hours.map((x) => x.pressure)) ?? 0),
+            visibility: Math.round(mean(hours.map((x) => x.visibility)) ?? 0),
+            windSpeed: d.wind_speed_10m_max[i],
+            windDeg: d.wind_direction_10m_dominant[i],
+            precipProbability: d.precipitation_probability_max[i] ?? 0,
+            precipSum: d.precipitation_sum[i] ?? 0,
+            uvMax: d.uv_index_max[i] ?? 0,
+            sunrise: d.sunrise[i],
+            sunset: d.sunset[i],
+            condition: condition(d.weather_code[i], true),
+        };
     });
 
+    const now = c.time;
     return {
-        provider: PROVIDER,
-        list,
-        city: { name: place.name, country: place.country, coord: { lat: place.lat, lon: place.lon } },
+        utcOffset,
+        current: {
+            time: now,
+            localTime: localIso(now),
+            temp: c.temperature_2m,
+            feelsLike: c.apparent_temperature,
+            humidity: c.relative_humidity_2m,
+            pressure: c.pressure_msl,
+            visibility: c.visibility ?? 10000,
+            windSpeed: c.wind_speed_10m,
+            windDeg: c.wind_direction_10m,
+            cloudCover: c.cloud_cover,
+            uv: c.uv_index ?? 0,
+            sunrise: daily[0].sunrise ?? now,
+            sunset: daily[0].sunset ?? now,
+            condition: condition(c.weather_code, c.is_day === 1),
+        },
+        hourly: allHourly.filter((x) => x.time + 3600 > now), // от текущия час нататък
+        daily,
     };
 }
-

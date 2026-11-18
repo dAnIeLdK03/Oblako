@@ -3,7 +3,7 @@ import RainChance from '../components/RainChance';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
 import '../Weather.css';
-import { getCurrentWeather } from '../services/weather';
+import { getWeather } from '../services/weather';
 
 function RainChancePage() {
   const { language } = useLanguage();
@@ -19,7 +19,7 @@ function RainChancePage() {
         navigator.geolocation.getCurrentPosition(async (position) => {
           try {
             const { latitude, longitude } = position.coords;
-            setWeatherData(await getCurrentWeather({ lat: latitude, lon: longitude }));
+            setWeatherData(await getWeather({ lat: latitude, lon: longitude }));
           } catch (err) {
             setError(err.message);
           }

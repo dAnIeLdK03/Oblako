@@ -1,86 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { CloudLightning, CloudRain, Sun, Moon, Cloud } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
-import { getForecast } from '../services/weather';
 
 function RainChance({ weatherData }) {
   const { language } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
-  const [rainData, setRainData] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchRainData = async () => {
-      if (weatherData && weatherData.coord) {
-        setLoading(true);
-        try {
-          console.log('Fetching rain data for:', weatherData.coord);
-          const forecastData = await getForecast({ lat: weatherData.coord.lat, lon: weatherData.coord.lon });
-          console.log('Forecast data received:', forecastData);
-          
-          // Process forecast data for rain chances
-          const processedData = processForecastData(forecastData);
-          console.log('Processed rain data:', processedData);
-          setRainData(processedData);
-        } catch (err) {
-          console.error('Error fetching rain data:', err);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+  const rainData = useMemo(() => {
+    if (!weatherData?.hourly) return null;
 
-    fetchRainData();
-  }, [weatherData]);
+    // Днес по часове: следващите 24 часа, през 3 часа
+    const today = weatherData.hourly.filter((_, i) => i % 3 === 0).slice(0, 8).map((h) => ({
+      hour: `${h.hour.toString().padStart(2, '0')}:00`,
+      chance: Math.round(h.precipProbability),
+      type: getWeatherType(h.condition.group),
+      temp: Math.round(h.temp),
+    }));
 
-  const processForecastData = (forecastData) => {
-    const today = [];
-    const week = [];
-    
-    // Process hourly data for today
-    forecastData.list.slice(0, 8).forEach((item, index) => {
-      const date = new Date(item.dt * 1000);
-      const hour = date.getHours();
-      const pop = Math.round((item.pop || 0) * 100);
-      
-      today.push({
-        hour: `${hour.toString().padStart(2, '0')}:00`,
-        chance: pop,
-        type: getWeatherType(item.weather[0].main),
-        temp: Math.round(item.main.temp)
-      });
+    // Седмична прогноза: реалните дни от седмицата
+    const days = ['Нед', 'Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб'];
+    const daysEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const week = weatherData.daily.slice(0, 7).map((d) => {
+      const weekday = new Date(`${d.date}T12:00:00`).getDay();
+      return {
+        day: language === 'bg' ? days[weekday] : daysEn[weekday],
+        chance: Math.round(d.precipProbability),
+        type: getWeatherType(d.condition.group),
+        temp: Math.round(d.tempMax),
+      };
     });
 
-    // Process daily data for week
-    const days = ['Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб', 'Нед'];
-    const daysEn = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    
-    for (let i = 0; i < 7; i++) {
-      const dayData = forecastData.list[i * 8] || forecastData.list[forecastData.list.length - 1];
-      const pop = Math.round((dayData.pop || 0) * 100);
-      
-      week.push({
-        day: language === 'bg' ? days[i] : daysEn[i],
-        chance: pop,
-        type: getWeatherType(dayData.weather[0].main),
-        temp: Math.round(dayData.main.temp)
-      });
-    }
-
     return { today, week };
-  };
+  }, [weatherData, language]);
 
-  const getWeatherType = (main) => {
-    switch(main.toLowerCase()) {
-      case 'rain': return 'rain';
+  function getWeatherType(group) {
+    switch (group) {
+      case 'rain':
+      case 'drizzle': return 'rain';
       case 'thunderstorm': return 'storm';
       case 'snow': return 'snow';
       case 'clear': return 'clear';
-      case 'clouds': return 'clouds';
-      default: return 'clear';
+      default: return 'clouds';
     }
-  };
+  }
 
   // Ensure no duplicate hours in today's data
   const uniqueTodayData = rainData?.today?.reduce((acc, item) => {
@@ -131,17 +94,6 @@ function RainChance({ weatherData }) {
     if (chance < 80) return language === 'bg' ? 'Висока вероятност' : 'High chance';
     return language === 'bg' ? 'Много вероятно' : 'Very likely';
   };
-
-  if (loading) {
-    return (
-      <div className="rain-chance">
-        <div className="loading">
-          <div className="loading-spinner"></div>
-          <p>{language === 'bg' ? 'Зареждане на данни за валежи...' : 'Loading rain data...'}</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!rainData) {
     return (

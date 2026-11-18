@@ -4,7 +4,7 @@ import { Map, Satellite, Mountain, Trash2, MapPin, LoaderCircle, XCircle, Drople
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import 'leaflet/dist/leaflet.css';
-import { getCurrentWeather, getIconUrl } from '../services/weather';
+import { getWeather, getIconUrl } from '../services/weather';
 
 // Fix for default markers
 import L from 'leaflet';
@@ -32,7 +32,7 @@ function MapController({ onLocationSelect, markers, setMarkers }) {
       setMarkers(prev => [...prev, newMarker]);
       
       try {
-        const data = await getCurrentWeather({ lat: e.latlng.lat, lon: e.latlng.lng });
+        const data = await getWeather({ lat: e.latlng.lat, lon: e.latlng.lng });
         
         setMarkers(prev => prev.map(marker => 
           marker.id === newMarker.id 
@@ -77,7 +77,7 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
         className: 'custom-marker',
         html: `
           <div style="
-            background: ${marker.weather ? getWeatherColor(marker.weather.main.temp) : '#666'};
+            background: ${marker.weather ? getWeatherColor(marker.weather.current.temp) : '#666'};
             color: white;
             border-radius: 50%;
             width: 30px;
@@ -90,7 +90,7 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
             border: 2px solid white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
           ">
-            ${marker.weather ? convertTemperature(marker.weather.main.temp) : '...'}
+            ${marker.weather ? convertTemperature(marker.weather.current.temp) : '...'}
           </div>
         `,
         iconSize: [30, 30],
@@ -112,21 +112,21 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
           {marker.weather && (
             <div>
               <h4 style={{margin: '0 0 8px 0', color: '#333'}}>
-                {marker.weather.name || language === 'bg' ? 'Неизвестно място' : 'Unknown location'}
+                {marker.weather.place.name || language === 'bg' ? 'Неизвестно място' : 'Unknown location'}
               </h4>
               <div style={{fontSize: '24px', fontWeight: 'bold', margin: '8px 0'}}>
-                {convertTemperature(marker.weather.main.temp)}{getTemperatureSymbol()}
+                {convertTemperature(marker.weather.current.temp)}{getTemperatureSymbol()}
               </div>
               <div style={{margin: '8px 0', fontSize: '14px', color: '#666'}}>
-                {marker.weather.weather[0].description}
+                {marker.weather.current.condition.description}
               </div>
               <img 
-                src={getWeatherIcon(marker.weather.weather[0].icon)} 
+                src={getWeatherIcon(marker.weather.current.condition.icon)} 
                 alt="weather" 
                 style={{width: 50, height: 50}}
               />
               <div style={{marginTop: '8px', fontSize: '12px', color: '#888', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6}}>
-                <Droplet size={14} /> {marker.weather.main.humidity}% | <Wind size={14} /> {marker.weather.wind?.speed || 0} km/h
+                <Droplet size={14} /> {marker.weather.current.humidity}% | <Wind size={14} /> {Math.round((marker.weather.current.windSpeed || 0) * 3.6)} km/h
               </div>
               <button
                 onClick={() => onRemove(marker.id)}
