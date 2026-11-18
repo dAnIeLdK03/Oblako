@@ -36,7 +36,14 @@ export function wmoToCondition(code, isDay = true) {
     return { id, main, description, icon: `${base}${isDay ? 'd' : 'n'}` };
 }
 
-// Иконите са статични файлове (без ключ и без лимит на заявките).
-export function getIconUrl(iconCode, { large = true } = {}) {
-    return `https://openweathermap.org/img/wn/${iconCode}${large ? '@2x' : ''}.png`;
+// Локални SVG икони от public/weather-icons (без външни заявки).
+// Само 01, 02 и 10 имат различни варианти за ден (d) и нощ (n).
+const DAY_NIGHT_ICONS = new Set(['01', '02', '10']);
+
+// Приема код във формат на OpenWeather ("10d", "04n"...), от който и да е доставчик.
+export function getIconUrl(iconCode) {
+    const base = String(iconCode || '03').slice(0, 2);
+    const night = String(iconCode).endsWith('n') ? 'n' : 'd';
+    const file = DAY_NIGHT_ICONS.has(base) ? `${base}${night}` : base;
+    return `${import.meta.env.BASE_URL}weather-icons/${file}.svg`;
 }

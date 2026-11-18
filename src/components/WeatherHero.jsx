@@ -122,7 +122,7 @@ function WeatherHero({
                                         {t(weekdayKeys[new Date(day.dt * 1000).getDay()])}
                                     </span>
                                     <img
-                                        src={getIconUrl(day.weather[0].icon, { large: false })}
+                                        src={getIconUrl(day.weather[0].icon)}
                                         alt={day.weather[0].description}
                                     />
                                     <span className="hero-forecast-temp">
