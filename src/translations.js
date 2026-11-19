@@ -66,6 +66,10 @@ darkMode: "Тъмен режим",
     locationNotSupported: "Геолокацията не се поддържа от браузъра",
     locationEnableInstructions: "Моля, разрешете достъпа до местоположението от настройките на браузъра или устройството си.",
     forecastError: "Данните за прогнозата не са достъпни",
+    errNetwork: "Няма връзка с интернет. Проверете връзката си и опитайте отново.",
+    errTimeout: "Сървърът не отговаря. Опитайте отново след малко.",
+    errRateLimit: "Твърде много заявки. Опитайте отново след минута.",
+    errServer: "Услугата за времето е временно недостъпна. Опитайте по-късно.",
     
     // Loading
     loading: "Зареждане...",
@@ -155,6 +159,10 @@ darkMode: "Тъмен режим",
     locationNotSupported: "Geolocation is not supported by your browser",
     locationEnableInstructions: "Please enable location access in your browser or device settings.",
     forecastError: "Forecast data not available",
+    errNetwork: "No internet connection. Check your connection and try again.",
+    errTimeout: "The server is not responding. Please try again shortly.",
+    errRateLimit: "Too many requests. Please try again in a minute.",
+    errServer: "The weather service is temporarily unavailable. Please try later.",
     
     // Loading
     loading: "Loading...",

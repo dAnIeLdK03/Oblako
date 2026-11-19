@@ -2,24 +2,78 @@
 // За смяна на API се пренаписва само той — трябва да експортира:
 //   NAME, searchCity(text, {count}), reverseGeocode(lat, lon), fetchWeather({lat, lon}, {days})
 // и да връща данни в собствения модел (виж index.js). Единици: °C, m/s, hPa, метри, unix секунди.
-import { WeatherError } from './errors.js';
+import { WeatherError, isAbortError } from './errors.js';
 
 export const NAME = 'openmeteo';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const REVERSE_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client';
 
-async function getJson(url) {
-    let res;
+const TIMEOUT_MS = 10000;
+const RETRY_DELAY_MS = 600;
+const RETRYABLE = new Set(['NETWORK', 'SERVER']); // 429 не се повтаря: само влошава лимита
+
+const abortError = () => new DOMException('Aborted', 'AbortError');
+
+function statusError(status) {
+    const code = status === 429 ? 'RATE_LIMIT' : status >= 500 ? 'SERVER' : 'UNAVAILABLE';
+    return new WeatherError(code, `${NAME} HTTP ${status}`, { status, provider: NAME });
+}
+
+// Една заявка с таймаут; `signal` позволява на извикващия да я отмени.
+async function request(url, signal) {
+    if (signal?.aborted) throw abortError();
+
+    const controller = new AbortController();
+    let timedOut = false;
+    const onAbort = () => controller.abort();
+    signal?.addEventListener('abort', onAbort, { once: true });
+    const timer = setTimeout(() => { timedOut = true; controller.abort(); }, TIMEOUT_MS);
+
+    const classify = (err) => {
+        if (timedOut) return new WeatherError('TIMEOUT', `${NAME} timeout`, { provider: NAME });
+        if (isAbortError(err)) return err; // отказана от извикващия
+        if (err instanceof SyntaxError) return new WeatherError('SERVER', 'Invalid response', { provider: NAME });
+        return new WeatherError('NETWORK', err.message, { provider: NAME });
+    };
+
     try {
-        res = await fetch(url);
+        let res;
+        try {
+            res = await fetch(url, { signal: controller.signal });
+        } catch (err) {
+            throw classify(err);
+        }
+        if (!res.ok) throw statusError(res.status);
+        try {
+            return await res.json();
+        } catch (err) {
+            throw classify(err);
+        }
+    } finally {
+        clearTimeout(timer);
+        signal?.removeEventListener('abort', onAbort);
+    }
+}
+
+function delay(ms, signal) {
+    return new Promise((resolve, reject) => {
+        if (signal?.aborted) return reject(abortError());
+        const onAbort = () => { clearTimeout(timer); reject(abortError()); };
+        const timer = setTimeout(() => { signal?.removeEventListener('abort', onAbort); resolve(); }, ms);
+        signal?.addEventListener('abort', onAbort, { once: true });
+    });
+}
+
+// Заявка с една повторна опитка при мрежова грешка или 5xx.
+async function getJson(url, signal) {
+    try {
+        return await request(url, signal);
     } catch (err) {
-        throw new WeatherError('UNAVAILABLE', err.message, { provider: NAME });
+        if (!RETRYABLE.has(err.code)) throw err;
+        await delay(RETRY_DELAY_MS, signal);
+        return request(url, signal);
     }
-    if (!res.ok) {
-        throw new WeatherError('UNAVAILABLE', `${NAME} HTTP ${res.status}`, { status: res.status, provider: NAME });
-    }
-    return res.json();
 }
 
 // ---- Състояния: WMO код -> собствен модел { group, description, icon, isDay } ----
@@ -62,10 +116,10 @@ function condition(code, isDay = true) {
 }
 
 // ---- Геокодиране ----
-export async function searchCity(text, { count = 5 } = {}) {
+export async function searchCity(text, { count = 5, signal } = {}) {
     const name = text.trim();
     if (!name) return [];
-    const data = await getJson(`${GEOCODING_URL}?name=${encodeURIComponent(name)}&count=${count}&language=en&format=json`);
+    const data = await getJson(`${GEOCODING_URL}?name=${encodeURIComponent(name)}&count=${count}&language=en&format=json`, signal);
     return (data.results || []).map((r) => ({
         name: r.name,
         country: r.country_code || '',
@@ -75,30 +129,32 @@ export async function searchCity(text, { count = 5 } = {}) {
     }));
 }
 
-export async function reverseGeocode(lat, lon) {
+export async function reverseGeocode(lat, lon, { signal } = {}) {
     try {
-        const d = await getJson(`${REVERSE_URL}?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+        const d = await getJson(`${REVERSE_URL}?latitude=${lat}&longitude=${lon}&localityLanguage=en`, signal);
         const name = d.city || d.locality || d.principalSubdivision;
         return name ? { name, country: d.countryCode || '' } : null;
-    } catch {
-        return null;
+    } catch (err) {
+        if (isAbortError(err)) throw err; // отмяната трябва да стигне до извикващия
+        return null; // името е допълнително — без него продължаваме
     }
 }
 
 // ---- Времето ----
 const mean = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
 
-export async function fetchWeather({ lat, lon }, { days = 7 } = {}) {
+export async function fetchWeather({ lat, lon }, { days = 7, signal } = {}) {
     const data = await getJson(
         `${FORECAST_URL}?latitude=${lat}&longitude=${lon}` +
         '&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,visibility,uv_index' +
         '&hourly=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation_probability,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,visibility,is_day' +
         '&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_direction_10m_dominant,uv_index_max,sunrise,sunset' +
-        `&wind_speed_unit=ms&timeformat=unixtime&timezone=auto&forecast_days=${days}`
+        `&wind_speed_unit=ms&timeformat=unixtime&timezone=auto&forecast_days=${days}`,
+        signal
     );
     const { current: c, hourly: h, daily: d } = data;
     if (!c || !h?.time || !d?.time) {
-        throw new WeatherError('UNAVAILABLE', `${NAME}: incomplete data`, { provider: NAME });
+        throw new WeatherError('SERVER', `${NAME}: incomplete data`, { provider: NAME });
     }
 
     const utcOffset = data.utc_offset_seconds || 0;

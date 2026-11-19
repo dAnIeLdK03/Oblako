@@ -17,35 +17,36 @@
 //                description (англ. текст), icon, isDay }
 //   localTime е "YYYY-MM-DDTHH:mm" по часа на самото място (new Date(localTime) го показва правилно).
 import * as provider from './openmeteo.js';
-import { WeatherError } from './errors.js';
+import { WeatherError, isAbortError } from './errors.js';
 
 export { getIconUrl } from './icons.js';
-export { WeatherError };
+export { WeatherError, isAbortError };
 
 export const searchCity = (text, opts) => provider.searchCity(text, opts);
 
 // "Sofia" или "Sofia, BG" / "Sofia, Bulgaria"
-async function geocode(city) {
+async function geocode(city, signal) {
     const [name, ...rest] = city.split(',').map((s) => s.trim());
     const hint = rest.join(' ').toLowerCase();
-    const results = await provider.searchCity(name, { count: hint ? 10 : 1 });
+    const results = await provider.searchCity(name, { count: hint ? 10 : 1, signal });
     if (!results.length) throw new WeatherError('NOT_FOUND', 'City not found', { status: 404 });
     const match = hint && results.find((r) => [r.country, r.region].some((v) => v && v.toLowerCase() === hint));
     return match || results[0];
 }
 
 // query: { city } или { lat, lon }.  opts.days — дни напред (по подразбиране 7, до 16).
-export async function getWeather(query, { days = 7 } = {}) {
+// opts.signal — AbortSignal; при отказ се хвърля AbortError (виж isAbortError).
+export async function getWeather(query, { days = 7, signal } = {}) {
     let place;
     let weather;
     if (query.city) {
-        place = await geocode(query.city);
-        weather = await provider.fetchWeather(place, { days });
+        place = await geocode(query.city, signal);
+        weather = await provider.fetchWeather(place, { days, signal });
     } else {
         // По координати: името на мястото се търси паралелно с времето.
         const [found, data] = await Promise.all([
-            provider.reverseGeocode(query.lat, query.lon),
-            provider.fetchWeather(query, { days }),
+            provider.reverseGeocode(query.lat, query.lon, { signal }),
+            provider.fetchWeather(query, { days, signal }),
         ]);
         place = {
             name: found?.name || `${Number(query.lat).toFixed(2)}, ${Number(query.lon).toFixed(2)}`,

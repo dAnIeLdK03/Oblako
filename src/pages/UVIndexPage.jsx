@@ -4,7 +4,8 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
 import Navigation from '../components/Navigation.jsx';
-import { getWeather } from '../services/weather';
+import { getWeather, isAbortError } from '../services/weather';
+import { weatherErrorMessage } from '../utils/weatherErrors.js';
 
 const UVIndexPage = () => {
   const { language, t } = useLanguage();
@@ -14,6 +15,7 @@ const UVIndexPage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    const controller = new AbortController();
     // Get current location weather for UV index
     const getCurrentWeather = async () => {
       setLoading(true);
@@ -22,9 +24,9 @@ const UVIndexPage = () => {
           navigator.geolocation.getCurrentPosition(async (position) => {
             try {
               const { latitude, longitude } = position.coords;
-              setWeatherData(await getWeather({ lat: latitude, lon: longitude }, { days: 1 }));
+              setWeatherData(await getWeather({ lat: latitude, lon: longitude }, { days: 1, signal: controller.signal }));
             } catch (err) {
-              setError(err.message);
+              if (!isAbortError(err)) setError(weatherErrorMessage(err, t));
             }
           }, (error) => {
             console.error('Geolocation error:', error);
@@ -41,6 +43,7 @@ const UVIndexPage = () => {
     };
 
     getCurrentWeather();
+    return () => controller.abort();
   }, [language]);
 
   return (

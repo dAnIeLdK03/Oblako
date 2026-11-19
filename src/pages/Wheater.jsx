@@ -12,7 +12,8 @@ import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
 import { verifyLocation } from '../utils/location.js';
-import { getWeather as fetchWeather } from '../services/weather';
+import { getWeather as fetchWeather, isAbortError } from '../services/weather';
+import { weatherErrorMessage } from '../utils/weatherErrors.js';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 
 
@@ -29,6 +30,15 @@ function Weather() {
     const [mapSelectedCity, setMapSelectedCity] = useState(null);
     const [locationWarning, setLocationWarning] = useState(null);
     const didInitLocation = useRef(false);
+    const requestRef = useRef(null);
+
+    // Всяка нова заявка отменя предишната, за да не презапише по-стар отговор по-новия
+    function startRequest() {
+        requestRef.current?.abort();
+        const controller = new AbortController();
+        requestRef.current = controller;
+        return controller;
+    }
 
     async function getWeather(e, searchCity = null){
         if (e) e.preventDefault();
@@ -37,16 +47,12 @@ function Weather() {
             return;
         }
 
+        const controller = startRequest();
         setLoading(true);
         try{
             setError('');
             setLocationWarning(null);
-            let data;
-            try {
-                data = await fetchWeather({ city: cityToSearch });
-            } catch (err) {
-                throw new Error(err.code === 'NOT_FOUND' ? t('cityNotFound') : t('forecastError'));
-            }
+            const data = await fetchWeather({ city: cityToSearch }, { signal: controller.signal });
             setWeatherData(data);
 
 
@@ -54,10 +60,11 @@ function Weather() {
             setCity(data.place.name);
 
         }catch(err){
-            setError(err.message);
+            if (isAbortError(err)) return; // заменена от по-нова заявка
+            setError(weatherErrorMessage(err, t));
             setWeatherData(null);
         } finally {
-            setLoading(false);
+            if (requestRef.current === controller) setLoading(false);
         }
     }
 
@@ -86,20 +93,22 @@ function Weather() {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const { latitude, longitude } = position.coords;
+                const controller = startRequest();
                 try {
                     // Допълнителна проверка на точността на позицията
                     const check = verifyLocation(position);
                     setLocationWarning(check.ok ? null : check);
                     // Услугата връща и реалното име на населеното място
-                    const data = await fetchWeather({ lat: latitude, lon: longitude });
+                    const data = await fetchWeather({ lat: latitude, lon: longitude }, { signal: controller.signal });
                     setWeatherData(data);
                     setCity(data.place.name);
                     setError('');
                 } catch (err) {
+                    if (isAbortError(err)) return;
                     if (fallbackCity) getWeather(null, fallbackCity);
-                    else setError(t('locationError'));
+                    else setError(weatherErrorMessage(err, t));
                 } finally {
-                    setLoading(false);
+                    if (requestRef.current === controller) setLoading(false);
                 }
             },
             (geoError) => {

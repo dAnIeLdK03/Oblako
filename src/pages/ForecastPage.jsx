@@ -5,10 +5,11 @@ import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
 import '../Weather.css';
-import { getWeather, getIconUrl } from '../services/weather';
+import { getWeather, getIconUrl, isAbortError } from '../services/weather';
+import { weatherErrorMessage } from '../utils/weatherErrors.js';
 
 function ForecastPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,28 +21,26 @@ function ForecastPage() {
 
   useEffect(() => {
     if (!selectedCity) return;
+    const controller = new AbortController();
     
     async function fetchForecast() {
       setLoading(true);
       setError('');
       try {
-        let weather;
-        try {
-          weather = await getWeather({ city: selectedCity }, { days: 14 });
-        } catch {
-          throw new Error(language === 'bg' ? 'Грешка при зареждане на прогнозата' : 'Error loading forecast');
-        }
+        const weather = await getWeather({ city: selectedCity }, { days: 14, signal: controller.signal });
         setForecast(weather.daily.slice(0, 13));
       } catch (err) {
+        if (isAbortError(err)) return; // заменена от по-нова заявка
         console.error('Forecast error:', err);
-        setError(err.message);
+        setError(weatherErrorMessage(err, t));
         setForecast([]);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
 
     fetchForecast();
+    return () => controller.abort();
   }, [selectedCity, language]);
 
   const formatDate = (dateString) => {
