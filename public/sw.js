@@ -1,4 +1,7 @@
-// Empty service worker to remove offline functionality
+// Empty service worker to remove offline functionality.
+// Нищо в приложението не го регистрира: пази се само за да замени и унищожи
+// service worker-а от стари версии у потребителите. Може да се изтрие, когато
+// такива вече няма (напр. след няколко месеца).
 self.addEventListener('install', function(e) {
   self.skipWaiting();
 });

@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const DIST = path.join(__dirname, 'dist'); // билднатото приложение (npm run build)
 
 // CORS само за собствените домейни (само едно извикване, преди статичните файлове и лимита)
 app.use(cors({
@@ -24,12 +25,12 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(DIST));
 
 
 // SPA fallback: връща index.html за всички непознати пътища (винаги най-отдолу!)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(DIST, 'index.html'));
 });
 
 app.listen(PORT, () => {

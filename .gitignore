@@ -23,3 +23,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Потребителски данни (не се commit-ват)
+feedback.json
+visits.json
