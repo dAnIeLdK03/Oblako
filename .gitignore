@@ -27,3 +27,8 @@ dist-ssr
 # Потребителски данни (не се commit-ват)
 feedback.json
 visits.json
+
+# Кешове и отчети
+coverage
+.eslintcache
+*.tsbuildinfo

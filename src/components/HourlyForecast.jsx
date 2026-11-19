@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Droplet } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
-import Logo from '../components/Logo.jsx';
-import TemperatureChart from '../components/TemperatureChart.jsx';
+import Logo from './Logo.jsx';
+import TemperatureChart from './TemperatureChart.jsx';
 import { getIconUrl } from '../services/weather';
 
-function Forecast({ weather }){
+function HourlyForecast({ weather }){
     const { t } = useLanguage();
     const { convertTemperature, getTemperatureSymbol } = useTheme();
     const [chartType, setChartType] = useState('hourly'); 
@@ -83,4 +83,4 @@ function Forecast({ weather }){
     );
 }
 
-export default Forecast;
+export default HourlyForecast;

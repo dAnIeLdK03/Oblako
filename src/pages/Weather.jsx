@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Forecast from './Forecast';
+import HourlyForecast from '../components/HourlyForecast.jsx';
 import { useLanguage } from '../LanguageContext.jsx';
 import '../Weather.css';
 import {useTheme} from '../ThemeContext.jsx';
@@ -312,7 +312,7 @@ function Weather() {
                     </div>
 
                     <div className="wp-section">
-                        <Forecast weather={weatherData} />
+                        <HourlyForecast weather={weatherData} />
                     </div>
                 </div>
             )}

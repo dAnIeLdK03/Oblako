@@ -55,7 +55,7 @@ function generateSVGIcon(size) {
 const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512];
 
 // Ensure icons directory exists
-const iconsDir = path.join(__dirname, 'public', 'icons');
+const iconsDir = path.join(__dirname, '..', 'public', 'icons');
 if (!fs.existsSync(iconsDir)) {
   fs.mkdirSync(iconsDir, { recursive: true });
 }

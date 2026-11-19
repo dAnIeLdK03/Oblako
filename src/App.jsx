@@ -1,4 +1,4 @@
-import Weather from './pages/Wheater'
+import Weather from './pages/Weather'
 import ForecastPage from './pages/ForecastPage.jsx';
 import RainChancePage from './pages/RainChancePage.jsx';
 import UVIndexPage from './pages/UVIndexPage.jsx';
