@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { loadAnalytics } from '../utils/analytics.js';
 
 function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -10,8 +11,8 @@ function CookieConsent() {
 
   const acceptAll = () => {
     localStorage.setItem('oblako_cookie_consent', 'all');
+    loadAnalytics();
     setVisible(false);
-    
   };
 
   const acceptFunctional = () => {
@@ -34,7 +35,7 @@ function CookieConsent() {
       zIndex: 9999,
       fontSize: 15
     }}>
-      Този сайт използва бисквитки за функционалност и (по избор) за персонализирани реклами. Използвайки Oblako, Вие се съгласявате с <a href="/cookies" style={{color:'#fff', textDecoration:'underline'}}>Политиката за бисквитки</a>.
+      Използваме локално съхранение за функционалност и, само с Вашето съгласие, Google Analytics за статистика. Повече в <a href="/cookies" style={{color:'#fff', textDecoration:'underline'}}>Политиката за бисквитки</a> и <a href="/privacy" style={{color:'#fff', textDecoration:'underline'}}>Правилата за поверителност</a>.
       <button onClick={acceptAll} style={{marginLeft: 16, background:'#74b9ff', color:'#222', border:'none', borderRadius:4, padding:'6px 18px', fontWeight:'bold', cursor:'pointer'}}>Приемам всички</button>
       <button onClick={acceptFunctional} style={{marginLeft: 8, background:'#888', color:'#fff', border:'none', borderRadius:4, padding:'6px 18px', fontWeight:'bold', cursor:'pointer'}}>Само функционални</button>
     </div>
