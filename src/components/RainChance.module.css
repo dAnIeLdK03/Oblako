@@ -1,0 +1,175 @@
+/* Стилове на RainChance. Класовете са локални за файла (CSS Modules). */
+
+.rain-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  flex: 1;
+}
+
+.rain-section {
+  margin-bottom: 20px;
+}
+
+.rain-section h4 {
+  color: var(--text-color);
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.rain-hours, .rain-week {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rain-hour-item, .rain-day-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--bg-color1);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.rain-hour-item:hover, .rain-day-item:hover {
+  transform: translateX(3px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.rain-time, .rain-day {
+  min-width: 45px;
+  font-weight: 500;
+  color: var(--text-color);
+  font-size: 0.85rem;
+}
+
+.rain-temp {
+  min-width: 35px;
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.rain-icon {
+  font-size: 1.2rem;
+  min-width: 25px;
+  text-align: center;
+}
+
+.rain-chance-bar {
+  flex: 1;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.rain-chance-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.rain-percentage {
+  min-width: 35px;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.rain-tips {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 18px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.rain-tips h4 {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rain-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rain-tips li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.9rem;
+}
+
+.rain-tips li:before {
+  content: '☔';
+  position: absolute;
+  left: 0;
+  top: 6px;
+}
+
+.rain-tips li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .rain-content {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .rain-hour-item, .rain-day-item {
+    padding: 6px;
+    gap: 8px;
+  }
+  .rain-time, .rain-day {
+    min-width: 40px;
+    font-size: 0.8rem;
+  }
+  .rain-temp {
+    min-width: 30px;
+    font-size: 0.75rem;
+  }
+  .rain-icon {
+    font-size: 1.1rem;
+    min-width: 22px;
+  }
+  .rain-percentage {
+    min-width: 30px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rain-section h4 {
+    font-size: 1rem;
+  }
+  .rain-hour-item, .rain-day-item {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .rain-time, .rain-day {
+    min-width: 35px;
+    font-size: 0.75rem;
+  }
+  .rain-temp {
+    min-width: 25px;
+    font-size: 0.7rem;
+  }
+  .rain-chance-bar {
+    height: 5px;
+  }
+  .rain-percentage {
+    min-width: 25px;
+    font-size: 0.75rem;
+  }
+}

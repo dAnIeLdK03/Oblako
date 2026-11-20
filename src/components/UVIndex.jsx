@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sun } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
+import styles from './UVIndex.module.css';
 
 const UVIndex = ({ weatherData }) => {
   const { language } = useLanguage();
@@ -48,20 +49,20 @@ const UVIndex = ({ weatherData }) => {
   const uvAdvice = getUVAdvice(uvIndex, uvLevel.level);
 
   return (
-    <div className="uv-index-card">
-      <div className="uv-header">
-        <div className="uv-icon"><Sun size={22} /></div>
+    <div className={styles['uv-index-card']}>
+      <div className={styles['uv-header']}>
+        <div className={styles['uv-icon']}><Sun size={22} /></div>
         <h3>{language === 'bg' ? 'UV Индекс' : 'UV Index'}</h3>
       </div>
       
       <div className="uv-content">
-        <div className="uv-display">
-          <div className="uv-value" style={{ color: uvLevel.color }}>
+        <div className={styles['uv-display']}>
+          <div className={styles['uv-value']} style={{ color: uvLevel.color }}>
             {uvIndex}
           </div>
-          <div className="uv-level">
-            <span className="uv-level-dot" style={{ backgroundColor: uvLevel.color }} />
-            <span className="uv-level-text">
+          <div className={styles['uv-level']}>
+            <span className={styles['uv-level-dot']} style={{ backgroundColor: uvLevel.color }} />
+            <span className={styles['uv-level-text']}>
               {language === 'bg' ? 
                 (uvLevel.level === 'low' ? 'Нисък' :
                  uvLevel.level === 'moderate' ? 'Умерен' :
@@ -73,9 +74,9 @@ const UVIndex = ({ weatherData }) => {
           </div>
         </div>
 
-        <div className="uv-bar">
+        <div className={styles['uv-bar']}>
           <div 
-            className="uv-bar-fill" 
+            className={styles['uv-bar-fill']} 
             style={{ 
               width: `${Math.min(uvIndex / 11, 1) * 100}%`,
               backgroundColor: uvLevel.color 
@@ -83,23 +84,23 @@ const UVIndex = ({ weatherData }) => {
           ></div>
         </div>
 
-        <div className="uv-advice">
-          <div className="advice-main">{uvAdvice.bg}</div>
-          <div className="advice-detail">{uvAdvice.en}</div>
+        <div className={styles['uv-advice']}>
+          <div className={styles['advice-main']}>{uvAdvice.bg}</div>
+          <div className={styles['advice-detail']}>{uvAdvice.en}</div>
         </div>
 
-        <div className="uv-details">
-          <div className="detail-item">
-            <span className="detail-label">{language === 'bg' ? 'Време' : 'Time'}</span>
-            <span className="detail-value">{new Date(current.localTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+        <div className={styles['uv-details']}>
+          <div className={styles['detail-item']}>
+            <span className={styles['detail-label']}>{language === 'bg' ? 'Време' : 'Time'}</span>
+            <span className={styles['detail-value']}>{new Date(current.localTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
           </div>
-          <div className="detail-item">
-            <span className="detail-label">{language === 'bg' ? 'Времето' : 'Weather'}</span>
-            <span className="detail-value">{current.condition.description}</span>
+          <div className={styles['detail-item']}>
+            <span className={styles['detail-label']}>{language === 'bg' ? 'Времето' : 'Weather'}</span>
+            <span className={styles['detail-value']}>{current.condition.description}</span>
           </div>
-          <div className="detail-item">
-            <span className="detail-label">{language === 'bg' ? 'Облаци' : 'Clouds'}</span>
-            <span className="detail-value">{current.cloudCover ?? 0}%</span>
+          <div className={styles['detail-item']}>
+            <span className={styles['detail-label']}>{language === 'bg' ? 'Облаци' : 'Clouds'}</span>
+            <span className={styles['detail-value']}>{current.cloudCover ?? 0}%</span>
           </div>
         </div>
       </div>

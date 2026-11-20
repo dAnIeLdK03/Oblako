@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sunrise, Sunset, Sun } from 'lucide-react';
 import { useLanguage} from '../LanguageContext.jsx';
+import styles from './SunriseSunset.module.css';
 
 function SunriseSunset({weatherData}){
     const { t } = useLanguage();
@@ -72,46 +73,46 @@ function SunriseSunset({weatherData}){
 
     return(
         <div className = "sunrise-sunset-container">
-            <h3 className = "sun-title">
-                <Sunrise size={20} className="sun-title-icon" /> {t('sunriseSunset')}
+            <h3 className = {styles['sun-title']}>
+                <Sunrise size={20} className={styles['sun-title-icon']} /> {t('sunriseSunset')}
             </h3>
 
-            <div className = "sun-info-grid">
+            <div className = {styles['sun-info-grid']}>
                 {/*Sunrise*/}
-                <div className = "sun-info-item">
-                    <div className = "sun-icon sunrise-icon"><Sunrise size={24} /></div>
-                    <div className = "sun-details">
-                        <span className = "sun-label">{t('sunrise')}</span>
-                        <span className = "sun-time">{formatTime(sunrise)}</span>
+                <div className = {styles['sun-info-item']}>
+                    <div className = {`${styles['sun-icon']} ${styles['sunrise-icon']}`}><Sunrise size={24} /></div>
+                    <div className = {styles['sun-details']}>
+                        <span className = {styles['sun-label']}>{t('sunrise')}</span>
+                        <span className = {styles['sun-time']}>{formatTime(sunrise)}</span>
                     </div>
                 </div>
 
                 {/*Sunset*/}
-                <div className = "sun-info-item">
-                    <div className = "sun-icon sunset-icon"><Sunset size={24} /></div>
-                    <div className = "sun-details">
-                        <span className = "sun-label">{t('sunset')}</span>
-                        <span className = "sun-time">{formatTime(sunset)}</span>
+                <div className = {styles['sun-info-item']}>
+                    <div className = {`${styles['sun-icon']} ${styles['sunset-icon']}`}><Sunset size={24} /></div>
+                    <div className = {styles['sun-details']}>
+                        <span className = {styles['sun-label']}>{t('sunset')}</span>
+                        <span className = {styles['sun-time']}>{formatTime(sunset)}</span>
                     </div>
                 </div>
             </div>
 
             {/*Countdown Timer*/}
-            <div className = "countdown-container">
-                <div className = "countdown-header">
-                    <span className = "countdown-label">
+            <div className = {styles['countdown-container']}>
+                <div className = {styles['countdown-header']}>
+                    <span className = {styles['countdown-label']}>
                         {nextEvent === 'sunrise'? <Sunrise size={16} /> : <Sunset size={16} />} {t('nextEvent')}:
                     </span>
-                    <span className = "next-event-name">
+                    <span className = {styles['next-event-name']}>
                         {nextEvent === 'sunrise' ? t('sunrise') : t('sunset')}
                     </span>
                 </div>
 
-                <div className = "countdown-timer">
-                    <div className = "countdown-display">
+                <div className = {styles['countdown-timer']}>
+                    <div className = {styles['countdown-display']}>
                         {countdown}
                     </div>
-                    <div className = "countdown-units">
+                    <div className = {styles['countdown-units']}>
                         <span>{t('hours')}</span>
                         <span>{t('minutes')}</span>
                         <span>{t('seconds')}</span>
@@ -120,9 +121,9 @@ function SunriseSunset({weatherData}){
             </div>
 
             {/*Day Length*/}
-            <div className = "day-length">
-                <span className = "day-length-label"><Sun size={16} /> {t('dayLength')}:</span>
-                <span className = "day-length-value">
+            <div className = {styles['day-length']}>
+                <span className = {styles['day-length-label']}><Sun size={16} /> {t('dayLength')}:</span>
+                <span className = {styles['day-length-value']}>
                     {(() => {
                         const dayLengthSeconds = sunset - sunrise;
                         const hours = Math.floor(dayLengthSeconds / 3600);

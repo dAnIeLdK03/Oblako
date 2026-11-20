@@ -1,0 +1,318 @@
+/* Стилове на HourlyForecast. Класовете са локални за файла (CSS Modules). */
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.forecast-container {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.forecast-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.forecast-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.forecast-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 3px;
+}
+
+.forecast-item {
+    background-color: var(--bg-color1);
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 16px;
+    min-width: 120px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.forecast-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: none;
+}
+
+.forecast-item p {
+    margin: 5px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.forecast-item img {
+    width: 50px;
+    height: 50px;
+    margin: 5px 0;
+}
+
+:global(.light-theme) .forecast-item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
+.chart-toggle-btn {
+  background-color: var(--bg-color1);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.chart-toggle-btn:global(.active) {
+  background-color: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.chart-toggle-btn:hover {
+  background-color: var(--accent);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .forecast-container {
+    gap: 8px !important;
+    padding: 6px 0 !important;
+    overflow-x: auto !important;
+    width: 100% !important;
+  }
+  .forecast-item {
+    min-width: 80px !important;
+    font-size: 0.9em !important;
+    padding: 8px !important;
+  }
+}
+
+/* Hourly Forecast Styles */
+
+.hour-time {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.hour-temp {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 6px 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.hour-desc {
+  font-size: 0.75em;
+  color: var(--text-secondary);
+  margin: 4px 0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.hour-humidity {
+  font-size: 0.7em;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.hour-humidity-icon {
+  flex-shrink: 0;
+}
+
+/* Enhanced forecast container for hourly data */
+
+.forecast-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  padding: 20px 0;
+  max-width: 100%;
+  align-items: stretch;
+}
+
+.forecast-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.forecast-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.forecast-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.forecast-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+.forecast-item {
+  min-width: 100px;
+  padding: 15px 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  border-radius: 15px;
+  text-align: center;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-item:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.forecast-item img {
+  width: 45px;
+  height: 45px;
+  margin: 8px 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Light theme adjustments for hourly forecast */
+
+:global(.light-theme) .hour-time {
+  color: var(--text-color);
+}
+
+:global(.light-theme) .hour-temp {
+  color: var(--accent);
+}
+
+:global(.light-theme) .hour-desc,
+:global(.light-theme) .hour-humidity {
+  color: var(--text-secondary);
+}
+
+:global(.light-theme) .forecast-item {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:global(.light-theme) .forecast-item:hover {
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive grid adjustments */
+
+@media (max-width: 1200px) {
+  .forecast-container {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .forecast-container {
+    grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+    gap: 8px;
+  }
+  .forecast-item {
+    min-width: 75px;
+    padding: 12px 8px;
+  }
+  .forecast-item img {
+    width: 40px;
+    height: 40px;
+  }
+  .hour-time {
+    font-size: 0.8em;
+  }
+  .hour-temp {
+    font-size: 1em;
+  }
+  .hour-desc {
+    font-size: 0.7em;
+  }
+  .hour-humidity {
+    font-size: 0.65em;
+  }
+}
+
+@media (max-width: 480px) {
+  .forecast-container {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 6px;
+  }
+  .forecast-item {
+    min-width: 70px;
+    padding: 10px 6px;
+  }
+  .forecast-item img {
+    width: 35px;
+    height: 35px;
+  }
+  .hour-time {
+    font-size: 0.75em;
+  }
+  .hour-temp {
+    font-size: 0.9em;
+  }
+  .hour-desc {
+    font-size: 0.65em;
+  }
+  .hour-humidity {
+    font-size: 0.6em;
+  }
+}
+
+/* Stagger animation for forecast items */
+
+.forecast-item {
+  animation: slideInRight 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+.forecast-item:nth-child(1) { animation-delay: 0.1s; }
+
+.forecast-item:nth-child(2) { animation-delay: 0.2s; }
+
+.forecast-item:nth-child(3) { animation-delay: 0.3s; }
+
+.forecast-item:nth-child(4) { animation-delay: 0.4s; }
+
+.forecast-item:nth-child(5) { animation-delay: 0.5s; }

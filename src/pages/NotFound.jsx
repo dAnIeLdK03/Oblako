@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useSeo } from '../hooks/useSeo.js';
-import '../Weather.css';
 
 function NotFound() {
   const { t } = useLanguage();

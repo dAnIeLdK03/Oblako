@@ -13,6 +13,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
+import styles from './TemperatureChart.module.css';
 
 // Register Chart.js components
 ChartJS.register(
@@ -32,8 +33,8 @@ function TemperatureChart({ weather, type = 'hourly' }) {
 
   if (!weather?.hourly?.length) {
     return (
-      <div className="chart-container">
-        <div className="no-chart-data">
+      <div className={styles['chart-container']}>
+        <div className={styles['no-chart-data']}>
           {t('noChartData')}
         </div>
       </div>
@@ -198,8 +199,8 @@ function TemperatureChart({ weather, type = 'hourly' }) {
   };
 
   return (
-    <div className="chart-container">
-      <div className="chart-wrapper">
+    <div className={styles['chart-container']}>
+      <div className={styles['chart-wrapper']}>
         <Line data={data} options={options} />
       </div>
     </div>

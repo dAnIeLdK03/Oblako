@@ -2,9 +2,9 @@ import React from 'react';
 import RainChance from '../components/RainChance';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
-import '../Weather.css';
 import { useWeather } from '../hooks/useWeather.js';
 import { useSeo } from '../hooks/useSeo.js';
+import styles from './RainChancePage.module.css';
 
 function RainChancePage() {
   const { language } = useLanguage();
@@ -12,7 +12,7 @@ function RainChancePage() {
   useSeo('rain', { city: weatherData?.place.named ? weatherData.place.name : undefined });
 
   return (
-    <div className="rain-chance-page">
+    <div className={styles['rain-chance-page']}>
       <div className="page-header">
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
           <Logo size="xlarge" showText={false} />
@@ -21,7 +21,7 @@ function RainChancePage() {
         <p>{language === 'bg' ? 'Детайлна информация за валежите' : 'Detailed precipitation information'}</p>
       </div>
       
-      <div className="rain-chance-content">
+      <div className={styles['rain-chance-content']}>
         {loading && (
           <div className="loading">
             <div className="loading-spinner"></div>
@@ -40,7 +40,7 @@ function RainChancePage() {
         )}
 
         {!loading && !error && !weatherData && (
-          <div className="no-data">
+          <div className={styles['no-data']}>
             <p>{language === 'bg' ? 'Няма данни за времето' : 'No weather data available'}</p>
           </div>
         )}

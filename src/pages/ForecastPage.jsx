@@ -4,10 +4,10 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
-import '../Weather.css';
 import { getIconUrl } from '../services/weather';
 import { useWeather } from '../hooks/useWeather.js';
 import { useSeo } from '../hooks/useSeo.js';
+import styles from './ForecastPage.module.css';
 
 function ForecastPage() {
   const { language } = useLanguage();
@@ -55,7 +55,7 @@ function ForecastPage() {
   };
 
   return (
-    <div className="forecast-page">
+    <div className={styles['forecast-page']}>
       <div className="page-header">
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
                      <Logo size="xlarge" showText={false} />
@@ -64,14 +64,14 @@ function ForecastPage() {
          <p>{language === 'bg' ? 'Детайлна прогноза за следващите 10 дни' : 'Detailed forecast for the next 10 days'}</p>
         
                  {/* City Selector */}
-         <div className="city-selector">
+         <div className={styles['city-selector']}>
            <input
              type="text"
              value={cityInput}
              onChange={(e) => setCityInput(e.target.value)}
              onKeyDown={(e) => e.key === 'Enter' && searchCity(cityInput)}
              placeholder={language === 'bg' ? 'Въведете град...' : 'Enter city...'}
-             className="city-input"
+             className={styles['city-input']}
            />
            <button 
              onClick={() => searchCity(cityInput)}
@@ -83,32 +83,32 @@ function ForecastPage() {
          </div>
       </div>
       
-      <div className="forecast-content">
+      <div className={styles['forecast-content']}>
         {loading && <div className="loading">{language === 'bg' ? 'Зареждане...' : 'Loading...'}</div>}
         {error && <div className="error-message">{error}</div>}
         
         {!loading && !error && (
-          <div className="ten-day-forecast">
+          <div className={styles['ten-day-forecast']}>
             {forecast.map((day, index) => (
               <div 
                 key={day.date} 
-                className="forecast-day-card clickable"
+                className={`${styles['forecast-day-card']} ${styles.clickable}`}
                 onClick={() => setSelectedDay(day)}
               >
-                <div className="day-header">
-                  <div className="day-name">{formatDate(`${day.date}T12:00:00`)}</div>
-                  <div className="day-number">{index + 1}</div>
+                <div className={styles['day-header']}>
+                  <div className={styles['day-name']}>{formatDate(`${day.date}T12:00:00`)}</div>
+                  <div className={styles['day-number']}>{index + 1}</div>
                 </div>
                
-               <div className="weather-info">
-                 <div className="weather-icon">
+               <div className={styles['weather-info']}>
+                 <div className={styles['weather-icon']}>
                    <img 
                      src={getWeatherIcon(day.condition.icon)} 
                      alt={day.condition.description}
                    />
                  </div>
                  
-                 <div className="temperature-info">
+                 <div className={styles['temperature-info']}>
                    <div className="temp-max">
                      {convertTemperature(day.tempMax)}{getTemperatureSymbol()}
                    </div>
@@ -118,12 +118,12 @@ function ForecastPage() {
                  </div>
                </div>
                
-               <div className="weather-details">
-                 <div className="weather-desc">
+               <div className={styles['weather-details']}>
+                 <div className={styles['weather-desc']}>
                    {getWeatherDescription(day.condition.description)}
                  </div>
                  
-                 <div className="additional-info">
+                 <div className={styles['additional-info']}>
                    <div className="humidity">
                      <Droplet size={14} /> {day.humidity}%
                    </div>
@@ -133,7 +133,7 @@ function ForecastPage() {
                  </div>
                </div>
                
-               <div className="click-hint">
+               <div className={styles['click-hint']}>
                  {language === 'bg' ? 'Кликнете за подробности' : 'Click for details'}
                </div>
               </div>

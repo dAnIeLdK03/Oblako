@@ -1,0 +1,271 @@
+/* Стилове на UVIndex. Класовете са локални за файла (CSS Modules). */
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  background: var(--bg-color2);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 3px;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+  .detail-item {
+    padding: 8px;
+  }
+  .detail-label {
+    font-size: 0.7rem;
+  }
+  .detail-value {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-item {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.uv-level {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+  .detail-label {
+    font-size: 0.8rem;
+  }
+  .detail-value {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-label {
+    font-size: 0.75rem;
+  }
+  .detail-value {
+    font-size: 0.95rem;
+  }
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.95em;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.detail-value {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* UV Index Styles */
+
+.uv-index-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  border-radius: 18px;
+  padding: 20px;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 15px 0;
+  transition: all 0.3s ease;
+}
+
+.uv-index-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.uv-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.uv-icon {
+  display: flex;
+  align-items: center;
+  color: var(--accent);
+}
+
+.uv-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: var(--text-color);
+}
+
+.uv-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.uv-value {
+  font-size: 2.5em;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.uv-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.uv-level-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+.uv-level-text {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.uv-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.uv-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.uv-advice {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
+}
+
+.advice-main {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 5px;
+  font-size: 0.95em;
+}
+
+.advice-detail {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.uv-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.detail-label {
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 0.9em;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Light theme adjustments for UV index */
+
+:global(.light-theme) .uv-index-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.02));
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:global(.light-theme) .uv-bar {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:global(.light-theme) .uv-advice {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustments for UV index */
+
+@media (max-width: 768px) {
+  .uv-display {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .uv-value {
+    font-size: 2em;
+  }
+  .uv-details {
+    grid-template-columns: 1fr;
+  }
+}

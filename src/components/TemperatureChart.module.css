@@ -1,0 +1,53 @@
+/* Стилове на TemperatureChart. Класовете са локални за файла (CSS Modules). */
+
+/* Temperature Chart Styles */
+
+.chart-container {
+  background-color: var(--bg-color2);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+.chart-wrapper {
+  height: 300px;
+  position: relative;
+}
+
+.no-chart-data {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 40px 20px;
+  font-style: italic;
+}
+
+/* Responsive chart */
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 250px;
+  }
+  .chart-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    min-width: 240px !important;
+    width: 100% !important;
+  }
+}

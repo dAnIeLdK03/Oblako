@@ -3,6 +3,7 @@ import { Droplet, Wind, Gauge, Eye, Compass, CloudRain } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import { getIconUrl } from '../services/weather';
+import styles from './DetailedDayForecast.module.css';
 
 function DetailedDayForecast({ day, onClose }) {
   const { language } = useLanguage();
@@ -102,78 +103,78 @@ function DetailedDayForecast({ day, onClose }) {
 
 
   return (
-    <div className="detailed-forecast-overlay">
-      <div className="detailed-forecast-modal">
-        <div className="detailed-forecast-header">
+    <div className={styles['detailed-forecast-overlay']}>
+      <div className={styles['detailed-forecast-modal']}>
+        <div className={styles['detailed-forecast-header']}>
           <h2>{formatDate(`${day.date}T12:00:00`)}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className={styles['close-btn']} onClick={onClose}>×</button>
         </div>
 
-        <div className="detailed-forecast-content">
+        <div className={styles['detailed-forecast-content']}>
           {/* Main Weather Info */}
-          <div className="main-weather-section">
-            <div className="weather-icon-large">
+          <div className={styles['main-weather-section']}>
+            <div className={styles['weather-icon-large']}>
               <img 
                 src={getWeatherIcon(day.condition.icon)} 
                 alt={day.condition.description}
               />
             </div>
             
-            <div className="weather-main-info">
-              <div className="weather-description">
+            <div className={styles['weather-main-info']}>
+              <div className={styles['weather-description']}>
                 {getWeatherDescription(day.condition.description)}
               </div>
               
-              <div className="temperature-range">
+              <div className={styles['temperature-range']}>
                 <div className="temp-max">
-                  <span className="temp-label">{language === 'bg' ? 'Максимум' : 'Max'}</span>
-                  <span className="temp-value">{convertTemperature(day.tempMax)}{getTemperatureSymbol()}</span>
+                  <span className={styles['temp-label']}>{language === 'bg' ? 'Максимум' : 'Max'}</span>
+                  <span className={styles['temp-value']}>{convertTemperature(day.tempMax)}{getTemperatureSymbol()}</span>
                 </div>
                 <div className="temp-min">
-                  <span className="temp-label">{language === 'bg' ? 'Минимум' : 'Min'}</span>
-                  <span className="temp-value">{convertTemperature(day.tempMin)}{getTemperatureSymbol()}</span>
+                  <span className={styles['temp-label']}>{language === 'bg' ? 'Минимум' : 'Min'}</span>
+                  <span className={styles['temp-value']}>{convertTemperature(day.tempMin)}{getTemperatureSymbol()}</span>
                 </div>
               </div>
             </div>
           </div>
 
                                            {/* Detailed Weather Parameters */}
-            <div className="weather-parameters">
-              <div className="parameter-grid">
-                <div className="parameter-item">
-                  <div className="parameter-icon"><Droplet size={22} /></div>
-                  <div className="parameter-info">
-                    <div className="parameter-label">{language === 'bg' ? 'Влажност' : 'Humidity'}</div>
-                    <div className="parameter-value">{day.humidity}%</div>
+            <div className={styles['weather-parameters']}>
+              <div className={styles['parameter-grid']}>
+                <div className={styles['parameter-item']}>
+                  <div className={styles['parameter-icon']}><Droplet size={22} /></div>
+                  <div className={styles['parameter-info']}>
+                    <div className={styles['parameter-label']}>{language === 'bg' ? 'Влажност' : 'Humidity'}</div>
+                    <div className={styles['parameter-value']}>{day.humidity}%</div>
                   </div>
                 </div>
 
-                <div className="parameter-item">
-                  <div className="parameter-icon"><Wind size={22} /></div>
-                  <div className="parameter-info">
-                    <div className="parameter-label">{language === 'bg' ? 'Вятър' : 'Wind'}</div>
-                    <div className="parameter-value">
+                <div className={styles['parameter-item']}>
+                  <div className={styles['parameter-icon']}><Wind size={22} /></div>
+                  <div className={styles['parameter-info']}>
+                    <div className={styles['parameter-label']}>{language === 'bg' ? 'Вятър' : 'Wind'}</div>
+                    <div className={styles['parameter-value']}>
                       {Math.round(day.windSpeed)} m/s {day.windDeg ? getWindDirection(day.windDeg) : ''}
                     </div>
                   </div>
                 </div>
 
                 {day.pressure > 0 && (
-                  <div className="parameter-item">
-                    <div className="parameter-icon"><Gauge size={22} /></div>
-                    <div className="parameter-info">
-                      <div className="parameter-label">{language === 'bg' ? 'Налягане' : 'Pressure'}</div>
-                      <div className="parameter-value">{day.pressure} hPa</div>
+                  <div className={styles['parameter-item']}>
+                    <div className={styles['parameter-icon']}><Gauge size={22} /></div>
+                    <div className={styles['parameter-info']}>
+                      <div className={styles['parameter-label']}>{language === 'bg' ? 'Налягане' : 'Pressure'}</div>
+                      <div className={styles['parameter-value']}>{day.pressure} hPa</div>
                     </div>
                   </div>
                 )}
 
                 {day.visibility > 0 && (
-                  <div className="parameter-item">
-                    <div className="parameter-icon"><Eye size={22} /></div>
-                    <div className="parameter-info">
-                      <div className="parameter-label">{language === 'bg' ? 'Видимост' : 'Visibility'}</div>
-                      <div className="parameter-value">{Math.round(day.visibility / 1000)} km</div>
+                  <div className={styles['parameter-item']}>
+                    <div className={styles['parameter-icon']}><Eye size={22} /></div>
+                    <div className={styles['parameter-info']}>
+                      <div className={styles['parameter-label']}>{language === 'bg' ? 'Видимост' : 'Visibility'}</div>
+                      <div className={styles['parameter-value']}>{Math.round(day.visibility / 1000)} km</div>
                     </div>
                   </div>
                 )}
@@ -182,23 +183,23 @@ function DetailedDayForecast({ day, onClose }) {
 
                      {/* Wind Details */}
            {day.windSpeed != null && (
-             <div className="wind-details-section">
+             <div className={styles['wind-details-section']}>
                <h3>{language === 'bg' ? 'Детайли за вятъра' : 'Wind Details'}</h3>
-               <div className="wind-details-grid">
-                 <div className="wind-detail-item">
-                   <div className="wind-icon"><Wind size={20} /></div>
-                   <div className="wind-info">
-                     <div className="wind-label">{language === 'bg' ? 'Скорост' : 'Speed'}</div>
-                     <div className="wind-value">{Math.round(day.windSpeed)} m/s</div>
+               <div className={styles['wind-details-grid']}>
+                 <div className={styles['wind-detail-item']}>
+                   <div className={styles['wind-icon']}><Wind size={20} /></div>
+                   <div className={styles['wind-info']}>
+                     <div className={styles['wind-label']}>{language === 'bg' ? 'Скорост' : 'Speed'}</div>
+                     <div className={styles['wind-value']}>{Math.round(day.windSpeed)} m/s</div>
                    </div>
                  </div>
 
                  {day.windDeg > 0 && (
-                   <div className="wind-detail-item">
-                     <div className="wind-icon"><Compass size={20} /></div>
-                     <div className="wind-info">
-                       <div className="wind-label">{language === 'bg' ? 'Посока' : 'Direction'}</div>
-                       <div className="wind-value">{day.windDeg}° ({getWindDirectionFull(day.windDeg)})</div>
+                   <div className={styles['wind-detail-item']}>
+                     <div className={styles['wind-icon']}><Compass size={20} /></div>
+                     <div className={styles['wind-info']}>
+                       <div className={styles['wind-label']}>{language === 'bg' ? 'Посока' : 'Direction'}</div>
+                       <div className={styles['wind-value']}>{day.windDeg}° ({getWindDirectionFull(day.windDeg)})</div>
                      </div>
                    </div>
                  )}
@@ -209,23 +210,23 @@ function DetailedDayForecast({ day, onClose }) {
                      
 
           {/* Precipitation Details */}
-          <div className="precipitation-section">
+          <div className={styles['precipitation-section']}>
             <h3>{language === 'bg' ? 'Валежи' : 'Precipitation'}</h3>
-            <div className="precipitation-details">
-              <div className="precipitation-item">
-                <div className="precipitation-icon"><CloudRain size={22} /></div>
-                <div className="precipitation-info">
-                  <div className="precipitation-label">{language === 'bg' ? 'Вероятност' : 'Probability'}</div>
-                  <div className="precipitation-value">{Math.round(day.precipProbability)}%</div>
+            <div className={styles['precipitation-details']}>
+              <div className={styles['precipitation-item']}>
+                <div className={styles['precipitation-icon']}><CloudRain size={22} /></div>
+                <div className={styles['precipitation-info']}>
+                  <div className={styles['precipitation-label']}>{language === 'bg' ? 'Вероятност' : 'Probability'}</div>
+                  <div className={styles['precipitation-value']}>{Math.round(day.precipProbability)}%</div>
                 </div>
               </div>
 
               {day.precipSum > 0 && (
-                <div className="precipitation-item">
-                  <div className="precipitation-icon"><Droplet size={22} /></div>
-                  <div className="precipitation-info">
-                    <div className="precipitation-label">{language === 'bg' ? 'Общо за деня' : 'Daily total'}</div>
-                    <div className="precipitation-value">{day.precipSum.toFixed(1)} mm</div>
+                <div className={styles['precipitation-item']}>
+                  <div className={styles['precipitation-icon']}><Droplet size={22} /></div>
+                  <div className={styles['precipitation-info']}>
+                    <div className={styles['precipitation-label']}>{language === 'bg' ? 'Общо за деня' : 'Daily total'}</div>
+                    <div className={styles['precipitation-value']}>{day.precipSum.toFixed(1)} mm</div>
                   </div>
                 </div>
               )}

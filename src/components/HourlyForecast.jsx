@@ -5,6 +5,7 @@ import { useTheme } from '../ThemeContext.jsx';
 import Logo from './Logo.jsx';
 import TemperatureChart from './TemperatureChart.jsx';
 import { getIconUrl } from '../services/weather';
+import styles from './HourlyForecast.module.css';
 
 function HourlyForecast({ weather }){
     const { t } = useLanguage();
@@ -31,15 +32,15 @@ function HourlyForecast({ weather }){
             </div>
             
             {/* Chart Toggle */}
-            <div className="chart-toggle">
+            <div className={styles['chart-toggle']}>
                 <button 
-                    className={`chart-toggle-btn ${chartType === 'hourly' ? 'active' : ''}`}
+                    className={`${styles['chart-toggle-btn']} ${chartType === 'hourly' ? 'active' : ''}`}
                     onClick={() => setChartType('hourly')}
                 >
                     {t('hourlyChart')}
                 </button>
                 <button 
-                    className={`chart-toggle-btn ${chartType === 'daily' ? 'active' : ''}`}
+                    className={`${styles['chart-toggle-btn']} ${chartType === 'daily' ? 'active' : ''}`}
                     onClick={() => setChartType('daily')}
                 >
                     {t('dailyChart')}
@@ -47,7 +48,7 @@ function HourlyForecast({ weather }){
             </div>
 
             {/* Temperature Chart */}
-            <div className="scroll-x">
+            <div className={styles['scroll-x']}>
               <TemperatureChart 
                   weather={weather} 
                   type={chartType}
@@ -55,17 +56,17 @@ function HourlyForecast({ weather }){
             </div>
             
             {/* Hourly forecast cards */}
-            <div className="forecast-container">
+            <div className={styles['forecast-container']}>
                 {forecast.map((hour) => (
-                    <div key={hour.time} className="forecast-item">
-                        <p className="hour-time">{formatTime(hour.localTime)}</p>
+                    <div key={hour.time} className={styles['forecast-item']}>
+                        <p className={styles['hour-time']}>{formatTime(hour.localTime)}</p>
                         <img 
                             src={getIconUrl(hour.condition.icon)}
                             alt={hour.condition.description}
                         />
-                        <p className="hour-temp">{convertTemperature(hour.temp)}{getTemperatureSymbol()}</p>
-                        <p className="hour-desc">{hour.condition.description}</p>
-                        <p className="hour-humidity"><Droplet size={14} className="hour-humidity-icon" /> {hour.humidity}%</p>
+                        <p className={styles['hour-temp']}>{convertTemperature(hour.temp)}{getTemperatureSymbol()}</p>
+                        <p className={styles['hour-desc']}>{hour.condition.description}</p>
+                        <p className={styles['hour-humidity']}><Droplet size={14} className={styles['hour-humidity-icon']} /> {hour.humidity}%</p>
                     </div>
                 ))}
             </div>

@@ -1,0 +1,84 @@
+/* Стилове на PullToRefresh. Класовете са локални за файла (CSS Modules). */
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pull to Refresh Styles */
+
+.pull-to-refresh-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.pull-to-refresh-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 15px 15px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.refresh-spinner {
+  margin-bottom: 10px;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.pull-arrow {
+  font-size: 24px;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.refresh-text {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.pull-to-refresh-content {
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Light theme adjustments */
+
+:global(.light-theme) .pull-to-refresh-indicator {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:global(.light-theme) .spinner {
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  border-top: 3px solid #000;
+}
+
+:global(.light-theme) .pull-arrow,
+:global(.light-theme) .refresh-text {
+  color: #000;
+}

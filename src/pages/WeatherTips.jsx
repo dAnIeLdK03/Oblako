@@ -2,6 +2,7 @@ import React from 'react';
 import { useSeo } from '../hooks/useSeo.js';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
+import styles from './WeatherTips.module.css';
 
 function WeatherTips() {
   useSeo('tips');
@@ -15,7 +16,7 @@ function WeatherTips() {
       </div>
       
       {language === 'bg' ? (
-        <div className="tips-content">
+        <div className={styles['tips-content']}>
           <section>
             <h2>Как да разчетем прогнозата за времето</h2>
             <p>Прогнозата за времето е сложна наука, която обаче може да бъде разбрана от всеки. Когато виждате прогноза за деня, важно е да знаете какво означават различните символи и числа.</p>
@@ -76,7 +77,7 @@ function WeatherTips() {
           </section>
         </div>
       ) : (
-        <div className="tips-content">
+        <div className={styles['tips-content']}>
           <section>
             <h2>How to Read Weather Forecasts</h2>
             <p>Weather forecasting is a complex science that can be understood by everyone. When you see a daily forecast, it's important to know what the different symbols and numbers mean.</p>

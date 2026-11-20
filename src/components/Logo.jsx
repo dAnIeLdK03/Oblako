@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../ThemeContext.jsx';
-import '../Weather.css';
+import styles from './Logo.module.css';
 
 const Logo = ({ className = '', showText = true, size = 'medium' }) => {
   const { theme } = useTheme();
@@ -21,15 +21,15 @@ const Logo = ({ className = '', showText = true, size = 'medium' }) => {
   };
 
   return (
-    <Link to="/" className={`logo-link ${className}`}>
-      <div className={`logo-container ${getSizeClass()}`}>
+    <Link to="/" className={`${styles['logo-link']} ${className}`}>
+      <div className={`${styles['logo-container']} ${getSizeClass()}`}>
         <img 
           src={getLogoPath()} 
           alt="Oblako Logo" 
-          className="logo-image"
+          className={styles['logo-image']}
         />
         {showText && (
-          <span className="logo-text">Oblako</span>
+          <span className={styles['logo-text']}>Oblako</span>
         )}
       </div>
     </Link>

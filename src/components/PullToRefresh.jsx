@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowDown } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
+import styles from './PullToRefresh.module.css';
 
 const PullToRefresh = ({ onRefresh, children }) => {
   const { language } = useLanguage();
@@ -62,25 +63,25 @@ const PullToRefresh = ({ onRefresh, children }) => {
   }, [pullDistance, isPulling]);
 
   return (
-    <div className="pull-to-refresh-container">
+    <div className={styles['pull-to-refresh-container']}>
       {(isPulling || isRefreshing) && (
         <div 
-          className="pull-to-refresh-indicator"
+          className={styles['pull-to-refresh-indicator']}
           style={{
             transform: `translateY(${pullDistance}px)`,
             opacity: Math.min(pullDistance / 50, 1)
           }}
         >
-          <div className="refresh-spinner">
+          <div className={styles['refresh-spinner']}>
             {isRefreshing ? (
-              <div className="spinner"></div>
+              <div className={styles.spinner}></div>
             ) : (
-              <div className="pull-arrow" style={{ transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)`, display: 'flex' }}>
+              <div className={styles['pull-arrow']} style={{ transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)`, display: 'flex' }}>
                 <ArrowDown size={20} />
               </div>
             )}
           </div>
-          <div className="refresh-text">
+          <div className={styles['refresh-text']}>
             {isRefreshing 
               ? (language === 'bg' ? 'Обновяване...' : 'Refreshing...')
               : (language === 'bg' ? 'Плъзнете за обновяване' : 'Pull to refresh')
@@ -89,7 +90,7 @@ const PullToRefresh = ({ onRefresh, children }) => {
         </div>
       )}
       
-      <div ref={containerRef} className="pull-to-refresh-content">
+      <div ref={containerRef} className={styles['pull-to-refresh-content']}>
         {children}
       </div>
     </div>

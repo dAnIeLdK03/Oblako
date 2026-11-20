@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { CloudLightning, CloudRain, Sun, Moon, Cloud } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
+import styles from './RainChance.module.css';
 
 function RainChance({ weatherData }) {
   const { language } = useLanguage();
@@ -100,56 +101,56 @@ function RainChance({ weatherData }) {
     <div className="rain-chance">
       <h3>{language === 'bg' ? 'Вероятност за валежи' : 'Precipitation Chance'}</h3>
       
-      <div className="rain-content">
+      <div className={styles['rain-content']}>
         {/* Дневна прогноза */}
-        <div className="rain-section">
+        <div className={styles['rain-section']}>
           <h4>{language === 'bg' ? 'Днес по часове' : 'Today by hours'}</h4>
-          <div className="rain-hours">
+          <div className={styles['rain-hours']}>
             {uniqueTodayData.map((item, index) => (
-              <div key={index} className="rain-hour-item">
-                <div className="rain-time">{item.hour}</div>
-                <div className="rain-icon">{getRainIcon(item.type, parseInt(item.hour.split(':')[0]))}</div>
-                <div className="rain-chance-bar">
+              <div key={index} className={styles['rain-hour-item']}>
+                <div className={styles['rain-time']}>{item.hour}</div>
+                <div className={styles['rain-icon']}>{getRainIcon(item.type, parseInt(item.hour.split(':')[0]))}</div>
+                <div className={styles['rain-chance-bar']}>
                   <div 
-                    className="rain-chance-fill"
+                    className={styles['rain-chance-fill']}
                     style={{ 
                       width: `${item.chance}%`,
                       backgroundColor: getChanceColor(item.chance)
                     }}
                   ></div>
                 </div>
-                <div className="rain-percentage">{item.chance}%</div>
+                <div className={styles['rain-percentage']}>{item.chance}%</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Седмична прогноза */}
-        <div className="rain-section">
+        <div className={styles['rain-section']}>
           <h4>{language === 'bg' ? 'Седмична прогноза' : 'Weekly forecast'}</h4>
-          <div className="rain-week">
+          <div className={styles['rain-week']}>
             {uniqueWeekData.map((item, index) => (
-              <div key={index} className="rain-day-item">
-                <div className="rain-day">{item.day}</div>
-                <div className="rain-temp">{convertTemperature(item.temp)}{getTemperatureSymbol()}</div>
-                <div className="rain-icon">{getRainIcon(item.type, 12)}</div>
-                <div className="rain-chance-bar">
+              <div key={index} className={styles['rain-day-item']}>
+                <div className={styles['rain-day']}>{item.day}</div>
+                <div className={styles['rain-temp']}>{convertTemperature(item.temp)}{getTemperatureSymbol()}</div>
+                <div className={styles['rain-icon']}>{getRainIcon(item.type, 12)}</div>
+                <div className={styles['rain-chance-bar']}>
                   <div 
-                    className="rain-chance-fill"
+                    className={styles['rain-chance-fill']}
                     style={{ 
                       width: `${item.chance}%`,
                       backgroundColor: getChanceColor(item.chance)
                     }}
                   ></div>
                 </div>
-                <div className="rain-percentage">{item.chance}%</div>
+                <div className={styles['rain-percentage']}>{item.chance}%</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Съвети */}
-        <div className="rain-tips">
+        <div className={styles['rain-tips']}>
           <h4>{language === 'bg' ? 'Съвети за деня' : 'Today\'s tips'}</h4>
           <ul>
             <li>{language === 'bg' ? 'Най-висока вероятност за валежи между 15:00-18:00' : 'Highest rain chance between 15:00-18:00'}</li>

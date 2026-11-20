@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from './WorldClock.module.css';
 
 const WorldClock = ({ city, language, hasError = false }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -96,22 +97,22 @@ const WorldClock = ({ city, language, hasError = false }) => {
 
   return (
     <div className="digital-clock-container">
-      <div className={`digital-clock ${isAnimating ? 'animate' : ''} ${hasError ? 'error' : ''}`}>
+      <div className={`${styles['digital-clock']} ${isAnimating ? styles.animate : ''} ${hasError ? styles.error : ''}`}>
         {hasError ? (
           <>
-            <div className="time-display">--:--:--</div>
-            <div className="city-name error-text">{city}</div>
-            <div className="date-display">{t.cityNotFound}</div>
+            <div className={styles['time-display']}>--:--:--</div>
+            <div className={`${styles['city-name']} ${styles['error-text']}`}>{city}</div>
+            <div className={styles['date-display']}>{t.cityNotFound}</div>
           </>
         ) : (
           <>
-            <div className="time-display">{getCityTime(city)}</div>
-            <div className="city-name">{city}</div>
-            <div className="date-display">{getCityDate(city)}</div>
+            <div className={styles['time-display']}>{getCityTime(city)}</div>
+            <div className={styles['city-name']}>{city}</div>
+            <div className={styles['date-display']}>{getCityDate(city)}</div>
           </>
         )}
       </div>
-      <div className="clock-label">
+      <div className={styles['clock-label']}>
         {hasError ? t.cityNotFound : `${t.currentTime} ${t.in} ${city}`}
       </div>
     </div>

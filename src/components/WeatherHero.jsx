@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { getCityPhoto } from '../utils/cityPhotos';
 import { getIconUrl } from '../services/weather';
+import styles from './WeatherHero.module.css';
 
 function WeatherHero({
     weatherData,
@@ -29,15 +30,15 @@ function WeatherHero({
 
     return (
         <section
-            className="hero"
+            className={styles.hero}
             style={{ backgroundImage: `url(${getCityPhoto(cityName)})` }}
         >
-            <div className="hero-overlay" />
+            <div className={styles['hero-overlay']} />
 
-            <div className="hero-topbar">
+            <div className={styles['hero-topbar']}>
                 <button
                     type="button"
-                    className="hero-icon-btn"
+                    className={styles['hero-icon-btn']}
                     onClick={() => setSearchOpen((v) => !v)}
                     aria-label={t('searchButton')}
                 >
@@ -45,9 +46,9 @@ function WeatherHero({
                 </button>
 
                 {searchOpen && (
-                    <div className="hero-search-panel">
-                        <form onSubmit={handleSubmit} className="hero-search-form">
-                            <div className="hero-search-input-wrap">
+                    <div className={styles['hero-search-panel']}>
+                        <form onSubmit={handleSubmit} className={styles['hero-search-form']}>
+                            <div className={styles['hero-search-input-wrap']}>
                                 <input
                                     type="text"
                                     value={city}
@@ -64,11 +65,11 @@ function WeatherHero({
                 )}
             </div>
 
-            {error && <div className="hero-error">{error}</div>}
+            {error && <div className={styles['hero-error']}>{error}</div>}
 
             {weatherData && (
-                <div className="hero-bottom">
-                    <div className="hero-info">
+                <div className={styles['hero-bottom']}>
+                    <div className={styles['hero-info']}>
                         <h1>{cityName},</h1>
                         <h1>{weekday},</h1>
                         <h1>
@@ -78,17 +79,17 @@ function WeatherHero({
                     </div>
 
                     {dailyForecast.length > 0 && (
-                        <div className="hero-forecast-strip">
+                        <div className={styles['hero-forecast-strip']}>
                             {dailyForecast.map((day) => (
-                                <div key={day.date} className="hero-forecast-item">
-                                    <span className="hero-forecast-day">
+                                <div key={day.date} className={styles['hero-forecast-item']}>
+                                    <span className={styles['hero-forecast-day']}>
                                         {t(weekdayKeys[new Date(`${day.date}T12:00:00`).getDay()])}
                                     </span>
                                     <img
                                         src={getIconUrl(day.condition.icon)}
                                         alt={day.condition.description}
                                     />
-                                    <span className="hero-forecast-temp">
+                                    <span className={styles['hero-forecast-temp']}>
                                         {translateWeatherCondition(day.condition.description)}, {convertTemperature(day.tempMax)}{getTemperatureSymbol()}
                                     </span>
                                 </div>

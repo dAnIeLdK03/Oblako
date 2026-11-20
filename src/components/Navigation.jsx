@@ -5,6 +5,7 @@ import { useTheme } from '../ThemeContext.jsx';
 import Logo from './Logo.jsx';
 import { placeSearch } from '../utils/locationParams.js';
 import { Home, CalendarDays, CloudRain, Sun, Moon, Lightbulb } from 'lucide-react';
+import styles from './Navigation.module.css';
 
 function Navigation() {
   const { language, changeLanguage } = useLanguage();
@@ -150,46 +151,46 @@ function Navigation() {
           }}></span>
        </div>
 
-      <nav className={`navigation ${isMenuOpen ? 'open' : ''}`}>
+      <nav className={`navigation ${isMenuOpen ? styles.open : ''}`}>
         
 
              {/* Navigation Menu */}
-       <div className={`nav-menu ${isMenuOpen ? 'open' : ''}`}>
-         <div className="nav-header">
+       <div className={`${styles['nav-menu']} ${isMenuOpen ? styles.open : ''}`}>
+         <div className={styles['nav-header']}>
            <Logo size="xlarge" showText={false} />
            <p>{language === 'bg' ? 'Времето в реално време' : 'Real-time weather'}</p>
          </div>
 
-        <ul className="nav-list">
+        <ul className={styles['nav-list']}>
           {menuItems.map((item, index) => (
-            <li key={index} className={`nav-item ${isActive(item.path) ? 'active' : ''}`}>
+            <li key={index} className={`${styles['nav-item']} ${isActive(item.path) ? 'active' : ''}`}>
               <Link 
                 to={{ pathname: item.path, search: item.keepPlace ? placeSearch(location.search) : '' }} 
-                className="nav-link"
+                className={styles['nav-link']}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <div className="nav-icon"><item.icon size={20} /></div>
-                <div className="nav-content">
-                  <div className="nav-label">{item.label}</div>
-                  <div className="nav-description">{item.description}</div>
+                <div className={styles['nav-icon']}><item.icon size={20} /></div>
+                <div className={styles['nav-content']}>
+                  <div className={styles['nav-label']}>{item.label}</div>
+                  <div className={styles['nav-description']}>{item.description}</div>
                 </div>
                 {isActive(item.path) && (
-                  <div className="nav-indicator">●</div>
+                  <div className={styles['nav-indicator']}>●</div>
                 )}
               </Link>
             </li>
           ))}
         </ul>
 
-        <div className="nav-footer">
-          <div className="nav-theme nav-language">
+        <div className={styles['nav-footer']}>
+          <div className={`${styles['nav-theme']} ${styles['nav-language']}`}>
             <span>{language === 'bg' ? 'Език:' : 'Language:'}</span>
-            <div className="lang-switch" role="group" aria-label={language === 'bg' ? 'Език' : 'Language'}>
+            <div className={styles['lang-switch']} role="group" aria-label={language === 'bg' ? 'Език' : 'Language'}>
               {['bg', 'en'].map((code) => (
                 <button
                   key={code}
                   type="button"
-                  className={`lang-btn ${language === code ? 'active' : ''}`}
+                  className={`${styles['lang-btn']} ${language === code ? 'active' : ''}`}
                   onClick={() => changeLanguage(code)}
                   aria-pressed={language === code}
                 >
@@ -198,11 +199,11 @@ function Navigation() {
               ))}
             </div>
           </div>
-          <div className="nav-theme">
+          <div className={styles['nav-theme']}>
             <span>{language === 'bg' ? 'Тема:' : 'Theme:'}</span>
             <button
               type="button"
-              className="theme-indicator"
+              className={styles['theme-indicator']}
               onClick={toggleTheme}
               aria-label={theme === 'dark'
                 ? (language === 'bg' ? 'Превключи към светла тема' : 'Switch to light theme')
@@ -219,7 +220,7 @@ function Navigation() {
 
              {/* Overlay for closing menu */}
        <div 
-         className="nav-overlay" 
+         className={styles['nav-overlay']} 
          onClick={() => setIsMenuOpen(false)}
        ></div>
      </nav>

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import HourlyForecast from '../components/HourlyForecast.jsx';
 import { useLanguage } from '../LanguageContext.jsx';
-import '../Weather.css';
 import {useTheme} from '../ThemeContext.jsx';
 import { useHistory } from '../HistoryContext.jsx';
 import SunriseSunset from '../components/SunriseSunset.jsx';
@@ -14,6 +13,7 @@ import WeatherHero from '../components/WeatherHero.jsx';
 import { useWeather } from '../hooks/useWeather.js';
 import { useSeo } from '../hooks/useSeo.js';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
+import styles from './Weather.module.css';
 
 
 function Weather() {
@@ -161,48 +161,48 @@ function Weather() {
 
             <PullToRefresh onRefresh={handleRefresh}>
                 {loading && <SkeletonLoading />}
-                {error && <div className="wp-error">{error}</div>}
+                {error && <div className={styles['wp-error']}>{error}</div>}
                 {locationWarning && (
-                    <div className="wp-error">
+                    <div className={styles['wp-error']}>
                         {language === 'bg'
                             ? 'Локацията е с ниска точност. Проверете дали е правилна или потърсете града ръчно.'
                             : 'Location accuracy is low. Please verify it or search for your city manually.'}
                     </div>
                 )}
                 {mapSelectedCity && (
-                    <div className="wp-toast">
-                        <MapPin size={16} className="wp-toast-icon" /> {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
+                    <div className={styles['wp-toast']}>
+                        <MapPin size={16} className={styles['wp-toast-icon']} /> {language === 'bg' ? 'Избрано от картата:' : 'Selected from map:'} {mapSelectedCity}
                     </div>
                 )}
 
                 {weatherData && (
-                <div className="wp-content">
+                <div className={styles['wp-content']}>
                     <div className="wp-grid">
-                        <div className="wp-card">
-                            <h3 className="wp-card-title"><BarChart3 size={20} className="wp-card-title-icon" /> {t('overview')}</h3>
-                            <div className="wp-stat-list">
-                                <div className="wp-stat">
-                                    <Calendar size={16} className="wp-stat-icon" />
+                        <div className={styles['wp-card']}>
+                            <h3 className={styles['wp-card-title']}><BarChart3 size={20} className={styles['wp-card-title-icon']} /> {t('overview')}</h3>
+                            <div className={styles['wp-stat-list']}>
+                                <div className={styles['wp-stat']}>
+                                    <Calendar size={16} className={styles['wp-stat-icon']} />
                                     <span>{formatDate(weatherData.current.time)}</span>
                                 </div>
-                                <div className="wp-stat">
-                                    <MapPin size={16} className="wp-stat-icon" />
+                                <div className={styles['wp-stat']}>
+                                    <MapPin size={16} className={styles['wp-stat-icon']} />
                                     <span>{weatherData.place.name}, {weatherData.place.country}</span>
                                 </div>
-                                <div className="wp-stat">
-                                    <Eye size={16} className="wp-stat-icon" />
+                                <div className={styles['wp-stat']}>
+                                    <Eye size={16} className={styles['wp-stat-icon']} />
                                     <span>{t('visibility')}: {weatherData.current.visibility / 1000} km</span>
                                 </div>
-                                <div className="wp-stat">
-                                    <Droplet size={16} className="wp-stat-icon" />
+                                <div className={styles['wp-stat']}>
+                                    <Droplet size={16} className={styles['wp-stat-icon']} />
                                     <span>{t('humidity')}: {weatherData.current.humidity}%</span>
                                 </div>
-                                <div className="wp-stat">
-                                    <Thermometer size={16} className="wp-stat-icon" />
+                                <div className={styles['wp-stat']}>
+                                    <Thermometer size={16} className={styles['wp-stat-icon']} />
                                     <span>{t('feelsLike')}: {convertTemperature(weatherData.current.feelsLike)}{getTemperatureSymbol()}</span>
                                 </div>
-                                <div className="wp-stat">
-                                    <Wind size={16} className="wp-stat-icon" />
+                                <div className={styles['wp-stat']}>
+                                    <Wind size={16} className={styles['wp-stat-icon']} />
                                     <span>{t('wind')}: {Math.round(weatherData.current.windSpeed * 3.6)} km/h</span>
                                 </div>
                             </div>

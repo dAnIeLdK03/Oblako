@@ -1,0 +1,139 @@
+/* Стилове на UVIndexPage. Класовете са локални за файла (CSS Modules). */
+
+.page-header-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* UV Index Page Styles */
+
+.uv-index-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.uv-info-section,
+.uv-tips-section {
+  margin-top: 30px;
+}
+
+.uv-info-section h2,
+.uv-tips-section h2 {
+  color: var(--text-color);
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.uv-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.uv-info-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.uv-info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.info-icon-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+.uv-info-card h3 {
+  color: var(--text-color);
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.uv-info-card p {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.tip-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 15px;
+  padding: 20px;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tip-icon {
+  margin-bottom: 15px;
+  display: flex;
+  color: var(--accent);
+}
+
+.tip-card h3 {
+  color: var(--text-color);
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.tip-card p {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* Light theme adjustments for UV page */
+
+:global(.light-theme) .uv-info-card,
+:global(.light-theme) .tip-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.02));
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments for UV page */
+
+@media (max-width: 768px) {
+  .uv-index-page {
+    padding: 15px;
+  }
+  .uv-info-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .tips-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .uv-info-card,
+  .tip-card {
+    padding: 15px;
+  }
+}

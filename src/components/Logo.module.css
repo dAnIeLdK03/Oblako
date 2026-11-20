@@ -1,0 +1,98 @@
+/* Стилове на Logo. Класовете са локални за файла (CSS Modules). */
+
+/* Logo Styles */
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.logo-link:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 0px;
+}
+
+.logo-image {
+  height: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.logo-text {
+  font-weight: 600;
+  font-size: 1.2em;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+:global(.logo-small) .logo-image {
+  width: 24px;
+  height: 24px;
+}
+
+:global(.logo-small) .logo-text {
+  font-size: 1em;
+}
+
+:global(.logo-medium) .logo-image {
+  width: 32px;
+  height: 32px;
+}
+
+:global(.logo-medium) .logo-text {
+  font-size: 1.2em;
+}
+
+:global(.logo-large) .logo-image {
+  width: 48px;
+  height: 48px;
+}
+
+:global(.logo-large) .logo-text {
+  font-size: 1.5em;
+}
+
+:global(.logo-xlarge) .logo-image {
+  width: 64px;
+  height: 64px;
+}
+
+:global(.logo-xlarge) .logo-text {
+  font-size: 1.8em;
+}
+
+:global(.logo-xxlarge) .logo-image {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.1));
+  transition: all 0.3s ease;
+}
+
+:global(.logo-xxlarge) .logo-image:hover {
+  filter: drop-shadow(0 6px 12px rgba(255, 255, 255, 0.2));
+  transform: scale(1.05);
+}
+
+:global(.logo-xxlarge) .logo-text {
+  font-size: 3em;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+:global(.logo-xxlarge) .logo-text:hover {
+  text-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+}
