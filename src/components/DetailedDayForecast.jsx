@@ -19,14 +19,6 @@ function DetailedDayForecast({ day, onClose }) {
     return date.toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US', options);
   };
 
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString(language === 'bg' ? 'bg-BG' : 'en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   const getWeatherIcon = (iconCode) => {
     return getIconUrl(iconCode);
   };
@@ -57,7 +49,6 @@ function DetailedDayForecast({ day, onClose }) {
       'thunderstorm with rain': language === 'bg' ? 'Буря с дъжд' : 'Thunderstorm with rain',
       'thunderstorm with heavy rain': language === 'bg' ? 'Буря със силни дъждове' : 'Thunderstorm with heavy rain',
       'light snow': language === 'bg' ? 'Леки снегове' : 'Light snow',
-      'snow': language === 'bg' ? 'Сняг' : 'Snow',
       'heavy snow': language === 'bg' ? 'Силни снегове' : 'Heavy snow',
       'sleet': language === 'bg' ? 'Суграшица' : 'Sleet',
       'light shower sleet': language === 'bg' ? 'Лека суграшица' : 'Light shower sleet',
@@ -107,14 +98,6 @@ function DetailedDayForecast({ day, onClose }) {
     };
     const direction = getWindDirection(degrees);
     return directions[direction] || direction;
-  };
-
-  const getUVIndex = (uvi) => {
-    if (uvi <= 2) return { level: language === 'bg' ? 'Ниско' : 'Low', color: '#00ff00' };
-    if (uvi <= 5) return { level: language === 'bg' ? 'Умерено' : 'Moderate', color: '#ffff00' };
-    if (uvi <= 7) return { level: language === 'bg' ? 'Високо' : 'High', color: '#ff8000' };
-    if (uvi <= 10) return { level: language === 'bg' ? 'Много високо' : 'Very High', color: '#ff0000' };
-    return { level: language === 'bg' ? 'Екстремно' : 'Extreme', color: '#800080' };
   };
 
 

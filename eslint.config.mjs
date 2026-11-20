@@ -5,25 +5,55 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'node_modules', 'coverage']),
+
+  // Приложението (браузър, React)
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['src/**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,
-      reactHooks.configs['recommended-latest'],
+      reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       globals: globals.browser,
       parserOptions: {
-        ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
         sourceType: 'module',
       },
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Съвет на React Compiler, не грешка: показва се като предупреждение
+      'react-hooks/set-state-in-effect': 'warn',
     },
+  },
+
+  // Контекстите изнасят и Provider, и hook — нормално за контекст
+  {
+    files: ['src/*Context.jsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+
+  // Express сървърът (CommonJS, Node)
+  {
+    files: ['server.js'],
+    extends: [js.configs.recommended],
+    languageOptions: { sourceType: 'commonjs', globals: globals.node },
+  },
+
+  // Скриптове и конфигурации (ESM, Node)
+  {
+    files: ['scripts/**/*.js', 'vite.config.mjs', 'eslint.config.mjs'],
+    extends: [js.configs.recommended],
+    languageOptions: { sourceType: 'module', globals: globals.node },
+  },
+
+  // Service worker
+  {
+    files: ['public/sw.js'],
+    extends: [js.configs.recommended],
+    languageOptions: { sourceType: 'script', globals: globals.serviceworker },
   },
 ])

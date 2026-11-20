@@ -23,15 +23,6 @@ function HourlyForecast({ weather }){
         });
     };
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric'
-        });
-    };
-
     return (
         <div className="card">
             <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px'}}>
@@ -65,7 +56,7 @@ function HourlyForecast({ weather }){
             
             {/* Hourly forecast cards */}
             <div className="forecast-container">
-                {forecast.map((hour, index) => (
+                {forecast.map((hour) => (
                     <div key={hour.time} className="forecast-item">
                         <p className="hour-time">{formatTime(hour.localTime)}</p>
                         <img 

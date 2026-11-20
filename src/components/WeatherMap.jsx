@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import React, { useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import { Map, Satellite, Mountain, Trash2, MapPin, LoaderCircle, XCircle, Droplet, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
@@ -17,10 +17,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-function MapController({ onLocationSelect, markers, setMarkers }) {
+function MapController({ onLocationSelect, setMarkers }) {
   const { language } = useLanguage();
   const queryClient = useQueryClient();
-  const map = useMap();
 
   useMapEvents({
     click: async (e) => {
@@ -44,7 +43,7 @@ function MapController({ onLocationSelect, markers, setMarkers }) {
         ));
         
         if (onLocationSelect) onLocationSelect(data);
-      } catch (err) {
+      } catch {
         setMarkers(prev => prev.map(marker => 
           marker.id === newMarker.id 
             ? { ...marker, error: language === 'bg' ? 'Няма данни за времето' : 'No weather data', loading: false }
@@ -162,7 +161,7 @@ function WeatherMap({ onLocationSelect }) {
   const { convertTemperature, getTemperatureSymbol } = useTheme();
   const [markers, setMarkers] = useState([]);
   const [mapType, setMapType] = useState('street');
-  const [showControls, setShowControls] = useState(true);
+  const [showControls] = useState(true);
 
   // Default center: Sofia, Bulgaria
   const center = [42.6977, 23.3219];
@@ -317,7 +316,6 @@ function WeatherMap({ onLocationSelect }) {
         />
         <MapController 
           onLocationSelect={onLocationSelect} 
-          markers={markers}
           setMarkers={setMarkers}
         />
         {markers.map(marker => (

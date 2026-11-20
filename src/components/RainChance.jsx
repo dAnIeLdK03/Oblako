@@ -88,13 +88,6 @@ function RainChance({ weatherData }) {
     return '#9C27B0';
   };
 
-  const getChanceText = (chance) => {
-    if (chance < 20) return language === 'bg' ? 'Малка вероятност' : 'Low chance';
-    if (chance < 50) return language === 'bg' ? 'Умерена вероятност' : 'Moderate chance';
-    if (chance < 80) return language === 'bg' ? 'Висока вероятност' : 'High chance';
-    return language === 'bg' ? 'Много вероятно' : 'Very likely';
-  };
-
   if (!rainData) {
     return (
       <div className="rain-chance">

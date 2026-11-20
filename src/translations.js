@@ -75,10 +75,6 @@ darkMode: "Тъмен режим",
     loading: "Зареждане...",
     loadingForecast: "Зареждане на прогнозата...",
 
-    // Theme
-    lightMode: "Светъл режим",
-    darkMode: "Тъмен режим",
-
     // History
     clearHistory: "Изчисти историята",
     noHistory: "Няма история на търсения",

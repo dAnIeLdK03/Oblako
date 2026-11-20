@@ -9,7 +9,7 @@ import { getIconUrl } from '../services/weather';
 import { useWeather } from '../hooks/useWeather.js';
 
 function ForecastPage() {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
   const [cityInput, setCityInput] = useState('');
   const [selectedDay, setSelectedDay] = useState(null);
