@@ -5,43 +5,23 @@ import { useTheme } from '../ThemeContext.jsx';
 import Logo from '../components/Logo.jsx';
 import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
 import '../Weather.css';
-import { getWeather, getIconUrl, isAbortError } from '../services/weather';
-import { weatherErrorMessage } from '../utils/weatherErrors.js';
+import { getIconUrl } from '../services/weather';
+import { useWeather } from '../hooks/useWeather.js';
 
 function ForecastPage() {
   const { language, t } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
-  const [forecast, setForecast] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { weather, loading, error, searchCity: loadCity } = useWeather({ days: 14 });
   const [selectedCity, setSelectedCity] = useState('Sofia');
   const [searchCity, setSearchCity] = useState('Sofia');
   const [selectedDay, setSelectedDay] = useState(null);
 
+  const forecast = weather ? weather.daily.slice(0, 13) : [];
 
   useEffect(() => {
-    if (!selectedCity) return;
-    const controller = new AbortController();
-    
-    async function fetchForecast() {
-      setLoading(true);
-      setError('');
-      try {
-        const weather = await getWeather({ city: selectedCity }, { days: 14, signal: controller.signal });
-        setForecast(weather.daily.slice(0, 13));
-      } catch (err) {
-        if (isAbortError(err)) return; // заменена от по-нова заявка
-        console.error('Forecast error:', err);
-        setError(weatherErrorMessage(err, t));
-        setForecast([]);
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
-    }
-
-    fetchForecast();
-    return () => controller.abort();
-  }, [selectedCity, language]);
+    loadCity(selectedCity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCity]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

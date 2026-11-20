@@ -1,42 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import RainChance from '../components/RainChance';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
 import '../Weather.css';
-import { getWeather, isAbortError } from '../services/weather';
-import { weatherErrorMessage } from '../utils/weatherErrors.js';
+import { useWeather } from '../hooks/useWeather.js';
 
 function RainChancePage() {
-  const { language, t } = useLanguage();
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  
+  const { language } = useLanguage();
+  const { weather: weatherData, loading, error, locate } = useWeather();
 
   useEffect(() => {
-    const controller = new AbortController();
-    setLoading(true);
-    try {
-      if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          try {
-            const { latitude, longitude } = position.coords;
-            setWeatherData(await getWeather({ lat: latitude, lon: longitude }, { signal: controller.signal }));
-          } catch (err) {
-            if (!isAbortError(err)) setError(weatherErrorMessage(err, t));
-          }
-        }, (error) => {
-          console.error('Geolocation error:', error);
-          setError(language === 'bg' ? 'Грешка при получаване на местоположението' : 'Error getting location');
-        });
-      } else {
-        setError(language === 'bg' ? 'Геолокацията не се поддържа' : 'Geolocation not supported');
-      }
-    } finally {
-      setLoading(false);
-    }
-    return () => controller.abort();
-  }, [language]);
+    locate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="rain-chance-page">

@@ -11,9 +11,7 @@ import { useEffect, useRef } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
-import { verifyLocation } from '../utils/location.js';
-import { getWeather as fetchWeather, isAbortError } from '../services/weather';
-import { weatherErrorMessage } from '../utils/weatherErrors.js';
+import { useWeather } from '../hooks/useWeather.js';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 
 
@@ -24,108 +22,25 @@ function Weather() {
 
     const [city, setCity] = useState('');
 
-    const [weatherData, setWeatherData] = useState(null);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
     const [mapSelectedCity, setMapSelectedCity] = useState(null);
-    const [locationWarning, setLocationWarning] = useState(null);
     const didInitLocation = useRef(false);
-    const requestRef = useRef(null);
+    const {
+        weather: weatherData, loading, error, locationWarning,
+        searchCity, locate, showWeather,
+    } = useWeather();
 
-    // Всяка нова заявка отменя предишната, за да не презапише по-стар отговор по-новия
-    function startRequest() {
-        requestRef.current?.abort();
-        const controller = new AbortController();
-        requestRef.current = controller;
-        return controller;
-    }
-
-    async function getWeather(e, searchCity = null){
+    async function getWeather(e, searchCityName = null){
         if (e) e.preventDefault();
-        const cityToSearch = searchCity || city;
-        if (!cityToSearch.trim()) {
-            return;
-        }
-
-        const controller = startRequest();
-        setLoading(true);
-        try{
-            setError('');
-            setLocationWarning(null);
-            const data = await fetchWeather({ city: cityToSearch }, { signal: controller.signal });
-            setWeatherData(data);
-
-
+        const data = await searchCity(searchCityName || city);
+        if (data) {
             addToHistory(data.place.name);
             setCity(data.place.name);
-
-        }catch(err){
-            if (isAbortError(err)) return; // заменена от по-нова заявка
-            setError(weatherErrorMessage(err, t));
-            setWeatherData(null);
-        } finally {
-            if (requestRef.current === controller) setLoading(false);
         }
     }
 
     const getCurrentLocation = async (fallbackCity = null) => {
-        if (!navigator.geolocation) {
-            if (fallbackCity) getWeather(null, fallbackCity);
-            else setError(t('locationError') + ': ' + t('locationNotSupported'));
-            return;
-        }
-        setLoading(true);
-        setError('');
-        // Проверка с Permissions API
-        if (navigator.permissions) {
-            try {
-                const status = await navigator.permissions.query({ name: 'geolocation' });
-                if (status.state === 'denied') {
-                    if (fallbackCity) getWeather(null, fallbackCity);
-                    else setError(t('locationError') + ': ' + t('locationPermissionDenied') + '. ' + t('locationEnableInstructions'));
-                    setLoading(false);
-                    return;
-                }
-            } catch (e) {
-                // Permissions API не се поддържа, продължаваме нататък
-            }
-        }
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const { latitude, longitude } = position.coords;
-                const controller = startRequest();
-                try {
-                    // Допълнителна проверка на точността на позицията
-                    const check = verifyLocation(position);
-                    setLocationWarning(check.ok ? null : check);
-                    // Услугата връща и реалното име на населеното място
-                    const data = await fetchWeather({ lat: latitude, lon: longitude }, { signal: controller.signal });
-                    setWeatherData(data);
-                    setCity(data.place.name);
-                    setError('');
-                } catch (err) {
-                    if (isAbortError(err)) return;
-                    if (fallbackCity) getWeather(null, fallbackCity);
-                    else setError(weatherErrorMessage(err, t));
-                } finally {
-                    if (requestRef.current === controller) setLoading(false);
-                }
-            },
-            (geoError) => {
-                if (fallbackCity) {
-                    getWeather(null, fallbackCity);
-                    setLoading(false);
-                    return;
-                }
-                let msg = t('locationError');
-                if (geoError.code === 1) msg += ': ' + t('locationPermissionDenied') + '. ' + t('locationEnableInstructions');
-                else if (geoError.code === 2) msg += ': ' + t('locationUnavailable');
-                else if (geoError.code === 3) msg += ': ' + t('locationTimeout');
-                setError(msg);
-                setLoading(false);
-            },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
+        const data = await locate({ fallbackCity });
+        if (data) setCity(data.place.name);
     };
 
     useEffect(() => {
@@ -203,8 +118,7 @@ function Weather() {
 
     // При клик на карта зареждам данните и показвам прогнозата
     const handleMapWeather = async (data) => {
-        setWeatherData(data);
-        setError('');
+        showWeather(data);
         setCity(data.place.name); // Обновяваме града в търсачката
         setMapSelectedCity(data.place.name); // Запазваме града от картата
         

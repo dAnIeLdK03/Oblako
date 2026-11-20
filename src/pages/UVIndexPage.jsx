@@ -1,50 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Sun, SprayCan, Glasses, Shirt, Clock } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
 import Navigation from '../components/Navigation.jsx';
-import { getWeather, isAbortError } from '../services/weather';
-import { weatherErrorMessage } from '../utils/weatherErrors.js';
+import { useWeather } from '../hooks/useWeather.js';
 
 const UVIndexPage = () => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const { theme } = useTheme();
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { weather: weatherData, loading, error, locate } = useWeather({ days: 1 });
 
   useEffect(() => {
-    const controller = new AbortController();
-    // Get current location weather for UV index
-    const getCurrentWeather = async () => {
-      setLoading(true);
-      try {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(async (position) => {
-            try {
-              const { latitude, longitude } = position.coords;
-              setWeatherData(await getWeather({ lat: latitude, lon: longitude }, { days: 1, signal: controller.signal }));
-            } catch (err) {
-              if (!isAbortError(err)) setError(weatherErrorMessage(err, t));
-            }
-          }, (error) => {
-            console.error('Geolocation error:', error);
-            setError(language === 'bg' ? 'Грешка при получаване на местоположението' : 'Error getting location');
-          });
-        } else {
-          setError(language === 'bg' ? 'Геолокацията не се поддържа' : 'Geolocation not supported');
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getCurrentWeather();
-    return () => controller.abort();
-  }, [language]);
+    locate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
