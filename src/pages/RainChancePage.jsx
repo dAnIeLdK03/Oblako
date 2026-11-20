@@ -4,10 +4,12 @@ import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
 import '../Weather.css';
 import { useWeather } from '../hooks/useWeather.js';
+import { useSeo } from '../hooks/useSeo.js';
 
 function RainChancePage() {
   const { language } = useLanguage();
   const { weather: weatherData, loading, error } = useWeather({ fallbackCity: 'Sofia' });
+  useSeo('rain', { city: weatherData?.place.named ? weatherData.place.name : undefined });
 
   return (
     <div className="rain-chance-page">

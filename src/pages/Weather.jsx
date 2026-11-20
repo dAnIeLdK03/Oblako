@@ -12,6 +12,7 @@ import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
 import { useWeather } from '../hooks/useWeather.js';
+import { useSeo } from '../hooks/useSeo.js';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 
 
@@ -27,6 +28,8 @@ function Weather() {
         weather: weatherData, loading, error, locationWarning,
         searchCity, locate, showWeather, refresh,
     } = useWeather({ fallbackCity: 'Sofia' });
+
+    useSeo('home', { city: weatherData?.place.named ? weatherData.place.name : undefined });
 
     // Търсачката следва показаното място (при търсене, локация или избор от картата)
     useEffect(() => {

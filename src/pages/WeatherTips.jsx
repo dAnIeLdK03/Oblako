@@ -1,8 +1,10 @@
 import React from 'react';
+import { useSeo } from '../hooks/useSeo.js';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
 
 function WeatherTips() {
+  useSeo('tips');
   const { language } = useLanguage();
   
   return (

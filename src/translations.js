@@ -70,6 +70,9 @@ darkMode: "Тъмен режим",
     errTimeout: "Сървърът не отговаря. Опитайте отново след малко.",
     errRateLimit: "Твърде много заявки. Опитайте отново след минута.",
     errServer: "Услугата за времето е временно недостъпна. Опитайте по-късно.",
+    notFoundTitle: "Страницата не е намерена",
+    notFoundText: "Адресът не съществува или е преместен.",
+    backHome: "Към началната страница",
     
     // Loading
     loading: "Зареждане...",
@@ -159,6 +162,9 @@ darkMode: "Тъмен режим",
     errTimeout: "The server is not responding. Please try again shortly.",
     errRateLimit: "Too many requests. Please try again in a minute.",
     errServer: "The weather service is temporarily unavailable. Please try later.",
+    notFoundTitle: "Page not found",
+    notFoundText: "This address does not exist or has moved.",
+    backHome: "Back to home",
     
     // Loading
     loading: "Loading...",

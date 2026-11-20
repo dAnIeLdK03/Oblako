@@ -5,11 +5,13 @@ import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
 import Navigation from '../components/Navigation.jsx';
 import { useWeather } from '../hooks/useWeather.js';
+import { useSeo } from '../hooks/useSeo.js';
 
 const UVIndexPage = () => {
   const { language } = useLanguage();
   const { theme } = useTheme();
   const { weather: weatherData, loading, error } = useWeather({ fallbackCity: 'Sofia' });
+  useSeo('uv', { city: weatherData?.place.named ? weatherData.place.name : undefined });
 
   return (
     <>

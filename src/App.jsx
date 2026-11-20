@@ -13,6 +13,7 @@ import Cookies from './pages/Cookies.jsx';
 import CookieConsent from './components/CookieConsent.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WeatherTips from './pages/WeatherTips.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                     <Route path="/terms" element={<Terms />} />
                     <Route path="/privacy" element={<Privacy />} />
                     <Route path="/cookies" element={<Cookies />} />
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>
                 <Footer />

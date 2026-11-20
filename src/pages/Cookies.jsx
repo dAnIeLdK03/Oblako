@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSeo } from '../hooks/useSeo.js';
 import Logo from '../components/Logo.jsx';
 
 function Cookies() {
+  useSeo('cookies');
   return (
     <div style={{maxWidth: 700, margin: '40px auto', padding: 20, background: '#fff', color: '#222', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)'}}>
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>

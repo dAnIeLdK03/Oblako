@@ -7,6 +7,7 @@ import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
 import '../Weather.css';
 import { getIconUrl } from '../services/weather';
 import { useWeather } from '../hooks/useWeather.js';
+import { useSeo } from '../hooks/useSeo.js';
 
 function ForecastPage() {
   const { language } = useLanguage();
@@ -16,6 +17,7 @@ function ForecastPage() {
 
   const { weather, loading, error, searchCity } = useWeather({ fallbackCity: 'Sofia' });
   const forecast = weather ? weather.daily.slice(0, 13) : [];
+  useSeo('forecast', { city: weather?.place.named ? weather.place.name : undefined });
 
   // Полето следва показаното място (при търсене, споделен линк или навигация)
   useEffect(() => {
