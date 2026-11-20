@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Droplet, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
@@ -6,19 +6,22 @@ import Logo from '../components/Logo.jsx';
 import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
 import '../Weather.css';
 import { getIconUrl } from '../services/weather';
-import { useWeatherQuery } from '../hooks/useWeather.js';
-import { weatherErrorMessage } from '../utils/weatherErrors.js';
+import { useWeather } from '../hooks/useWeather.js';
 
 function ForecastPage() {
   const { language, t } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
-  const [selectedCity, setSelectedCity] = useState('Sofia');
-  const [searchCity, setSearchCity] = useState('Sofia');
+  const [cityInput, setCityInput] = useState('');
   const [selectedDay, setSelectedDay] = useState(null);
 
-  const { data: weather, isLoading: loading, error: queryError } = useWeatherQuery({ city: selectedCity }, { days: 14 });
-  const error = queryError ? weatherErrorMessage(queryError, t) : '';
+  const { weather, loading, error, searchCity } = useWeather({ fallbackCity: 'Sofia' });
   const forecast = weather ? weather.daily.slice(0, 13) : [];
+
+  // Полето следва показаното място (при търсене, споделен линк или навигация)
+  useEffect(() => {
+    if (weather) setCityInput(weather.place.name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weather?.place.name]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -62,14 +65,14 @@ function ForecastPage() {
          <div className="city-selector">
            <input
              type="text"
-             value={searchCity}
-             onChange={(e) => setSearchCity(e.target.value)}
-             onKeyPress={(e) => e.key === 'Enter' && setSelectedCity(searchCity)}
+             value={cityInput}
+             onChange={(e) => setCityInput(e.target.value)}
+             onKeyDown={(e) => e.key === 'Enter' && searchCity(cityInput)}
              placeholder={language === 'bg' ? 'Въведете град...' : 'Enter city...'}
              className="city-input"
            />
            <button 
-             onClick={() => setSelectedCity(searchCity)}
+             onClick={() => searchCity(cityInput)}
              className="search-btn"
              disabled={loading}
            >

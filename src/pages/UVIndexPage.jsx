@@ -9,7 +9,7 @@ import { useWeather } from '../hooks/useWeather.js';
 const UVIndexPage = () => {
   const { language } = useLanguage();
   const { theme } = useTheme();
-  const { weather: weatherData, loading, error } = useWeather({ days: 1, startWithLocation: true });
+  const { weather: weatherData, loading, error } = useWeather({ fallbackCity: 'Sofia' });
 
   return (
     <>

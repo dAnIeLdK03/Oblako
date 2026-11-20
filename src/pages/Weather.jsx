@@ -26,7 +26,7 @@ function Weather() {
     const {
         weather: weatherData, loading, error, locationWarning,
         searchCity, locate, showWeather, refresh,
-    } = useWeather({ fallbackCity: 'Sofia', startWithLocation: true });
+    } = useWeather({ fallbackCity: 'Sofia' });
 
     // Търсачката следва показаното място (при търсене, локация или избор от картата)
     useEffect(() => {

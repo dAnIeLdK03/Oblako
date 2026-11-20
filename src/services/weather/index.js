@@ -4,7 +4,7 @@
 // Модел (единици: °C, m/s, hPa, метри, unix секунди):
 //   getWeather() -> {
 //     provider, utcOffset,
-//     place:   { name, country, lat, lon, utcOffset },
+//     place:   { name, named (false = само координати), country, lat, lon, utcOffset },
 //     current: { time, localTime, temp, feelsLike, humidity, pressure, visibility,
 //                windSpeed, windDeg, cloudCover, uv, sunrise, sunset, condition },
 //     hourly:  [{ time, localTime, hour, temp, feelsLike, humidity, pressure, visibility,
@@ -39,6 +39,7 @@ async function geocode(city, signal) {
 export async function getWeather(query, { days = 7, signal } = {}) {
     let place;
     let weather;
+    let named = true;
     if (query.city) {
         place = await geocode(query.city, signal);
         weather = await provider.fetchWeather(place, { days, signal });
@@ -48,6 +49,7 @@ export async function getWeather(query, { days = 7, signal } = {}) {
             provider.reverseGeocode(query.lat, query.lon, { signal }),
             provider.fetchWeather(query, { days, signal }),
         ]);
+        named = Boolean(found?.name);
         place = {
             name: found?.name || `${Number(query.lat).toFixed(2)}, ${Number(query.lon).toFixed(2)}`,
             country: found?.country || '',
@@ -59,7 +61,7 @@ export async function getWeather(query, { days = 7, signal } = {}) {
     return {
         provider: provider.NAME,
         utcOffset: weather.utcOffset,
-        place: { name: place.name, country: place.country, lat: place.lat, lon: place.lon, utcOffset: weather.utcOffset },
+        place: { name: place.name, named, country: place.country, lat: place.lat, lon: place.lon, utcOffset: weather.utcOffset },
         current: weather.current,
         hourly: weather.hourly,
         daily: weather.daily,

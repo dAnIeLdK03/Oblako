@@ -7,7 +7,7 @@ import { useWeather } from '../hooks/useWeather.js';
 
 function RainChancePage() {
   const { language } = useLanguage();
-  const { weather: weatherData, loading, error } = useWeather({ startWithLocation: true });
+  const { weather: weatherData, loading, error } = useWeather({ fallbackCity: 'Sofia' });
 
   return (
     <div className="rain-chance-page">

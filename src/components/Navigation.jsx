@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from './Logo.jsx';
+import { placeSearch } from '../utils/locationParams.js';
 import { Home, CalendarDays, CloudRain, Sun, Moon, Lightbulb } from 'lucide-react';
 
 function Navigation() {
@@ -14,24 +15,28 @@ function Navigation() {
   const menuItems = [
     {
       path: '/',
+      keepPlace: true,
       icon: Home,
       label: language === 'bg' ? 'Начало' : 'Home',
       description: language === 'bg' ? 'Текущо време' : 'Current weather'
     },
     {
       path: '/forecast',
+      keepPlace: true,
       icon: CalendarDays,
       label: language === 'bg' ? 'Прогноза' : 'Forecast',
       description: language === 'bg' ? 'Детайлна прогноза' : 'Detailed forecast'
     },
     {
       path: '/rain-chance',
+      keepPlace: true,
       icon: CloudRain,
       label: language === 'bg' ? 'Валежи' : 'Rain Chance',
       description: language === 'bg' ? 'Вероятност за валежи' : 'Precipitation probability'
     },
     {
       path: '/uv-index',
+      keepPlace: true,
       icon: Sun,
       label: language === 'bg' ? 'UV Индекс' : 'UV Index',
       description: language === 'bg' ? 'Ултравиолетово лъчение' : 'Ultraviolet radiation'
@@ -159,7 +164,7 @@ function Navigation() {
           {menuItems.map((item, index) => (
             <li key={index} className={`nav-item ${isActive(item.path) ? 'active' : ''}`}>
               <Link 
-                to={item.path} 
+                to={{ pathname: item.path, search: item.keepPlace ? placeSearch(location.search) : '' }} 
                 className="nav-link"
                 onClick={() => setIsMenuOpen(false)}
               >

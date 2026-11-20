@@ -1,61 +1,66 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLanguage } from '../LanguageContext.jsx';
 import { weatherErrorMessage } from '../utils/weatherErrors.js';
 import { geolocationErrorMessage, verifyLocation } from '../utils/location.js';
+import { parsePlace, cityParams, coordsParams } from '../utils/locationParams.js';
 import { weatherQueryOptions, positionQueryOptions } from './weatherQueries.js';
 
-// Времето за конкретно място (град или координати). Кеш, дедупликация, повторни опити
-// и опресняване са на TanStack Query. query = null изключва заявката.
-export function useWeatherQuery(query, { days, enabled = true } = {}) {
+// Времето за конкретно място (град или координати). query = null изключва заявката.
+export function useWeatherQuery(query, { enabled = true } = {}) {
     return useQuery({
-        ...weatherQueryOptions(query ?? { city: '' }, days),
+        ...weatherQueryOptions(query ?? { city: '' }),
         enabled: Boolean(query) && enabled,
     });
 }
 
-// Време за страница, която започва от местоположението на потребителя и/или от търсене.
+// Мястото е в URL (?city=Sofia или ?lat=..&lon=..), така че адресът може да се споделя,
+// а всички страници, които ползват този хук, показват едно и също място от един кеш.
+// Без място в URL се ползва местоположението на потребителя (с резервен град).
+// След определяне на местоположението URL се заменя с ?city=Име (не с координати,
+// за да не се издава къде е потребителят в споделен линк).
 //
 //   const { weather, loading, error, locationWarning, searchCity, locate, showWeather, refresh }
-//       = useWeather({ days, fallbackCity, startWithLocation });
+//       = useWeather({ fallbackCity });
 //
-//   searchCity('Varna')   -> Promise<данни | null>; показва града
-//   locate()              -> показва времето за текущото местоположение
-//   showWeather(data)     -> показва вече заредени данни (напр. избрани от картата)
+//   searchCity('Varna')   -> Promise<данни | null>; сменя мястото в URL
+//   locate()              -> маха мястото от URL и търси местоположението
+//   showWeather(data)     -> слага в URL координатите на вече заредени данни (избор от картата)
 //   refresh()             -> опреснява показаното време
-export function useWeather({ days, fallbackCity = null, startWithLocation = false } = {}) {
+export function useWeather({ fallbackCity = null } = {}) {
     const { t } = useLanguage();
     const queryClient = useQueryClient();
-    // { type: 'locate' } | { type: 'city', city } | { type: 'coords', lat, lon } | null
-    const [target, setTarget] = useState(startWithLocation ? { type: 'locate' } : null);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const routerLocation = useLocation();
     const searchIdRef = useRef(0);
 
-    // --- Режим "моето местоположение": позиция -> време по координати ---
-    const locating = target?.type === 'locate';
+    const place = parsePlace(searchParams); // null = няма място в URL
+
+    // --- Няма място в URL: позиция -> време по координати ---
+    const locating = !place;
     const position = useQuery({ ...positionQueryOptions, enabled: locating });
     const coords = locating && position.data
         ? { lat: position.data.coords.latitude, lon: position.data.coords.longitude }
         : null;
-    const byCoords = useWeatherQuery(coords, { days });
+    const byCoords = useWeatherQuery(coords);
 
     // Ако позицията или времето по координати се провалят, пробваме резервния град
     const useFallback = locating && Boolean(fallbackCity) && (position.isError || byCoords.isError);
 
-    // --- Всичко останало: град, координати от картата или резервния град ---
+    // --- Място от URL или резервният град ---
     let spec = null;
-    if (target?.type === 'city') spec = { city: target.city };
-    else if (target?.type === 'coords') spec = { lat: target.lat, lon: target.lon };
+    if (place?.type === 'city') spec = { city: place.city };
+    else if (place?.type === 'coords') spec = { lat: place.lat, lon: place.lon };
     else if (useFallback) spec = { city: fallbackCity };
-    const bySpec = useWeatherQuery(spec, { days });
+    const bySpec = useWeatherQuery(spec);
 
     const fromLocation = locating && !useFallback;
     const shown = fromLocation ? byCoords : bySpec;
     const weather = shown.data ?? null;
 
     // Зареждане само когато няма какво да се покаже (не и при фоново опресняване)
-    const loading = fromLocation
-        ? (position.isLoading || byCoords.isLoading)
-        : bySpec.isLoading;
+    const loading = fromLocation ? (position.isLoading || byCoords.isLoading) : bySpec.isLoading;
 
     let error = '';
     if (!weather) {
@@ -63,17 +68,31 @@ export function useWeather({ days, fallbackCity = null, startWithLocation = fals
         else if (shown.error) error = weatherErrorMessage(shown.error, t);
     }
 
-    const check = locating && position.data ? verifyLocation(position.data) : null;
-    const locationWarning = check && !check.ok ? check : null;
+    // Предупреждението за неточна позиция се пази в състоянието на историята,
+    // защото след замяната на URL позицията вече не е "активна"
+    const check = fromLocation && position.data ? verifyLocation(position.data) : null;
+    const locationWarning = (check && !check.ok ? check : null) ?? routerLocation.state?.locationWarning ?? null;
+
+    // Местоположението е определено -> записваме мястото в URL (замяна, без нов запис в историята)
+    const located = locating ? shown.data : null;
+    useEffect(() => {
+        if (!located?.place.named) return;
+        queryClient.setQueryData(weatherQueryOptions({ city: located.place.name }).queryKey, located);
+        setSearchParams(cityParams(located.place.name), {
+            replace: true,
+            state: check && !check.ok ? { locationWarning: check } : null,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [located]);
 
     async function searchCity(city) {
         const name = city?.trim();
         if (!name) return null;
         const id = ++searchIdRef.current;
-        setTarget({ type: 'city', city: name });
+        setSearchParams(cityParams(name));
         try {
             // Същата заявка като тази на useQuery: изпраща се веднъж (дедупликация)
-            const data = await queryClient.fetchQuery(weatherQueryOptions({ city: name }, days));
+            const data = await queryClient.fetchQuery(weatherQueryOptions({ city: name }));
             return id === searchIdRef.current ? data : null; // има по-ново търсене
         } catch {
             return null; // грешката се показва през `error`
@@ -83,14 +102,14 @@ export function useWeather({ days, fallbackCity = null, startWithLocation = fals
     function locate() {
         searchIdRef.current++;
         queryClient.resetQueries({ queryKey: ['position'] }); // нов въпрос към браузъра
-        setTarget({ type: 'locate' });
+        setSearchParams({});
     }
 
     function showWeather(data) {
         searchIdRef.current++;
         // Данните вече са в кеша (заредени от картата), така че не се правят нови заявки
-        queryClient.setQueryData(weatherQueryOptions({ lat: data.place.lat, lon: data.place.lon }, days).queryKey, data);
-        setTarget({ type: 'coords', lat: data.place.lat, lon: data.place.lon });
+        queryClient.setQueryData(weatherQueryOptions({ lat: data.place.lat, lon: data.place.lon }).queryKey, data);
+        setSearchParams(coordsParams(data.place.lat, data.place.lon));
     }
 
     function refresh() {
