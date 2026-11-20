@@ -10,8 +10,6 @@ const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const REVERSE_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client';
 
 const TIMEOUT_MS = 10000;
-const RETRY_DELAY_MS = 600;
-const RETRYABLE = new Set(['NETWORK', 'SERVER']); // 429 не се повтаря: само влошава лимита
 
 const abortError = () => new DOMException('Aborted', 'AbortError');
 
@@ -56,25 +54,8 @@ async function request(url, signal) {
     }
 }
 
-function delay(ms, signal) {
-    return new Promise((resolve, reject) => {
-        if (signal?.aborted) return reject(abortError());
-        const onAbort = () => { clearTimeout(timer); reject(abortError()); };
-        const timer = setTimeout(() => { signal?.removeEventListener('abort', onAbort); resolve(); }, ms);
-        signal?.addEventListener('abort', onAbort, { once: true });
-    });
-}
-
-// Заявка с една повторна опитка при мрежова грешка или 5xx.
-async function getJson(url, signal) {
-    try {
-        return await request(url, signal);
-    } catch (err) {
-        if (!RETRYABLE.has(err.code)) throw err;
-        await delay(RETRY_DELAY_MS, signal);
-        return request(url, signal);
-    }
-}
+// Повторните опити, кешът и дедупликацията са в TanStack Query (src/hooks/weatherQueries.js).
+const getJson = request;
 
 // ---- Състояния: WMO код -> собствен модел { group, description, icon, isDay } ----
 // group: clear | clouds | drizzle | rain | snow | thunderstorm | fog

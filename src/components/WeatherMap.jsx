@@ -4,7 +4,9 @@ import { Map, Satellite, Mountain, Trash2, MapPin, LoaderCircle, XCircle, Drople
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import 'leaflet/dist/leaflet.css';
-import { getWeather, getIconUrl } from '../services/weather';
+import { useQueryClient } from '@tanstack/react-query';
+import { getIconUrl } from '../services/weather';
+import { weatherQueryOptions } from '../hooks/weatherQueries.js';
 
 // Fix for default markers
 import L from 'leaflet';
@@ -17,6 +19,7 @@ L.Icon.Default.mergeOptions({
 
 function MapController({ onLocationSelect, markers, setMarkers }) {
   const { language } = useLanguage();
+  const queryClient = useQueryClient();
   const map = useMap();
 
   useMapEvents({
@@ -32,7 +35,7 @@ function MapController({ onLocationSelect, markers, setMarkers }) {
       setMarkers(prev => [...prev, newMarker]);
       
       try {
-        const data = await getWeather({ lat: e.latlng.lat, lon: e.latlng.lng });
+        const data = await queryClient.fetchQuery(weatherQueryOptions({ lat: e.latlng.lat, lon: e.latlng.lng }));
         
         setMarkers(prev => prev.map(marker => 
           marker.id === newMarker.id 

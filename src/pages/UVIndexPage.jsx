@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Sun, SprayCan, Glasses, Shirt, Clock } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
@@ -9,12 +9,7 @@ import { useWeather } from '../hooks/useWeather.js';
 const UVIndexPage = () => {
   const { language } = useLanguage();
   const { theme } = useTheme();
-  const { weather: weatherData, loading, error, locate } = useWeather({ days: 1 });
-
-  useEffect(() => {
-    locate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { weather: weatherData, loading, error } = useWeather({ days: 1, startWithLocation: true });
 
   return (
     <>

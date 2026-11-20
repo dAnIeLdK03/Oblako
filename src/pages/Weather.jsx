@@ -7,7 +7,7 @@ import { useHistory } from '../HistoryContext.jsx';
 import SunriseSunset from '../components/SunriseSunset.jsx';
 import WeatherMap from '../components/WeatherMap.jsx';
 import WorldClock from '../components/WorldClock.jsx';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
@@ -23,33 +23,23 @@ function Weather() {
     const [city, setCity] = useState('');
 
     const [mapSelectedCity, setMapSelectedCity] = useState(null);
-    const didInitLocation = useRef(false);
     const {
         weather: weatherData, loading, error, locationWarning,
-        searchCity, locate, showWeather,
-    } = useWeather();
+        searchCity, locate, showWeather, refresh,
+    } = useWeather({ fallbackCity: 'Sofia', startWithLocation: true });
+
+    // Търсачката следва показаното място (при търсене, локация или избор от картата)
+    useEffect(() => {
+        if (weatherData) setCity(weatherData.place.name);
+        // само при смяна на мястото, за да не пренаписваме текста, който потребителят пише
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [weatherData?.place.name]);
 
     async function getWeather(e, searchCityName = null){
         if (e) e.preventDefault();
         const data = await searchCity(searchCityName || city);
-        if (data) {
-            addToHistory(data.place.name);
-            setCity(data.place.name);
-        }
+        if (data) addToHistory(data.place.name);
     }
-
-    const getCurrentLocation = async (fallbackCity = null) => {
-        const data = await locate({ fallbackCity });
-        if (data) setCity(data.place.name);
-    };
-
-    useEffect(() => {
-        if (didInitLocation.current) return;
-        didInitLocation.current = true;
-        getCurrentLocation('Sofia');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
 
     // Функция за превод на weather условията
     const translateWeatherCondition = (condition) => {
@@ -119,7 +109,6 @@ function Weather() {
     // При клик на карта зареждам данните и показвам прогнозата
     const handleMapWeather = async (data) => {
         showWeather(data);
-        setCity(data.place.name); // Обновяваме града в търсачката
         setMapSelectedCity(data.place.name); // Запазваме града от картата
         
         // Добавяме в историята
@@ -137,9 +126,7 @@ function Weather() {
     };
 
     const handleRefresh = async () => {
-        if (city) {
-            await getWeather(null, city);
-        }
+        await refresh();
     };
 
     return (
@@ -153,7 +140,7 @@ function Weather() {
                 city={city}
                 setCity={setCity}
                 onSearchSubmit={getWeather}
-                onLocationClick={() => getCurrentLocation()}
+                onLocationClick={locate}
                 language={language}
                 changeLanguage={changeLanguage}
                 theme={theme}

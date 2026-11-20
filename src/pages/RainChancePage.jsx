@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import RainChance from '../components/RainChance';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from '../components/Logo.jsx';
@@ -7,12 +7,7 @@ import { useWeather } from '../hooks/useWeather.js';
 
 function RainChancePage() {
   const { language } = useLanguage();
-  const { weather: weatherData, loading, error, locate } = useWeather();
-
-  useEffect(() => {
-    locate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { weather: weatherData, loading, error } = useWeather({ startWithLocation: true });
 
   return (
     <div className="rain-chance-page">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Droplet, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
@@ -6,22 +6,19 @@ import Logo from '../components/Logo.jsx';
 import DetailedDayForecast from '../components/DetailedDayForecast.jsx';
 import '../Weather.css';
 import { getIconUrl } from '../services/weather';
-import { useWeather } from '../hooks/useWeather.js';
+import { useWeatherQuery } from '../hooks/useWeather.js';
+import { weatherErrorMessage } from '../utils/weatherErrors.js';
 
 function ForecastPage() {
   const { language, t } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
-  const { weather, loading, error, searchCity: loadCity } = useWeather({ days: 14 });
   const [selectedCity, setSelectedCity] = useState('Sofia');
   const [searchCity, setSearchCity] = useState('Sofia');
   const [selectedDay, setSelectedDay] = useState(null);
 
+  const { data: weather, isLoading: loading, error: queryError } = useWeatherQuery({ city: selectedCity }, { days: 14 });
+  const error = queryError ? weatherErrorMessage(queryError, t) : '';
   const forecast = weather ? weather.daily.slice(0, 13) : [];
-
-  useEffect(() => {
-    loadCity(selectedCity);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCity]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
