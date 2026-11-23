@@ -1,0 +1,32 @@
+/* Значката с температурата на маркера. Leaflet я вмъква като HTML низ (L.divIcon),
+   затова стиловете са в класове, а не в style="" атрибут, който CSP (style-src 'self') блокира. */
+.marker-badge {
+  background: #666;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.marker-cold {
+  background: #4a90e2;
+}
+
+.marker-cool {
+  background: #7ed321;
+}
+
+.marker-warm {
+  background: #f5a623;
+}
+
+.marker-hot {
+  background: #d0021b;
+}

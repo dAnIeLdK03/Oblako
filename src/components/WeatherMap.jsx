@@ -4,6 +4,7 @@ import { Map, Satellite, Mountain, Trash2, MapPin, LoaderCircle, XCircle, Drople
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import 'leaflet/dist/leaflet.css';
+import styles from './WeatherMap.module.css';
 import { useQueryClient } from '@tanstack/react-query';
 import { getIconUrl } from '../services/weather';
 import { weatherQueryOptions } from '../hooks/weatherQueries.js';
@@ -63,11 +64,11 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
     return getIconUrl(iconCode);
   };
 
-  const getWeatherColor = (temp) => {
-    if (temp < 0) return '#4A90E2'; // Cold - blue
-    if (temp < 15) return '#7ED321'; // Cool - green
-    if (temp < 25) return '#F5A623'; // Warm - orange
-    return '#D0021B'; // Hot - red
+  const getWeatherColorClass = (temp) => {
+    if (temp < 0) return styles['marker-cold']; // blue
+    if (temp < 15) return styles['marker-cool']; // green
+    if (temp < 25) return styles['marker-warm']; // orange
+    return styles['marker-hot']; // red
   };
 
   if (!marker.weather && !marker.loading && !marker.error) return null;
@@ -77,24 +78,9 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
       position={marker.position}
       icon={L.divIcon({
         className: 'custom-marker',
-        html: `
-          <div style="
-            background: ${marker.weather ? getWeatherColor(marker.weather.current.temp) : '#666'};
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 12px;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-          ">
-            ${marker.weather ? convertTemperature(marker.weather.current.temp) : '...'}
-          </div>
-        `,
+        html: `<div class="${styles['marker-badge']} ${marker.weather ? getWeatherColorClass(marker.weather.current.temp) : ''}">${
+          marker.weather ? convertTemperature(marker.weather.current.temp) : '...'
+        }</div>`,
         iconSize: [30, 30],
         iconAnchor: [15, 15]
       })}

@@ -13,7 +13,15 @@ app.use(cors({
   origin: ['https://oblako17.online', 'https://www.oblako17.online'],
   methods: ['GET', 'POST'],
 }));
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// Същите security хедъри (вкл. CSP) като във Vercel — vercel.json е единственият източник.
+const { headers: vercelHeaders = [] } = require('./vercel.json');
+const securityHeaders = vercelHeaders.find((rule) => rule.source === '/(.*)')?.headers ?? [];
+app.use((req, res, next) => {
+  for (const { key, value } of securityHeaders) res.setHeader(key, value);
+  next();
+});
 
 const limiter = rateLimit({
   windowMs : 15 * 60 * 1000,
