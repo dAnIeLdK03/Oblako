@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getItem, setItem, removeItem } from './utils/storage.js';
 
 const ThemeContext = createContext();
 
@@ -12,7 +13,7 @@ export function ThemeProvider({ children }) {
   };
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('weatherAppTheme');
+    const savedTheme = getItem('weatherAppTheme');
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
@@ -31,7 +32,7 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e) => {
-      if (!localStorage.getItem('weatherAppTheme')) {
+      if (!getItem('weatherAppTheme')) {
         setTheme(e.matches ? 'dark' : 'light');
       }
     };
@@ -43,11 +44,11 @@ export function ThemeProvider({ children }) {
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    localStorage.setItem('weatherAppTheme', newTheme);
+    setItem('weatherAppTheme', newTheme);
   };
 
   const setAutoTheme = () => {
-    localStorage.removeItem('weatherAppTheme');
+    removeItem('weatherAppTheme');
     setTheme(getSystemTheme());
   };
 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getItem, setItem, removeItem } from './utils/storage.js';
 
 const HistoryContext = createContext(); 
 
@@ -14,9 +15,13 @@ export const HistoryProvider = ({children}) => {
     const [searchHistory, setSearchHistory] = useState([]);
 
     useEffect(() => {
-        const savedHistory = localStorage.getItem('oblako_history');
-        if (savedHistory) {
-            setSearchHistory(JSON.parse(savedHistory));
+        const savedHistory = getItem('oblako_history');
+        if (!savedHistory) return;
+        try {
+            const parsed = JSON.parse(savedHistory);
+            if (Array.isArray(parsed)) setSearchHistory(parsed.filter((c) => typeof c === 'string').slice(0, 5));
+        } catch {
+            // повредени данни — започваме с празна история
         }
     }, []);
 
@@ -33,14 +38,14 @@ export const HistoryProvider = ({children}) => {
 
             const newHistory = [normalizedCity, ...filtered].slice(0, 5);
 
-            localStorage.setItem('oblako_history', JSON.stringify(newHistory));
+            setItem('oblako_history', JSON.stringify(newHistory));
             return newHistory;
         });
     };
 
     const clearHistory = () => {
         setSearchHistory([]);
-        localStorage.removeItem('oblako_history');
+        removeItem('oblako_history');
     };
 
     return (

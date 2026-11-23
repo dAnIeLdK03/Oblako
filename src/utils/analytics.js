@@ -1,14 +1,12 @@
 // Google Analytics се зарежда САМО след изричното съгласие "Приемам всички".
 // До тогава към Google не се праща нищо (нито заявка за скрипта, нито IP адрес).
 const GA_ID = 'G-RKJ1SRJKBX';
+import { getItem } from './storage.js';
+
 const CONSENT_KEY = 'oblako_cookie_consent';
 
 export function hasAnalyticsConsent() {
-    try {
-        return localStorage.getItem(CONSENT_KEY) === 'all';
-    } catch {
-        return false;
-    }
+    return getItem(CONSENT_KEY) === 'all';
 }
 
 export function loadAnalytics() {

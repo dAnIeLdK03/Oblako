@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { loadAnalytics } from '../utils/analytics.js';
+import { getItem, setItem } from '../utils/storage.js';
 
 function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem('oblako_cookie_consent');
+    const consent = getItem('oblako_cookie_consent');
     if (!consent) setVisible(true);
   }, []);
 
   const acceptAll = () => {
-    localStorage.setItem('oblako_cookie_consent', 'all');
+    setItem('oblako_cookie_consent', 'all');
     loadAnalytics();
     setVisible(false);
   };
 
   const acceptFunctional = () => {
-    localStorage.setItem('oblako_cookie_consent', 'functional');
+    setItem('oblako_cookie_consent', 'functional');
     setVisible(false);
   };
 

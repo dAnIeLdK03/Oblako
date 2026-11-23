@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { translations } from './translations';
+import { getItem, setItem } from './utils/storage.js';
 
 const LanguageContext = createContext();
 
@@ -20,12 +21,12 @@ export const LanguageProvider = ({ children }) => {
   
   const changeLanguage = (newLanguage) => {
     setLanguage(newLanguage);
-    localStorage.setItem('oblako_language', newLanguage);
+    setItem('oblako_language', newLanguage);
   };
   
   // Load saved language on init, иначе избери според браузъра
   React.useEffect(() => {
-    const savedLanguage = localStorage.getItem('oblako_language');
+    const savedLanguage = getItem('oblako_language');
     if (savedLanguage && translations[savedLanguage]) {
       setLanguage(savedLanguage);
     } else {
