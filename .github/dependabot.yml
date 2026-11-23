@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '07:00'
+      timezone: Europe/Sofia
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'deps'
+    groups:
+      # Малките и patch обновления на dev инструментите идват в един PR
+      dev-tooling:
+        dependency-type: development
+        update-types: [minor, patch]
+      # Същото за production зависимостите; major версиите са отделни PR-ове
+      production:
+        dependency-type: production
+        update-types: [minor, patch]
