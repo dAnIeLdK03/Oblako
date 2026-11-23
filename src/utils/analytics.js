@@ -17,6 +17,15 @@ export function loadAnalytics() {
 
     window.dataLayer = window.dataLayer || [];
     window.gtag = function gtag() { window.dataLayer.push(arguments); };
+    // Consent Mode v2: всичко е "denied" по подразбиране; тази функция се вика само след
+    // съгласие, затова веднага се дава единствено analytics_storage. Реклама не се ползва.
+    window.gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+    });
+    window.gtag('consent', 'update', { analytics_storage: 'granted' });
     window.gtag('js', new Date());
     window.gtag('config', GA_ID);
 
