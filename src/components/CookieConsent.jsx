@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { loadAnalytics } from '../utils/analytics.js';
 import { getItem, setItem } from '../utils/storage.js';
 
@@ -36,7 +37,7 @@ function CookieConsent() {
       zIndex: 9999,
       fontSize: 15
     }}>
-      Използваме локално съхранение за функционалност и, само с Вашето съгласие, Google Analytics за статистика. Повече в <a href="/cookies" style={{color:'#fff', textDecoration:'underline'}}>Политиката за бисквитки</a> и <a href="/privacy" style={{color:'#fff', textDecoration:'underline'}}>Правилата за поверителност</a>.
+      Използваме локално съхранение за функционалност и, само с Вашето съгласие, Google Analytics за статистика. Повече в <Link to="/cookies" style={{color:'#fff', textDecoration:'underline'}}>Политиката за бисквитки</Link> и <Link to="/privacy" style={{color:'#fff', textDecoration:'underline'}}>Правилата за поверителност</Link>.
       <button onClick={acceptAll} style={{marginLeft: 16, background:'#74b9ff', color:'#222', border:'none', borderRadius:4, padding:'6px 18px', fontWeight:'bold', cursor:'pointer'}}>Приемам всички</button>
       <button onClick={acceptFunctional} style={{marginLeft: 8, background:'#888', color:'#fff', border:'none', borderRadius:4, padding:'6px 18px', fontWeight:'bold', cursor:'pointer'}}>Само функционални</button>
     </div>

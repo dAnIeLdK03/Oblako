@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useSeo } from '../hooks/useSeo.js';
 import Logo from '../components/Logo.jsx';
 
@@ -50,7 +51,7 @@ function Cookies() {
           </tbody>
         </table>
       </div>
-      <p>Преди да дадете съгласие, скриптът на Google не се зарежда и към Google не се изпраща нищо. Използваме Google Consent Mode: рекламните разрешения (<code>ad_storage</code>, <code>ad_user_data</code>, <code>ad_personalization</code>) са винаги отказани, а <code>analytics_storage</code> се дава само след съгласие. Ако изберете „Само функционални", тези бисквитки не се задават. Повече за данните, които получава Google, в <a href="/privacy">Правилата за поверителност</a>.</p>
+      <p>Преди да дадете съгласие, скриптът на Google не се зарежда и към Google не се изпраща нищо. Използваме Google Consent Mode: рекламните разрешения (<code>ad_storage</code>, <code>ad_user_data</code>, <code>ad_personalization</code>) са винаги отказани, а <code>analytics_storage</code> се дава само след съгласие. Ако изберете „Само функционални", тези бисквитки не се задават. Повече за данните, които получава Google, в <Link to="/privacy">Правилата за поверителност</Link>.</p>
 
       <h3>Реклами</h3>
       <p>Oblako не показва реклами и не използва рекламни бисквитки или рекламни профили.</p>

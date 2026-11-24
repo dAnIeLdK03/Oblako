@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from './Logo.jsx';
 
@@ -41,10 +42,10 @@ function Footer() {
         <span>{language === 'bg' ? 'Всички права запазени.' : 'All rights reserved.'}</span>
       </div>
       <span style={{fontWeight: 'bold'}}>
-        <a href="/weather-tips" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.weatherTips}</a> |
-        <a href="/terms" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.terms}</a> |
-        <a href="/privacy" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.privacy}</a> |
-        <a href="/cookies" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.cookies}</a>
+        <Link to="/weather-tips" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.weatherTips}</Link> |
+        <Link to="/terms" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.terms}</Link> |
+        <Link to="/privacy" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.privacy}</Link> |
+        <Link to="/cookies" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.cookies}</Link>
       </span>
       <div style={{marginTop: '6px', fontSize: '12px'}}>
         {language === 'bg' ? 'Метеорологични данни от ' : 'Weather data by '}
