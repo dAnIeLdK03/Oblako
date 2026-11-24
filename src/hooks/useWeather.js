@@ -5,6 +5,8 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { weatherErrorMessage } from '../utils/weatherErrors.js';
 import { geolocationErrorMessage, verifyLocation } from '../utils/location.js';
 import { parsePlace, cityParams, coordsParams } from '../utils/locationParams.js';
+import { readLastQuery, offlineQueryFor } from '../utils/lastQuery.js';
+import { useOnlineStatus } from './useOnlineStatus.js';
 import { weatherQueryOptions, positionQueryOptions } from './weatherQueries.js';
 
 // Времето за конкретно място (град или координати). query = null изключва заявката.
@@ -37,30 +39,44 @@ export function useWeather({ fallbackCity = null } = {}) {
 
     const place = parsePlace(searchParams); // null = няма място в URL
 
+    // Без връзка няма как да се определи позицията, затова се показва последното известно място
+    // (от кеша на service worker-а). Адресът не се променя, докато няма връзка.
+    const online = useOnlineStatus();
+    const offlineQuery = online ? null : offlineQueryFor(place, readLastQuery());
+    const useLast = !place && Boolean(offlineQuery);
+
     // --- Няма място в URL: позиция -> време по координати ---
     const locating = !place;
-    const position = useQuery({ ...positionQueryOptions, enabled: locating });
-    const coords = locating && position.data
+    const position = useQuery({ ...positionQueryOptions, enabled: locating && !useLast });
+    const coords = locating && !useLast && position.data
         ? { lat: position.data.coords.latitude, lon: position.data.coords.longitude }
         : null;
     const byCoords = useWeatherQuery(coords);
 
     // Ако позицията или времето по координати се провалят, пробваме резервния град
-    const useFallback = locating && Boolean(fallbackCity) && (position.isError || byCoords.isError);
+    const useFallback = locating && !useLast && Boolean(fallbackCity) && (position.isError || byCoords.isError);
 
     // --- Място от URL или резервният град ---
     let spec = null;
-    if (place?.type === 'city') spec = { city: place.city };
+    if (offlineQuery) spec = offlineQuery;
+    else if (place?.type === 'city') spec = { city: place.city };
     else if (place?.type === 'coords') spec = { lat: place.lat, lon: place.lon };
     else if (useFallback) spec = { city: fallbackCity };
     const bySpec = useWeatherQuery(spec);
 
-    const fromLocation = locating && !useFallback;
+    const fromLocation = locating && !useFallback && !useLast;
     const shown = fromLocation ? byCoords : bySpec;
-    const weather = shown.data ?? null;
+
+    // Мрежова грешка при връзка, която браузърът смята за налична (слаб сигнал): показваме последното
+    // известно място, ако service worker-ът го има в кеша си. Не се прави при други грешки (напр. град не е намерен).
+    const lastQuery = shown.error?.code === 'NETWORK' && !shown.data ? offlineQueryFor(place, readLastQuery()) : null;
+    const byLast = useWeatherQuery(lastQuery);
+
+    const weather = shown.data ?? byLast.data ?? null;
 
     // Зареждане само когато няма какво да се покаже (не и при фоново опресняване)
-    const loading = fromLocation ? (position.isLoading || byCoords.isLoading) : bySpec.isLoading;
+    const loading = (fromLocation ? (position.isLoading || byCoords.isLoading) : bySpec.isLoading)
+        || (Boolean(lastQuery) && byLast.isLoading);
 
     let error = '';
     if (!weather) {
@@ -74,7 +90,7 @@ export function useWeather({ fallbackCity = null } = {}) {
     const locationWarning = (check && !check.ok ? check : null) ?? routerLocation.state?.locationWarning ?? null;
 
     // Местоположението е определено -> записваме мястото в URL (замяна, без нов запис в историята)
-    const located = locating ? shown.data : null;
+    const located = locating && !useLast ? shown.data : null;
     useEffect(() => {
         if (!located?.place.named) return;
         queryClient.setQueryData(weatherQueryOptions({ city: located.place.name }).queryKey, located);

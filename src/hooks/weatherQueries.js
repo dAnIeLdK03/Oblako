@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getWeather } from '../services/weather';
 import { getPosition } from '../utils/location.js';
+import { rememberQuery } from '../utils/lastQuery.js';
 
 const MINUTE = 60 * 1000;
 // Всички страници (начало, прогноза, UV, валежи) ползват една и съща заявка за мястото,
@@ -23,7 +24,11 @@ function locationKey({ city, lat, lon }) {
 export function weatherQueryOptions(query) {
     return queryOptions({
         queryKey: ['weather', locationKey(query), FORECAST_DAYS],
-        queryFn: ({ signal }) => getWeather(query, { days: FORECAST_DAYS, signal }),
+        queryFn: async ({ signal }) => {
+            const data = await getWeather(query, { days: FORECAST_DAYS, signal });
+            rememberQuery(query, data); // за показване без мрежа
+            return data;
+        },
         staleTime: 5 * MINUTE,          // толкова време данните се смятат за свежи (без нова заявка)
         refetchInterval: 15 * MINUTE,   // автоматично опресняване, докато страницата е отворена
         retry: shouldRetry,

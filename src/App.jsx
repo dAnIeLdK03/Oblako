@@ -11,6 +11,7 @@ import Terms from './pages/Terms.jsx';
 import Privacy from './pages/Privacy.jsx';
 import Cookies from './pages/Cookies.jsx';
 import CookieConsent from './components/CookieConsent.jsx';
+import OfflineBanner from './components/OfflineBanner.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WeatherTips from './pages/WeatherTips.jsx';
 import NotFound from './pages/NotFound.jsx';
@@ -23,6 +24,7 @@ function App() {
           <LanguageProvider>
             <HistoryProvider>
               <div className="app-container">
+                <OfflineBanner />
                 <Navigation />
                 <main className="main-content">
                   <Routes>

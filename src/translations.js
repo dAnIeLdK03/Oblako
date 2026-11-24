@@ -59,6 +59,7 @@ darkMode: "Тъмен режим",
     
     // Error messages
     cityNotFound: "Градът не е намерен",
+    offlineNotice: "Няма връзка с интернет. Показва се последно запазената прогноза, която може да е остаряла.",
     locationError: "Не може да се определи местоположението",
     locationPermissionDenied: "Достъпът до местоположението е отказан",
     locationUnavailable: "Местоположението е недостъпно",
@@ -151,6 +152,7 @@ darkMode: "Тъмен режим",
     
     // Error messages
     cityNotFound: "City not found",
+    offlineNotice: "You are offline. Showing the last saved forecast, which may be out of date.",
     locationError: "Cannot determine location",
     locationPermissionDenied: "Location access denied",
     locationUnavailable: "Location unavailable",
