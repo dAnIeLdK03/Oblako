@@ -36,24 +36,10 @@ export default defineConfig([
     rules: { 'react-refresh/only-export-components': 'off' },
   },
 
-  // Express сървърът (CommonJS, Node)
-  {
-    files: ['server.js'],
-    extends: [js.configs.recommended],
-    languageOptions: { sourceType: 'commonjs', globals: globals.node },
-  },
-
   // Скриптове и конфигурации (ESM, Node)
   {
     files: ['scripts/**/*.js', 'vite.config.mjs', 'eslint.config.mjs'],
     extends: [js.configs.recommended],
     languageOptions: { sourceType: 'module', globals: globals.node },
-  },
-
-  // Service worker
-  {
-    files: ['public/sw.js'],
-    extends: [js.configs.recommended],
-    languageOptions: { sourceType: 'script', globals: globals.serviceworker },
   },
 ])

@@ -5,7 +5,6 @@ Allow: /
 Disallow: /admin/
 Disallow: /stats/
 Disallow: /api/
-Disallow: /server.js
 
 # Allow important pages
 Allow: /forecast
