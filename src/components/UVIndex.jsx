@@ -5,7 +5,7 @@ import styles from './UVIndex.module.css';
 
 const UVIndex = ({ weatherData }) => {
   const { language } = useLanguage();
-  
+
   const getUVLevel = (uvIndex) => {
     if (uvIndex <= 2) return { level: 'low', color: '#4CAF50' };
     if (uvIndex <= 5) return { level: 'moderate', color: '#FF9800' };
@@ -17,25 +17,55 @@ const UVIndex = ({ weatherData }) => {
   const getUVAdvice = (uvIndex, level) => {
     const advice = {
       low: {
-        bg: language === 'bg' ? 'Нисък UV индекс - безопасно за престой на открито' : 'Low UV index - safe for outdoor activities',
-        en: language === 'bg' ? 'Можете да сте на открито без защита' : 'You can be outdoors without protection'
+        bg:
+          language === 'bg'
+            ? 'Нисък UV индекс - безопасно за престой на открито'
+            : 'Low UV index - safe for outdoor activities',
+        en:
+          language === 'bg'
+            ? 'Можете да сте на открито без защита'
+            : 'You can be outdoors without protection',
       },
       moderate: {
-        bg: language === 'bg' ? 'Умерен UV индекс - използвайте слънцезащитен крем' : 'Moderate UV index - use sunscreen',
-        en: language === 'bg' ? 'Препоръчва се слънцезащитен крем SPF 30+' : 'Sunscreen SPF 30+ recommended'
+        bg:
+          language === 'bg'
+            ? 'Умерен UV индекс - използвайте слънцезащитен крем'
+            : 'Moderate UV index - use sunscreen',
+        en:
+          language === 'bg'
+            ? 'Препоръчва се слънцезащитен крем SPF 30+'
+            : 'Sunscreen SPF 30+ recommended',
       },
       high: {
-        bg: language === 'bg' ? 'Висок UV индекс - ограничете престоя на слънце' : 'High UV index - limit sun exposure',
-        en: language === 'bg' ? 'Избягвайте слънцето между 10:00-16:00' : 'Avoid sun between 10:00-16:00'
+        bg:
+          language === 'bg'
+            ? 'Висок UV индекс - ограничете престоя на слънце'
+            : 'High UV index - limit sun exposure',
+        en:
+          language === 'bg'
+            ? 'Избягвайте слънцето между 10:00-16:00'
+            : 'Avoid sun between 10:00-16:00',
       },
       very_high: {
-        bg: language === 'bg' ? 'Много висок UV индекс - избягвайте слънцето' : 'Very high UV index - avoid sun exposure',
-        en: language === 'bg' ? 'Останете в сянка и използвайте защита' : 'Stay in shade and use protection'
+        bg:
+          language === 'bg'
+            ? 'Много висок UV индекс - избягвайте слънцето'
+            : 'Very high UV index - avoid sun exposure',
+        en:
+          language === 'bg'
+            ? 'Останете в сянка и използвайте защита'
+            : 'Stay in shade and use protection',
       },
       extreme: {
-        bg: language === 'bg' ? 'Екстремен UV индекс - избягвайте открито' : 'Extreme UV index - avoid outdoors',
-        en: language === 'bg' ? 'Останете на закрито между 10:00-16:00' : 'Stay indoors between 10:00-16:00'
-      }
+        bg:
+          language === 'bg'
+            ? 'Екстремен UV индекс - избягвайте открито'
+            : 'Extreme UV index - avoid outdoors',
+        en:
+          language === 'bg'
+            ? 'Останете на закрито между 10:00-16:00'
+            : 'Stay indoors between 10:00-16:00',
+      },
     };
     return advice[level];
   };
@@ -51,10 +81,12 @@ const UVIndex = ({ weatherData }) => {
   return (
     <div className={styles['uv-index-card']}>
       <div className={styles['uv-header']}>
-        <div className={styles['uv-icon']}><Sun size={22} /></div>
+        <div className={styles['uv-icon']}>
+          <Sun size={22} />
+        </div>
         <h3>{language === 'bg' ? 'UV Индекс' : 'UV Index'}</h3>
       </div>
-      
+
       <div className="uv-content">
         <div className={styles['uv-display']}>
           <div className={styles['uv-value']} style={{ color: uvLevel.color }}>
@@ -63,23 +95,27 @@ const UVIndex = ({ weatherData }) => {
           <div className={styles['uv-level']}>
             <span className={styles['uv-level-dot']} style={{ backgroundColor: uvLevel.color }} />
             <span className={styles['uv-level-text']}>
-              {language === 'bg' ? 
-                (uvLevel.level === 'low' ? 'Нисък' :
-                 uvLevel.level === 'moderate' ? 'Умерен' :
-                 uvLevel.level === 'high' ? 'Висок' :
-                 uvLevel.level === 'very_high' ? 'Много висок' : 'Екстремен') :
-                uvLevel.level.charAt(0).toUpperCase() + uvLevel.level.slice(1).replace('_', ' ')
-              }
+              {language === 'bg'
+                ? uvLevel.level === 'low'
+                  ? 'Нисък'
+                  : uvLevel.level === 'moderate'
+                    ? 'Умерен'
+                    : uvLevel.level === 'high'
+                      ? 'Висок'
+                      : uvLevel.level === 'very_high'
+                        ? 'Много висок'
+                        : 'Екстремен'
+                : uvLevel.level.charAt(0).toUpperCase() + uvLevel.level.slice(1).replace('_', ' ')}
             </span>
           </div>
         </div>
 
         <div className={styles['uv-bar']}>
-          <div 
-            className={styles['uv-bar-fill']} 
-            style={{ 
+          <div
+            className={styles['uv-bar-fill']}
+            style={{
               width: `${Math.min(uvIndex / 11, 1) * 100}%`,
-              backgroundColor: uvLevel.color 
+              backgroundColor: uvLevel.color,
             }}
           ></div>
         </div>
@@ -92,14 +128,24 @@ const UVIndex = ({ weatherData }) => {
         <div className={styles['uv-details']}>
           <div className={styles['detail-item']}>
             <span className={styles['detail-label']}>{language === 'bg' ? 'Време' : 'Time'}</span>
-            <span className={styles['detail-value']}>{new Date(current.localTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+            <span className={styles['detail-value']}>
+              {new Date(current.localTime).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              })}
+            </span>
           </div>
           <div className={styles['detail-item']}>
-            <span className={styles['detail-label']}>{language === 'bg' ? 'Времето' : 'Weather'}</span>
+            <span className={styles['detail-label']}>
+              {language === 'bg' ? 'Времето' : 'Weather'}
+            </span>
             <span className={styles['detail-value']}>{current.condition.description}</span>
           </div>
           <div className={styles['detail-item']}>
-            <span className={styles['detail-label']}>{language === 'bg' ? 'Облаци' : 'Clouds'}</span>
+            <span className={styles['detail-label']}>
+              {language === 'bg' ? 'Облаци' : 'Clouds'}
+            </span>
             <span className={styles['detail-value']}>{current.cloudCover ?? 0}%</span>
           </div>
         </div>
@@ -108,4 +154,4 @@ const UVIndex = ({ weatherData }) => {
   );
 };
 
-export default UVIndex; 
+export default UVIndex;

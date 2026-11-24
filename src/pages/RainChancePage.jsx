@@ -14,13 +14,25 @@ function RainChancePage() {
   return (
     <div className={styles['rain-chance-page']}>
       <div className="page-header">
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px'}}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '15px',
+            marginBottom: '20px',
+          }}
+        >
           <Logo size="xlarge" showText={false} />
           <h1>{language === 'bg' ? 'Вероятност за валежи' : 'Rain Probability'}</h1>
         </div>
-        <p>{language === 'bg' ? 'Детайлна информация за валежите' : 'Detailed precipitation information'}</p>
+        <p>
+          {language === 'bg'
+            ? 'Детайлна информация за валежите'
+            : 'Detailed precipitation information'}
+        </p>
       </div>
-      
+
       <div className={styles['rain-chance-content']}>
         {loading && (
           <div className="loading">
@@ -29,15 +41,9 @@ function RainChancePage() {
           </div>
         )}
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
+        {error && <div className="error-message">{error}</div>}
 
-        {weatherData && (
-          <RainChance weatherData={weatherData} />
-        )}
+        {weatherData && <RainChance weatherData={weatherData} />}
 
         {!loading && !error && !weatherData && (
           <div className={styles['no-data']}>
@@ -49,4 +55,4 @@ function RainChancePage() {
   );
 }
 
-export default RainChancePage; 
+export default RainChancePage;

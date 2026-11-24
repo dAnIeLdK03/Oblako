@@ -11,7 +11,7 @@ function generateSVGIcon(size) {
   const sunX = size * 0.5;
   const sunY = size * 0.35;
   const cloudY = size * 0.65;
-  
+
   return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -26,7 +26,7 @@ function generateSVGIcon(size) {
   
   <!-- Sun rays -->
   <g stroke="#fff" stroke-width="${size * 0.02}" opacity="0.6">
-    ${Array.from({length: 8}, (_, i) => {
+    ${Array.from({ length: 8 }, (_, i) => {
       const angle = (i * Math.PI) / 4;
       const startX = sunX + Math.cos(angle) * radius;
       const startY = sunY + Math.sin(angle) * radius;
@@ -61,15 +61,15 @@ if (!fs.existsSync(iconsDir)) {
 }
 
 // Generate all icons
-iconSizes.forEach(size => {
+iconSizes.forEach((size) => {
   const svgContent = generateSVGIcon(size);
   const filename = `icon-${size}x${size}.svg`;
   const filepath = path.join(iconsDir, filename);
-  
+
   fs.writeFileSync(filepath, svgContent);
   console.log(`Generated: ${filename}`);
 });
 
 console.log('\nAll SVG icons generated successfully!');
 console.log('You can convert these to PNG using online tools or image editing software.');
-console.log('For now, the SVG icons will work for most PWA purposes.'); 
+console.log('For now, the SVG icons will work for most PWA purposes.');

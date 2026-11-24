@@ -20,39 +20,70 @@ function Footer() {
       privacy: 'Privacy Policy',
       cookies: 'Cookie Policy',
       weatherTips: 'Weather Tips',
-    }
+    },
   };
 
   const t = content[language] || content.en;
 
   return (
-    <footer style={{
-      width: '100%',
-      background: 'var(--bg-color1)',
-      color: '#888',
-      fontSize: '14px',
-      textAlign: 'center',
-      fontWeight: 'normal',
-      boxShadow: '0 -1px 8px rgba(0,0,0,0.04)',
-      padding: '16px 0',
-      borderTop: '1px solid var(--border-color)'
-    }}>
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '5px'}}>
+    <footer
+      style={{
+        width: '100%',
+        background: 'var(--bg-color1)',
+        color: '#888',
+        fontSize: '14px',
+        textAlign: 'center',
+        fontWeight: 'normal',
+        boxShadow: '0 -1px 8px rgba(0,0,0,0.04)',
+        padding: '16px 0',
+        borderTop: '1px solid var(--border-color)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
+          marginBottom: '5px',
+        }}
+      >
         <Logo size="small" showText={false} />
         <span>{language === 'bg' ? 'Всички права запазени.' : 'All rights reserved.'}</span>
       </div>
-      <span style={{fontWeight: 'bold'}}>
-        <Link to="/weather-tips" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.weatherTips}</Link> |
-        <Link to="/terms" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.terms}</Link> |
-        <Link to="/privacy" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.privacy}</Link> |
-        <Link to="/cookies" style={{color: '#888', textDecoration: 'underline', margin: '0 5px'}}>{t.cookies}</Link>
+      <span style={{ fontWeight: 'bold' }}>
+        <Link
+          to="/weather-tips"
+          style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}
+        >
+          {t.weatherTips}
+        </Link>{' '}
+        |
+        <Link to="/terms" style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}>
+          {t.terms}
+        </Link>{' '}
+        |
+        <Link to="/privacy" style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}>
+          {t.privacy}
+        </Link>{' '}
+        |
+        <Link to="/cookies" style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}>
+          {t.cookies}
+        </Link>
       </span>
-      <div style={{marginTop: '6px', fontSize: '12px'}}>
+      <div style={{ marginTop: '6px', fontSize: '12px' }}>
         {language === 'bg' ? 'Метеорологични данни от ' : 'Weather data by '}
-        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" style={{color: '#888', textDecoration: 'underline'}}>Open-Meteo.com</a>
+        <a
+          href="https://open-meteo.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#888', textDecoration: 'underline' }}
+        >
+          Open-Meteo.com
+        </a>
       </div>
     </footer>
   );
 }
 
-export default Footer; 
+export default Footer;

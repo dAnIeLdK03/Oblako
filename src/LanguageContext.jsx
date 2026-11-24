@@ -14,16 +14,16 @@ export const useLanguage = () => {
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState('bg'); // Default to Bulgarian
-  
+
   const t = (key) => {
     return translations[language][key] || key;
   };
-  
+
   const changeLanguage = (newLanguage) => {
     setLanguage(newLanguage);
     setItem('oblako_language', newLanguage);
   };
-  
+
   // Load saved language on init, иначе избери според браузъра
   React.useEffect(() => {
     const savedLanguage = getItem('oblako_language');
@@ -39,7 +39,7 @@ export const LanguageProvider = ({ children }) => {
       }
     }
   }, []);
-  
+
   return (
     <LanguageContext.Provider value={{ language, changeLanguage, t }}>
       {children}

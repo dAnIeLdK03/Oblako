@@ -48,7 +48,9 @@
   border-radius: 20px;
   padding: 24px;
   box-shadow: none;
-  transition: border-color 0.25s ease, transform 0.25s ease;
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
 }
 
 .wp-card {

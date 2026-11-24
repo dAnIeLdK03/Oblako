@@ -18,13 +18,15 @@
   font-weight: 500;
 }
 
-.rain-hours, .rain-week {
+.rain-hours,
+.rain-week {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.rain-hour-item, .rain-day-item {
+.rain-hour-item,
+.rain-day-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -34,12 +36,14 @@
   transition: all 0.3s ease;
 }
 
-.rain-hour-item:hover, .rain-day-item:hover {
+.rain-hour-item:hover,
+.rain-day-item:hover {
   transform: translateX(3px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.rain-time, .rain-day {
+.rain-time,
+.rain-day {
   min-width: 45px;
   font-weight: 500;
   color: var(--text-color);
@@ -105,7 +109,7 @@
 
 .rain-tips li {
   padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   padding-left: 18px;
   font-size: 0.9rem;
@@ -127,11 +131,13 @@
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  .rain-hour-item, .rain-day-item {
+  .rain-hour-item,
+  .rain-day-item {
     padding: 6px;
     gap: 8px;
   }
-  .rain-time, .rain-day {
+  .rain-time,
+  .rain-day {
     min-width: 40px;
     font-size: 0.8rem;
   }
@@ -153,11 +159,13 @@
   .rain-section h4 {
     font-size: 1rem;
   }
-  .rain-hour-item, .rain-day-item {
+  .rain-hour-item,
+  .rain-day-item {
     flex-wrap: wrap;
     gap: 6px;
   }
-  .rain-time, .rain-day {
+  .rain-time,
+  .rain-day {
     min-width: 35px;
     font-size: 0.75rem;
   }

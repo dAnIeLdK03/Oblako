@@ -60,7 +60,7 @@ export function ThemeProvider({ children }) {
 
   const convertTemperature = (celsius) => {
     if (temperatureUnit === 'fahrenheit') {
-      const fahrenheit = Math.round((celsius * 9/5) + 32);
+      const fahrenheit = Math.round((celsius * 9) / 5 + 32);
       return fahrenheit;
     }
     return Math.round(celsius);
@@ -71,15 +71,17 @@ export function ThemeProvider({ children }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ 
-      theme, 
-      toggleTheme, 
-      setAutoTheme,
-      temperatureUnit, 
-      toggleTemperatureUnit, 
-      convertTemperature, 
-      getTemperatureSymbol 
-    }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        toggleTheme,
+        setAutoTheme,
+        temperatureUnit,
+        toggleTemperatureUnit,
+        convertTemperature,
+        getTemperatureSymbol,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

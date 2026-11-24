@@ -49,14 +49,18 @@ const PAGES = {
     bg: {
       title: 'Вероятност за валежи – Oblako',
       titleCity: 'Вероятност за валежи във {city} – Oblako',
-      description: 'Вероятност за дъжд и сняг по часове и по дни за вашето местоположение или за всеки град.',
-      descriptionCity: 'Вероятност за дъжд и сняг във {city} по часове за днес и по дни за седмицата.',
+      description:
+        'Вероятност за дъжд и сняг по часове и по дни за вашето местоположение или за всеки град.',
+      descriptionCity:
+        'Вероятност за дъжд и сняг във {city} по часове за днес и по дни за седмицата.',
     },
     en: {
       title: 'Chance of rain – Oblako',
       titleCity: 'Chance of rain in {city} – Oblako',
-      description: 'Chance of rain and snow by the hour and by the day for your location or any city.',
-      descriptionCity: 'Chance of rain and snow in {city} by the hour for today and by the day for the week.',
+      description:
+        'Chance of rain and snow by the hour and by the day for your location or any city.',
+      descriptionCity:
+        'Chance of rain and snow in {city} by the hour for today and by the day for the week.',
     },
   },
   uv: {
@@ -94,17 +98,25 @@ const PAGES = {
     path: '/privacy',
     bg: {
       title: 'Правила за поверителност – Oblako',
-      description: 'Какви данни обработва Oblako, при какви условия и кои трети страни ги получават.',
+      description:
+        'Какви данни обработва Oblako, при какви условия и кои трети страни ги получават.',
     },
     en: {
       title: 'Privacy policy – Oblako',
-      description: 'What data Oblako processes, under what conditions and which third parties receive it.',
+      description:
+        'What data Oblako processes, under what conditions and which third parties receive it.',
     },
   },
   cookies: {
     path: '/cookies',
-    bg: { title: 'Политика за бисквитки – Oblako', description: 'Как Oblako използва бисквитки и локално съхранение.' },
-    en: { title: 'Cookie policy – Oblako', description: 'How Oblako uses cookies and local storage.' },
+    bg: {
+      title: 'Политика за бисквитки – Oblako',
+      description: 'Как Oblako използва бисквитки и локално съхранение.',
+    },
+    en: {
+      title: 'Cookie policy – Oblako',
+      description: 'How Oblako uses cookies and local storage.',
+    },
   },
   // Неизвестен адрес: не се индексира
   notFound: {
@@ -149,7 +161,8 @@ export function useSeo(page, { city } = {}) {
     const copy = config[language] || config.bg;
     const fill = (text) => text.replace('{city}', city);
     const title = city && copy.titleCity ? fill(copy.titleCity) : copy.title;
-    const description = city && copy.descriptionCity ? fill(copy.descriptionCity) : copy.description;
+    const description =
+      city && copy.descriptionCity ? fill(copy.descriptionCity) : copy.description;
     const url = config.path ? `${SITE_URL}${config.path === '/' ? '/' : config.path}` : null;
 
     document.title = title;
@@ -166,7 +179,10 @@ export function useSeo(page, { city } = {}) {
     const robots = document.head.querySelector('meta[name="robots"]');
     if (robots) {
       robots.dataset.defaultContent ??= robots.getAttribute('content');
-      robots.setAttribute('content', config.noindex ? 'noindex, follow' : robots.dataset.defaultContent);
+      robots.setAttribute(
+        'content',
+        config.noindex ? 'noindex, follow' : robots.dataset.defaultContent,
+      );
     }
   }, [page, language, city]);
 }

@@ -8,7 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { useLanguage } from '../LanguageContext.jsx';
@@ -24,7 +24,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 function TemperatureChart({ weather, type = 'hourly' }) {
@@ -34,9 +34,7 @@ function TemperatureChart({ weather, type = 'hourly' }) {
   if (!weather?.hourly?.length) {
     return (
       <div className={styles['chart-container']}>
-        <div className={styles['no-chart-data']}>
-          {t('noChartData')}
-        </div>
+        <div className={styles['no-chart-data']}>{t('noChartData')}</div>
       </div>
     );
   }
@@ -45,36 +43,39 @@ function TemperatureChart({ weather, type = 'hourly' }) {
   const prepareChartData = () => {
     // Всеки запис се свежда до { label-време, temp, feelsLike }
     let dataPoints;
-    
+
     if (type === 'hourly') {
       // Next 24 hours (8 data points, every 3 hours)
-      dataPoints = weather.hourly.filter((_, i) => i % 3 === 0).slice(0, 8)
-        .map(h => ({ at: h.localTime, temp: h.temp, feelsLike: h.feelsLike }));
+      dataPoints = weather.hourly
+        .filter((_, i) => i % 3 === 0)
+        .slice(0, 8)
+        .map((h) => ({ at: h.localTime, temp: h.temp, feelsLike: h.feelsLike }));
     } else {
       // 5 days, daily maximum
-      dataPoints = weather.daily.slice(0, 5)
-        .map(d => ({ at: `${d.date}T12:00`, temp: d.tempMax, feelsLike: d.feelsLikeMax }));
+      dataPoints = weather.daily
+        .slice(0, 5)
+        .map((d) => ({ at: `${d.date}T12:00`, temp: d.tempMax, feelsLike: d.feelsLikeMax }));
     }
 
-    const labels = dataPoints.map(item => {
+    const labels = dataPoints.map((item) => {
       const date = new Date(item.at);
-      
+
       if (type === 'hourly') {
-        return date.toLocaleTimeString('en-US', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
+        return date.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
         });
       } else {
-        return date.toLocaleDateString('en-US', { 
+        return date.toLocaleDateString('en-US', {
           weekday: 'short',
           month: 'short',
-          day: 'numeric'
+          day: 'numeric',
         });
       }
     });
 
-    const temperatures = dataPoints.map(item => convertTemperature(item.temp));
-    const feelsLike = dataPoints.map(item => convertTemperature(item.feelsLike));
+    const temperatures = dataPoints.map((item) => convertTemperature(item.temp));
+    const feelsLike = dataPoints.map((item) => convertTemperature(item.feelsLike));
 
     return { labels, temperatures, feelsLike };
   };
@@ -86,7 +87,7 @@ function TemperatureChart({ weather, type = 'hourly' }) {
     primary: theme === 'dark' ? '#74b9ff' : '#0984e3',
     secondary: theme === 'dark' ? '#ea6e4b' : '#d63031',
     text: theme === 'dark' ? '#ffffff' : '#2d3436',
-    grid: theme === 'dark' ? '#495057' : '#ddd'
+    grid: theme === 'dark' ? '#495057' : '#ddd',
   };
 
   const data = {
@@ -118,8 +119,8 @@ function TemperatureChart({ weather, type = 'hourly' }) {
         pointRadius: 4,
         pointHoverRadius: 6,
         borderDash: [5, 5],
-      }
-    ]
+      },
+    ],
   };
 
   const options = {
@@ -132,11 +133,11 @@ function TemperatureChart({ weather, type = 'hourly' }) {
           color: colors.text,
           font: {
             size: 12,
-            weight: '500'
+            weight: '500',
           },
           usePointStyle: true,
-          padding: 20
-        }
+          padding: 20,
+        },
       },
       title: {
         display: true,
@@ -144,9 +145,9 @@ function TemperatureChart({ weather, type = 'hourly' }) {
         color: colors.text,
         font: {
           size: 16,
-          weight: '600'
+          weight: '600',
         },
-        padding: 20
+        padding: 20,
       },
       tooltip: {
         backgroundColor: theme === 'dark' ? '#2a2b2d' : '#ffffff',
@@ -157,45 +158,45 @@ function TemperatureChart({ weather, type = 'hourly' }) {
         cornerRadius: 8,
         displayColors: true,
         callbacks: {
-          label: function(context) {
+          label: function (context) {
             return `${context.dataset.label}: ${context.parsed.y}${getTemperatureSymbol()}`;
-          }
-        }
-      }
+          },
+        },
+      },
     },
     scales: {
       x: {
         grid: {
           color: colors.grid,
-          drawBorder: false
+          drawBorder: false,
         },
         ticks: {
           color: colors.text,
           font: {
-            size: 11
-          }
-        }
+            size: 11,
+          },
+        },
       },
       y: {
         grid: {
           color: colors.grid,
-          drawBorder: false
+          drawBorder: false,
         },
         ticks: {
           color: colors.text,
           font: {
-            size: 11
+            size: 11,
           },
-          callback: function(value) {
+          callback: function (value) {
             return value + getTemperatureSymbol();
-          }
-        }
-      }
+          },
+        },
+      },
     },
     interaction: {
       intersect: false,
-      mode: 'index'
-    }
+      mode: 'index',
+    },
   };
 
   return (

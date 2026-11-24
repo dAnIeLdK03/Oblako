@@ -22,7 +22,7 @@ const PullToRefresh = ({ onRefresh, children }) => {
     if (containerRef.current && containerRef.current.scrollTop === 0) {
       currentY.current = e.touches[0].clientY;
       const distance = currentY.current - startY.current;
-      
+
       if (distance > 0) {
         e.preventDefault();
         setIsPulling(true);
@@ -42,7 +42,7 @@ const PullToRefresh = ({ onRefresh, children }) => {
         setIsRefreshing(false);
       }
     }
-    
+
     setIsPulling(false);
     setPullDistance(0);
   };
@@ -65,31 +65,40 @@ const PullToRefresh = ({ onRefresh, children }) => {
   return (
     <div className={styles['pull-to-refresh-container']}>
       {(isPulling || isRefreshing) && (
-        <div 
+        <div
           className={styles['pull-to-refresh-indicator']}
           style={{
             transform: `translateY(${pullDistance}px)`,
-            opacity: Math.min(pullDistance / 50, 1)
+            opacity: Math.min(pullDistance / 50, 1),
           }}
         >
           <div className={styles['refresh-spinner']}>
             {isRefreshing ? (
               <div className={styles.spinner}></div>
             ) : (
-              <div className={styles['pull-arrow']} style={{ transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)`, display: 'flex' }}>
+              <div
+                className={styles['pull-arrow']}
+                style={{
+                  transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)`,
+                  display: 'flex',
+                }}
+              >
                 <ArrowDown size={20} />
               </div>
             )}
           </div>
           <div className={styles['refresh-text']}>
-            {isRefreshing 
-              ? (language === 'bg' ? 'Обновяване...' : 'Refreshing...')
-              : (language === 'bg' ? 'Плъзнете за обновяване' : 'Pull to refresh')
-            }
+            {isRefreshing
+              ? language === 'bg'
+                ? 'Обновяване...'
+                : 'Refreshing...'
+              : language === 'bg'
+                ? 'Плъзнете за обновяване'
+                : 'Pull to refresh'}
           </div>
         </div>
       )}
-      
+
       <div ref={containerRef} className={styles['pull-to-refresh-content']}>
         {children}
       </div>
@@ -97,4 +106,4 @@ const PullToRefresh = ({ onRefresh, children }) => {
   );
 };
 
-export default PullToRefresh; 
+export default PullToRefresh;

@@ -8,13 +8,13 @@
 //   UNAVAILABLE- друга неочаквана грешка
 // Отказана от нас заявка (AbortController) НЕ е WeatherError: хвърля се нативният AbortError.
 export class WeatherError extends Error {
-    constructor(code, message, { status, provider } = {}) {
-        super(message);
-        this.name = 'WeatherError';
-        this.code = code;
-        this.status = status;
-        this.provider = provider;
-    }
+  constructor(code, message, { status, provider } = {}) {
+    super(message);
+    this.name = 'WeatherError';
+    this.code = code;
+    this.status = status;
+    this.provider = provider;
+  }
 }
 
 export const isAbortError = (err) => err?.name === 'AbortError';

@@ -16,14 +16,20 @@ const UVIndexPage = () => {
 
   return (
     <>
-      
       <div className={`app-container ${theme}`}>
         <Navigation />
-        
+
         <div className="main-content">
           <div className="page-header">
-            <h1><Sun size={28} className={styles['page-header-icon']} /> {language === 'bg' ? 'UV Индекс' : 'UV Index'}</h1>
-            <p>{language === 'bg' ? 'Информация за ултравиолетовото лъчение и съвети за защита от слънцето' : 'Information about ultraviolet radiation and sun protection advice'}</p>
+            <h1>
+              <Sun size={28} className={styles['page-header-icon']} />{' '}
+              {language === 'bg' ? 'UV Индекс' : 'UV Index'}
+            </h1>
+            <p>
+              {language === 'bg'
+                ? 'Информация за ултравиолетовото лъчение и съвети за защита от слънцето'
+                : 'Information about ultraviolet radiation and sun protection advice'}
+            </p>
           </div>
 
           <div className={styles['uv-index-page']}>
@@ -34,76 +40,133 @@ const UVIndexPage = () => {
               </div>
             )}
 
-            {error && (
-              <div className="error-message">
-                {error}
-              </div>
-            )}
+            {error && <div className="error-message">{error}</div>}
 
             {weatherData && (
               <div className="uv-content">
                 <UVIndex weatherData={weatherData} />
-                
+
                 <div className={styles['uv-info-section']}>
                   <h2>{language === 'bg' ? 'За UV индекса' : 'About UV Index'}</h2>
                   <div className={styles['uv-info-grid']}>
                     <div className={styles['uv-info-card']}>
-                      <div className={styles['info-icon-dot']} style={{ backgroundColor: '#4CAF50' }} />
+                      <div
+                        className={styles['info-icon-dot']}
+                        style={{ backgroundColor: '#4CAF50' }}
+                      />
                       <h3>{language === 'bg' ? 'Нисък (0-2)' : 'Low (0-2)'}</h3>
-                      <p>{language === 'bg' ? 'Безопасно за престой на открито без защита' : 'Safe for outdoor activities without protection'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Безопасно за престой на открито без защита'
+                          : 'Safe for outdoor activities without protection'}
+                      </p>
                     </div>
 
                     <div className={styles['uv-info-card']}>
-                      <div className={styles['info-icon-dot']} style={{ backgroundColor: '#FF9800' }} />
+                      <div
+                        className={styles['info-icon-dot']}
+                        style={{ backgroundColor: '#FF9800' }}
+                      />
                       <h3>{language === 'bg' ? 'Умерен (3-5)' : 'Moderate (3-5)'}</h3>
-                      <p>{language === 'bg' ? 'Препоръчва се слънцезащитен крем SPF 30+' : 'Sunscreen SPF 30+ recommended'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Препоръчва се слънцезащитен крем SPF 30+'
+                          : 'Sunscreen SPF 30+ recommended'}
+                      </p>
                     </div>
 
                     <div className={styles['uv-info-card']}>
-                      <div className={styles['info-icon-dot']} style={{ backgroundColor: '#FF5722' }} />
+                      <div
+                        className={styles['info-icon-dot']}
+                        style={{ backgroundColor: '#FF5722' }}
+                      />
                       <h3>{language === 'bg' ? 'Висок (6-7)' : 'High (6-7)'}</h3>
-                      <p>{language === 'bg' ? 'Ограничете престоя на слънце между 10:00-16:00' : 'Limit sun exposure between 10:00-16:00'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Ограничете престоя на слънце между 10:00-16:00'
+                          : 'Limit sun exposure between 10:00-16:00'}
+                      </p>
                     </div>
 
                     <div className={styles['uv-info-card']}>
-                      <div className={styles['info-icon-dot']} style={{ backgroundColor: '#9C27B0' }} />
+                      <div
+                        className={styles['info-icon-dot']}
+                        style={{ backgroundColor: '#9C27B0' }}
+                      />
                       <h3>{language === 'bg' ? 'Много висок (8-10)' : 'Very High (8-10)'}</h3>
-                      <p>{language === 'bg' ? 'Останете в сянка и използвайте защита' : 'Stay in shade and use protection'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Останете в сянка и използвайте защита'
+                          : 'Stay in shade and use protection'}
+                      </p>
                     </div>
 
                     <div className={styles['uv-info-card']}>
-                      <div className={styles['info-icon-dot']} style={{ backgroundColor: '#F44336' }} />
+                      <div
+                        className={styles['info-icon-dot']}
+                        style={{ backgroundColor: '#F44336' }}
+                      />
                       <h3>{language === 'bg' ? 'Екстремен (11+)' : 'Extreme (11+)'}</h3>
-                      <p>{language === 'bg' ? 'Останете на закрито между 10:00-16:00' : 'Stay indoors between 10:00-16:00'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Останете на закрито между 10:00-16:00'
+                          : 'Stay indoors between 10:00-16:00'}
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <div className={styles['uv-tips-section']}>
-                  <h2>{language === 'bg' ? 'Съвети за защита от слънцето' : 'Sun Protection Tips'}</h2>
+                  <h2>
+                    {language === 'bg' ? 'Съвети за защита от слънцето' : 'Sun Protection Tips'}
+                  </h2>
                   <div className={styles['tips-grid']}>
                     <div className={styles['tip-card']}>
-                      <div className={styles['tip-icon']}><SprayCan size={26} /></div>
+                      <div className={styles['tip-icon']}>
+                        <SprayCan size={26} />
+                      </div>
                       <h3>{language === 'bg' ? 'Слънцезащитен крем' : 'Sunscreen'}</h3>
-                      <p>{language === 'bg' ? 'Използвайте крем с SPF 30+ и нанасяйте на всеки 2 часа' : 'Use SPF 30+ and reapply every 2 hours'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Използвайте крем с SPF 30+ и нанасяйте на всеки 2 часа'
+                          : 'Use SPF 30+ and reapply every 2 hours'}
+                      </p>
                     </div>
 
                     <div className={styles['tip-card']}>
-                      <div className={styles['tip-icon']}><Glasses size={26} /></div>
+                      <div className={styles['tip-icon']}>
+                        <Glasses size={26} />
+                      </div>
                       <h3>{language === 'bg' ? 'Шапка и очила' : 'Hat and Sunglasses'}</h3>
-                      <p>{language === 'bg' ? 'Носете шапка с широки периферии и UV очила' : 'Wear wide-brimmed hat and UV sunglasses'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Носете шапка с широки периферии и UV очила'
+                          : 'Wear wide-brimmed hat and UV sunglasses'}
+                      </p>
                     </div>
 
                     <div className={styles['tip-card']}>
-                      <div className={styles['tip-icon']}><Shirt size={26} /></div>
+                      <div className={styles['tip-icon']}>
+                        <Shirt size={26} />
+                      </div>
                       <h3>{language === 'bg' ? 'Защитна дреха' : 'Protective Clothing'}</h3>
-                      <p>{language === 'bg' ? 'Носете лека дреха с дълги ръкави и панталони' : 'Wear light clothing with long sleeves and pants'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Носете лека дреха с дълги ръкави и панталони'
+                          : 'Wear light clothing with long sleeves and pants'}
+                      </p>
                     </div>
 
                     <div className={styles['tip-card']}>
-                      <div className={styles['tip-icon']}><Clock size={26} /></div>
+                      <div className={styles['tip-icon']}>
+                        <Clock size={26} />
+                      </div>
                       <h3>{language === 'bg' ? 'Време' : 'Timing'}</h3>
-                      <p>{language === 'bg' ? 'Избягвайте слънцето между 10:00-16:00' : 'Avoid sun between 10:00-16:00'}</p>
+                      <p>
+                        {language === 'bg'
+                          ? 'Избягвайте слънцето между 10:00-16:00'
+                          : 'Avoid sun between 10:00-16:00'}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -111,10 +174,9 @@ const UVIndexPage = () => {
             )}
           </div>
         </div>
-        
       </div>
     </>
   );
 };
 
-export default UVIndexPage; 
+export default UVIndexPage;

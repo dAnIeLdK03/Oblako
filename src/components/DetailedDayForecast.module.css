@@ -193,84 +193,84 @@
 }
 
 .parameter-value {
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-color);
-  }
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--text-color);
+}
 
 /* New sections styling */
 
 .wind-details-section,
-  .precipitation-section {
-    background: linear-gradient(135deg, var(--bg-color2), var(--bg-color3));
-    border-radius: 15px;
-    padding: 20px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 20px;
-  }
+.precipitation-section {
+  background: linear-gradient(135deg, var(--bg-color2), var(--bg-color3));
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
 
 .wind-details-section h3,
-  .precipitation-section h3 {
-    margin: 0 0 15px 0;
-    color: var(--text-color);
-    font-size: 1.2em;
-    font-weight: 600;
-    text-align: center;
-  }
+.precipitation-section h3 {
+  margin: 0 0 15px 0;
+  color: var(--text-color);
+  font-size: 1.2em;
+  font-weight: 600;
+  text-align: center;
+}
 
 .wind-details-grid,
-  .precipitation-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-  }
+.precipitation-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
 
 .wind-detail-item,
-  .precipitation-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: var(--bg-color);
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-  }
+.precipitation-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-color);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
 
 .wind-detail-item:hover,
-  .precipitation-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  }
+.precipitation-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 
 .wind-icon,
-  .precipitation-icon {
-    width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--accent);
-  }
+.precipitation-icon {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
 
 .wind-info,
-  .precipitation-info {
-    flex: 1;
-  }
+.precipitation-info {
+  flex: 1;
+}
 
 .wind-label,
-  .precipitation-label {
-    font-size: 0.9em;
-    color: var(--text-color);
-    opacity: 0.8;
-    margin-bottom: 2px;
-  }
+.precipitation-label {
+  font-size: 0.9em;
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 2px;
+}
 
 .wind-value,
-  .precipitation-value {
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-color);
-  }
+.precipitation-value {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--text-color);
+}
 
 /* Responsive design for detailed forecast */
 

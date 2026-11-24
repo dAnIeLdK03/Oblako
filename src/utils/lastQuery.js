@@ -11,31 +11,35 @@ const round = (n) => Number(Number(n).toFixed(2));
 
 // query: { city } или { lat, lon };  data: резултатът от getWeather (за името по координати)
 export function rememberQuery(query, data) {
-    const value = query.city
-        ? { city: query.city }
-        : { lat: round(query.lat), lon: round(query.lon), name: data?.place?.named ? data.place.name : null };
-    setItem(KEY, JSON.stringify(value));
+  const value = query.city
+    ? { city: query.city }
+    : {
+        lat: round(query.lat),
+        lon: round(query.lon),
+        name: data?.place?.named ? data.place.name : null,
+      };
+  setItem(KEY, JSON.stringify(value));
 }
 
 export function readLastQuery() {
-    try {
-        const v = JSON.parse(getItem(KEY));
-        if (typeof v?.city === 'string' && v.city) return { city: v.city };
-        if (Number.isFinite(v?.lat) && Number.isFinite(v?.lon)) {
-            return { lat: v.lat, lon: v.lon, name: typeof v.name === 'string' ? v.name : null };
-        }
-    } catch {
-        // липсва или е повредено
+  try {
+    const v = JSON.parse(getItem(KEY));
+    if (typeof v?.city === 'string' && v.city) return { city: v.city };
+    if (Number.isFinite(v?.lat) && Number.isFinite(v?.lon)) {
+      return { lat: v.lat, lon: v.lon, name: typeof v.name === 'string' ? v.name : null };
     }
-    return null;
+  } catch {
+    // липсва или е повредено
+  }
+  return null;
 }
 
 // Офлайн заявка за дадено място от URL. Градът, който сме определили по координати, няма кеширано
 // търсене по име (адресът му се записва в URL без мрежова заявка), затова се връщаме към координатите му.
 export function offlineQueryFor(place, last) {
-    if (!place) return last;
-    if (place.type === 'city' && last?.name && last.name.toLowerCase() === place.city.toLowerCase()) {
-        return { lat: last.lat, lon: last.lon };
-    }
-    return null; // иначе ползваме заявката от URL (може да е в кеша)
+  if (!place) return last;
+  if (place.type === 'city' && last?.name && last.name.toLowerCase() === place.city.toLowerCase()) {
+    return { lat: last.lat, lon: last.lon };
+  }
+  return null; // иначе ползваме заявката от URL (може да е в кеша)
 }

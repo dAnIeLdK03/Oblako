@@ -12,12 +12,15 @@ function RainChance({ weatherData }) {
     if (!weatherData?.hourly) return null;
 
     // Днес по часове: следващите 24 часа, през 3 часа
-    const today = weatherData.hourly.filter((_, i) => i % 3 === 0).slice(0, 8).map((h) => ({
-      hour: `${h.hour.toString().padStart(2, '0')}:00`,
-      chance: Math.round(h.precipProbability),
-      type: getWeatherType(h.condition.group),
-      temp: Math.round(h.temp),
-    }));
+    const today = weatherData.hourly
+      .filter((_, i) => i % 3 === 0)
+      .slice(0, 8)
+      .map((h) => ({
+        hour: `${h.hour.toString().padStart(2, '0')}:00`,
+        chance: Math.round(h.precipProbability),
+        type: getWeatherType(h.condition.group),
+        temp: Math.round(h.temp),
+      }));
 
     // Седмична прогноза: реалните дни от седмицата
     const days = ['Нед', 'Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб'];
@@ -38,29 +41,36 @@ function RainChance({ weatherData }) {
   function getWeatherType(group) {
     switch (group) {
       case 'rain':
-      case 'drizzle': return 'rain';
-      case 'thunderstorm': return 'storm';
-      case 'snow': return 'snow';
-      case 'clear': return 'clear';
-      default: return 'clouds';
+      case 'drizzle':
+        return 'rain';
+      case 'thunderstorm':
+        return 'storm';
+      case 'snow':
+        return 'snow';
+      case 'clear':
+        return 'clear';
+      default:
+        return 'clouds';
     }
   }
 
   // Ensure no duplicate hours in today's data
-  const uniqueTodayData = rainData?.today?.reduce((acc, item) => {
-    if (!acc.find(existing => existing.hour === item.hour)) {
-      acc.push(item);
-    }
-    return acc;
-  }, []) || [];
+  const uniqueTodayData =
+    rainData?.today?.reduce((acc, item) => {
+      if (!acc.find((existing) => existing.hour === item.hour)) {
+        acc.push(item);
+      }
+      return acc;
+    }, []) || [];
 
   // Ensure no duplicate days in week data
-  const uniqueWeekData = rainData?.week?.reduce((acc, item) => {
-    if (!acc.find(existing => existing.day === item.day)) {
-      acc.push(item);
-    }
-    return acc;
-  }, []) || [];
+  const uniqueWeekData =
+    rainData?.week?.reduce((acc, item) => {
+      if (!acc.find((existing) => existing.day === item.day)) {
+        acc.push(item);
+      }
+      return acc;
+    }, []) || [];
 
   const getCurrentHour = () => {
     return new Date().getHours();
@@ -70,7 +80,7 @@ function RainChance({ weatherData }) {
     const currentHour = hour || getCurrentHour();
     const isNight = currentHour < 6 || currentHour >= 20;
 
-    switch(type) {
+    switch (type) {
       case 'storm':
         return <CloudLightning size={22} />;
       case 'rain':
@@ -100,7 +110,7 @@ function RainChance({ weatherData }) {
   return (
     <div className="rain-chance">
       <h3>{language === 'bg' ? 'Вероятност за валежи' : 'Precipitation Chance'}</h3>
-      
+
       <div className={styles['rain-content']}>
         {/* Дневна прогноза */}
         <div className={styles['rain-section']}>
@@ -109,13 +119,15 @@ function RainChance({ weatherData }) {
             {uniqueTodayData.map((item, index) => (
               <div key={index} className={styles['rain-hour-item']}>
                 <div className={styles['rain-time']}>{item.hour}</div>
-                <div className={styles['rain-icon']}>{getRainIcon(item.type, parseInt(item.hour.split(':')[0]))}</div>
+                <div className={styles['rain-icon']}>
+                  {getRainIcon(item.type, parseInt(item.hour.split(':')[0]))}
+                </div>
                 <div className={styles['rain-chance-bar']}>
-                  <div 
+                  <div
                     className={styles['rain-chance-fill']}
-                    style={{ 
+                    style={{
                       width: `${item.chance}%`,
-                      backgroundColor: getChanceColor(item.chance)
+                      backgroundColor: getChanceColor(item.chance),
                     }}
                   ></div>
                 </div>
@@ -132,14 +144,17 @@ function RainChance({ weatherData }) {
             {uniqueWeekData.map((item, index) => (
               <div key={index} className={styles['rain-day-item']}>
                 <div className={styles['rain-day']}>{item.day}</div>
-                <div className={styles['rain-temp']}>{convertTemperature(item.temp)}{getTemperatureSymbol()}</div>
+                <div className={styles['rain-temp']}>
+                  {convertTemperature(item.temp)}
+                  {getTemperatureSymbol()}
+                </div>
                 <div className={styles['rain-icon']}>{getRainIcon(item.type, 12)}</div>
                 <div className={styles['rain-chance-bar']}>
-                  <div 
+                  <div
                     className={styles['rain-chance-fill']}
-                    style={{ 
+                    style={{
                       width: `${item.chance}%`,
-                      backgroundColor: getChanceColor(item.chance)
+                      backgroundColor: getChanceColor(item.chance),
                     }}
                   ></div>
                 </div>
@@ -151,11 +166,23 @@ function RainChance({ weatherData }) {
 
         {/* Съвети */}
         <div className={styles['rain-tips']}>
-          <h4>{language === 'bg' ? 'Съвети за деня' : 'Today\'s tips'}</h4>
+          <h4>{language === 'bg' ? 'Съвети за деня' : "Today's tips"}</h4>
           <ul>
-            <li>{language === 'bg' ? 'Най-висока вероятност за валежи между 15:00-18:00' : 'Highest rain chance between 15:00-18:00'}</li>
-            <li>{language === 'bg' ? 'Препоръчва се чадър или дъждобран' : 'Umbrella or raincoat recommended'}</li>
-            <li>{language === 'bg' ? 'Избягвайте открити дейности след обяд' : 'Avoid outdoor activities after noon'}</li>
+            <li>
+              {language === 'bg'
+                ? 'Най-висока вероятност за валежи между 15:00-18:00'
+                : 'Highest rain chance between 15:00-18:00'}
+            </li>
+            <li>
+              {language === 'bg'
+                ? 'Препоръчва се чадър или дъждобран'
+                : 'Umbrella or raincoat recommended'}
+            </li>
+            <li>
+              {language === 'bg'
+                ? 'Избягвайте открити дейности след обяд'
+                : 'Avoid outdoor activities after noon'}
+            </li>
           </ul>
         </div>
       </div>
@@ -163,4 +190,4 @@ function RainChance({ weatherData }) {
   );
 }
 
-export default RainChance; 
+export default RainChance;

@@ -5,35 +5,34 @@ import styles from './Logo.module.css';
 
 const Logo = ({ className = '', showText = true, size = 'medium' }) => {
   const { theme } = useTheme();
-  
+
   const getLogoPath = () => {
     return theme === 'dark' ? '/icons/DarkLogo.PNG' : '/icons/LightLogo.PNG';
   };
 
   const getSizeClass = () => {
     switch (size) {
-      case 'small': return 'logo-small';
-      case 'large': return 'logo-large';
-      case 'xlarge': return 'logo-xlarge';
-      case 'xxlarge': return 'logo-xxlarge';
-      default: return 'logo-medium';
+      case 'small':
+        return 'logo-small';
+      case 'large':
+        return 'logo-large';
+      case 'xlarge':
+        return 'logo-xlarge';
+      case 'xxlarge':
+        return 'logo-xxlarge';
+      default:
+        return 'logo-medium';
     }
   };
 
   return (
     <Link to="/" className={`${styles['logo-link']} ${className}`}>
       <div className={`${styles['logo-container']} ${getSizeClass()}`}>
-        <img 
-          src={getLogoPath()} 
-          alt="Oblako Logo" 
-          className={styles['logo-image']}
-        />
-        {showText && (
-          <span className={styles['logo-text']}>Oblako</span>
-        )}
+        <img src={getLogoPath()} alt="Oblako Logo" className={styles['logo-image']} />
+        {showText && <span className={styles['logo-text']}>Oblako</span>}
       </div>
     </Link>
   );
 };
 
-export default Logo; 
+export default Logo;

@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
-import { Map, Satellite, Mountain, Trash2, MapPin, LoaderCircle, XCircle, Droplet, Wind } from 'lucide-react';
+import {
+  Map,
+  Satellite,
+  Mountain,
+  Trash2,
+  MapPin,
+  LoaderCircle,
+  XCircle,
+  Droplet,
+  Wind,
+} from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import 'leaflet/dist/leaflet.css';
@@ -29,29 +39,37 @@ function MapController({ onLocationSelect, setMarkers }) {
         position: e.latlng,
         weather: null,
         loading: true,
-        error: ''
+        error: '',
       };
-      
-      setMarkers(prev => [...prev, newMarker]);
-      
+
+      setMarkers((prev) => [...prev, newMarker]);
+
       try {
-        const data = await queryClient.fetchQuery(weatherQueryOptions({ lat: e.latlng.lat, lon: e.latlng.lng }));
-        
-        setMarkers(prev => prev.map(marker => 
-          marker.id === newMarker.id 
-            ? { ...marker, weather: data, loading: false }
-            : marker
-        ));
-        
+        const data = await queryClient.fetchQuery(
+          weatherQueryOptions({ lat: e.latlng.lat, lon: e.latlng.lng }),
+        );
+
+        setMarkers((prev) =>
+          prev.map((marker) =>
+            marker.id === newMarker.id ? { ...marker, weather: data, loading: false } : marker,
+          ),
+        );
+
         if (onLocationSelect) onLocationSelect(data);
       } catch {
-        setMarkers(prev => prev.map(marker => 
-          marker.id === newMarker.id 
-            ? { ...marker, error: language === 'bg' ? 'Няма данни за времето' : 'No weather data', loading: false }
-            : marker
-        ));
+        setMarkers((prev) =>
+          prev.map((marker) =>
+            marker.id === newMarker.id
+              ? {
+                  ...marker,
+                  error: language === 'bg' ? 'Няма данни за времето' : 'No weather data',
+                  loading: false,
+                }
+              : marker,
+          ),
+        );
       }
-    }
+    },
   });
 
   return null;
@@ -59,7 +77,7 @@ function MapController({ onLocationSelect, setMarkers }) {
 
 function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSymbol }) {
   const { language } = useLanguage();
-  
+
   const getWeatherIcon = (iconCode) => {
     return getIconUrl(iconCode);
   };
@@ -74,7 +92,7 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
   if (!marker.weather && !marker.loading && !marker.error) return null;
 
   return (
-    <Marker 
+    <Marker
       position={marker.position}
       icon={L.divIcon({
         className: 'custom-marker',
@@ -82,39 +100,57 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
           marker.weather ? convertTemperature(marker.weather.current.temp) : '...'
         }</div>`,
         iconSize: [30, 30],
-        iconAnchor: [15, 15]
+        iconAnchor: [15, 15],
       })}
     >
       <Popup>
-        <div style={{minWidth: 150, textAlign: 'center'}}>
+        <div style={{ minWidth: 150, textAlign: 'center' }}>
           {marker.loading && (
             <div>
-              <span style={{display: 'inline-flex', alignItems: 'center', gap: 6}}><LoaderCircle size={14} /> {language === 'bg' ? 'Зареждане...' : 'Loading...'}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <LoaderCircle size={14} /> {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+              </span>
             </div>
           )}
           {marker.error && (
             <div>
-              <span style={{color: 'red', display: 'inline-flex', alignItems: 'center', gap: 6}}><XCircle size={14} /> {marker.error}</span>
+              <span style={{ color: 'red', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <XCircle size={14} /> {marker.error}
+              </span>
             </div>
           )}
           {marker.weather && (
             <div>
-              <h4 style={{margin: '0 0 8px 0', color: '#333'}}>
-                {marker.weather.place.name || language === 'bg' ? 'Неизвестно място' : 'Unknown location'}
+              <h4 style={{ margin: '0 0 8px 0', color: '#333' }}>
+                {marker.weather.place.name || language === 'bg'
+                  ? 'Неизвестно място'
+                  : 'Unknown location'}
               </h4>
-              <div style={{fontSize: '24px', fontWeight: 'bold', margin: '8px 0'}}>
-                {convertTemperature(marker.weather.current.temp)}{getTemperatureSymbol()}
+              <div style={{ fontSize: '24px', fontWeight: 'bold', margin: '8px 0' }}>
+                {convertTemperature(marker.weather.current.temp)}
+                {getTemperatureSymbol()}
               </div>
-              <div style={{margin: '8px 0', fontSize: '14px', color: '#666'}}>
+              <div style={{ margin: '8px 0', fontSize: '14px', color: '#666' }}>
                 {marker.weather.current.condition.description}
               </div>
-              <img 
-                src={getWeatherIcon(marker.weather.current.condition.icon)} 
-                alt="weather" 
-                style={{width: 50, height: 50}}
+              <img
+                src={getWeatherIcon(marker.weather.current.condition.icon)}
+                alt="weather"
+                style={{ width: 50, height: 50 }}
               />
-              <div style={{marginTop: '8px', fontSize: '12px', color: '#888', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6}}>
-                <Droplet size={14} /> {marker.weather.current.humidity}% | <Wind size={14} /> {Math.round((marker.weather.current.windSpeed || 0) * 3.6)} km/h
+              <div
+                style={{
+                  marginTop: '8px',
+                  fontSize: '12px',
+                  color: '#888',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                }}
+              >
+                <Droplet size={14} /> {marker.weather.current.humidity}% | <Wind size={14} />{' '}
+                {Math.round((marker.weather.current.windSpeed || 0) * 3.6)} km/h
               </div>
               <button
                 onClick={() => onRemove(marker.id)}
@@ -129,7 +165,7 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
                   fontSize: '12px',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
                 }}
               >
                 <XCircle size={14} /> {language === 'bg' ? 'Премахни' : 'Remove'}
@@ -154,17 +190,17 @@ function WeatherMap({ onLocationSelect }) {
 
   const mapTypes = {
     street: {
-      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     },
     satellite: {
-      url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      attribution: '&copy; <a href="https://www.esri.com/">Esri</a>'
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; <a href="https://www.esri.com/">Esri</a>',
     },
     terrain: {
-      url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-      attribution: '&copy; <a href="https://opentopomap.org/">OpenTopoMap</a>'
-    }
+      url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      attribution: '&copy; <a href="https://opentopomap.org/">OpenTopoMap</a>',
+    },
   };
 
   const clearAllMarkers = () => {
@@ -172,34 +208,38 @@ function WeatherMap({ onLocationSelect }) {
   };
 
   const removeMarker = (id) => {
-    setMarkers(prev => prev.filter(marker => marker.id !== id));
+    setMarkers((prev) => prev.filter((marker) => marker.id !== id));
   };
 
   return (
-    <div style={{
-      height: 400, 
-      width: '100%', 
-      margin: '30px 0 70px 0', 
-      borderRadius: 12, 
-      overflow: 'hidden', 
-      boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-      position: 'relative'
-    }}>
+    <div
+      style={{
+        height: 400,
+        width: '100%',
+        margin: '30px 0 70px 0',
+        borderRadius: 12,
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+        position: 'relative',
+      }}
+    >
       {/* Map Controls */}
       {showControls && (
-        <div style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          zIndex: 1000,
-          background: 'white',
-          borderRadius: '8px',
-          padding: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '5px'
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            zIndex: 1000,
+            background: 'white',
+            borderRadius: '8px',
+            padding: '8px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '5px',
+          }}
+        >
           <button
             onClick={() => setMapType('street')}
             style={{
@@ -212,7 +252,7 @@ function WeatherMap({ onLocationSelect }) {
               fontSize: '11px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '6px',
             }}
           >
             <Map size={14} /> {language === 'bg' ? 'Улица' : 'Street'}
@@ -229,7 +269,7 @@ function WeatherMap({ onLocationSelect }) {
               fontSize: '11px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '6px',
             }}
           >
             <Satellite size={14} /> {language === 'bg' ? 'Сателит' : 'Satellite'}
@@ -246,7 +286,7 @@ function WeatherMap({ onLocationSelect }) {
               fontSize: '11px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '6px',
             }}
           >
             <Mountain size={14} /> {language === 'bg' ? 'Терен' : 'Terrain'}
@@ -263,7 +303,7 @@ function WeatherMap({ onLocationSelect }) {
               fontSize: '11px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '6px',
             }}
           >
             <Trash2 size={14} /> {language === 'bg' ? 'Изчисти' : 'Clear'}
@@ -272,42 +312,41 @@ function WeatherMap({ onLocationSelect }) {
       )}
 
       {/* Instructions */}
-      <div style={{
-        position: 'absolute',
-        top: '10px',
-        left: '10px',
-        zIndex: 1000,
-        background: 'rgba(255,255,255,0.9)',
-        borderRadius: '8px',
-        padding: '8px 12px',
-        fontSize: '12px',
-        color: '#666',
-        maxWidth: '200px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px'
-      }}>
-        <MapPin size={14} /> {language === 'bg' ? 'Кликнете на картата за да добавите маркер' : 'Click on map to add marker'}
+      <div
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          zIndex: 1000,
+          background: 'rgba(255,255,255,0.9)',
+          borderRadius: '8px',
+          padding: '8px 12px',
+          fontSize: '12px',
+          color: '#666',
+          maxWidth: '200px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+        }}
+      >
+        <MapPin size={14} />{' '}
+        {language === 'bg'
+          ? 'Кликнете на картата за да добавите маркер'
+          : 'Click on map to add marker'}
       </div>
 
-      <MapContainer 
-        center={center} 
-        zoom={6} 
-        style={{height: '100%', width: '100%'}} 
+      <MapContainer
+        center={center}
+        zoom={6}
+        style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={true}
       >
-        <TileLayer
-          attribution={mapTypes[mapType].attribution}
-          url={mapTypes[mapType].url}
-        />
-        <MapController 
-          onLocationSelect={onLocationSelect} 
-          setMarkers={setMarkers}
-        />
-        {markers.map(marker => (
-          <WeatherMarker 
+        <TileLayer attribution={mapTypes[mapType].attribution} url={mapTypes[mapType].url} />
+        <MapController onLocationSelect={onLocationSelect} setMarkers={setMarkers} />
+        {markers.map((marker) => (
+          <WeatherMarker
             key={marker.id}
-            marker={marker} 
+            marker={marker}
             onRemove={removeMarker}
             convertTemperature={convertTemperature}
             getTemperatureSymbol={getTemperatureSymbol}
@@ -318,4 +357,4 @@ function WeatherMap({ onLocationSelect }) {
   );
 }
 
-export default WeatherMap; 
+export default WeatherMap;

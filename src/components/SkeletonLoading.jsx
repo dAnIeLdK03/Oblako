@@ -63,4 +63,4 @@ const SkeletonLoading = () => {
   );
 };
 
-export default SkeletonLoading; 
+export default SkeletonLoading;

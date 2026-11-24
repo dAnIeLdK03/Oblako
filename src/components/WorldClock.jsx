@@ -7,39 +7,39 @@ const WorldClock = ({ city, language, hasError = false }) => {
 
   // Времеви зони за различните градове
   const timeZones = {
-    'Sofia': 'Europe/Sofia',
-    'Plovdiv': 'Europe/Sofia',
-    'Varna': 'Europe/Sofia',
-    'Burgas': 'Europe/Sofia',
-    'London': 'Europe/London',
-    'Paris': 'Europe/Paris',
-    'Berlin': 'Europe/Berlin',
-    'Rome': 'Europe/Rome',
-    'Madrid': 'Europe/Madrid',
-    'Moscow': 'Europe/Moscow',
+    Sofia: 'Europe/Sofia',
+    Plovdiv: 'Europe/Sofia',
+    Varna: 'Europe/Sofia',
+    Burgas: 'Europe/Sofia',
+    London: 'Europe/London',
+    Paris: 'Europe/Paris',
+    Berlin: 'Europe/Berlin',
+    Rome: 'Europe/Rome',
+    Madrid: 'Europe/Madrid',
+    Moscow: 'Europe/Moscow',
     'New York': 'America/New_York',
     'Los Angeles': 'America/Los_Angeles',
-    'Tokyo': 'Asia/Tokyo',
-    'Beijing': 'Asia/Shanghai',
-    'Sydney': 'Australia/Sydney',
-    'Dubai': 'Asia/Dubai',
-    'Mumbai': 'Asia/Kolkata',
-    'Singapore': 'Asia/Singapore',
+    Tokyo: 'Asia/Tokyo',
+    Beijing: 'Asia/Shanghai',
+    Sydney: 'Australia/Sydney',
+    Dubai: 'Asia/Dubai',
+    Mumbai: 'Asia/Kolkata',
+    Singapore: 'Asia/Singapore',
     // Добавяме повече градове
-    'london': 'Europe/London',
-    'paris': 'Europe/Paris',
-    'berlin': 'Europe/Berlin',
-    'rome': 'Europe/Rome',
-    'madrid': 'Europe/Madrid',
-    'moscow': 'Europe/Moscow',
+    london: 'Europe/London',
+    paris: 'Europe/Paris',
+    berlin: 'Europe/Berlin',
+    rome: 'Europe/Rome',
+    madrid: 'Europe/Madrid',
+    moscow: 'Europe/Moscow',
     'new york': 'America/New_York',
     'los angeles': 'America/Los_Angeles',
-    'tokyo': 'Asia/Tokyo',
-    'beijing': 'Asia/Shanghai',
-    'sydney': 'Australia/Sydney',
-    'dubai': 'Asia/Dubai',
-    'mumbai': 'Asia/Kolkata',
-    'singapore': 'Asia/Singapore'
+    tokyo: 'Asia/Tokyo',
+    beijing: 'Asia/Shanghai',
+    sydney: 'Australia/Sydney',
+    dubai: 'Asia/Dubai',
+    mumbai: 'Asia/Kolkata',
+    singapore: 'Asia/Singapore',
   };
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const WorldClock = ({ city, language, hasError = false }) => {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
     });
   };
 
@@ -76,7 +76,7 @@ const WorldClock = ({ city, language, hasError = false }) => {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -84,20 +84,22 @@ const WorldClock = ({ city, language, hasError = false }) => {
     bg: {
       currentTime: 'Текущо време',
       in: 'в',
-      cityNotFound: 'Градът не е намерен'
+      cityNotFound: 'Градът не е намерен',
     },
     en: {
       currentTime: 'Current time',
       in: 'in',
-      cityNotFound: 'City not found'
-    }
+      cityNotFound: 'City not found',
+    },
   };
 
   const t = translations[language] || translations.bg;
 
   return (
     <div className="digital-clock-container">
-      <div className={`${styles['digital-clock']} ${isAnimating ? styles.animate : ''} ${hasError ? styles.error : ''}`}>
+      <div
+        className={`${styles['digital-clock']} ${isAnimating ? styles.animate : ''} ${hasError ? styles.error : ''}`}
+      >
         {hasError ? (
           <>
             <div className={styles['time-display']}>--:--:--</div>
@@ -119,4 +121,4 @@ const WorldClock = ({ city, language, hasError = false }) => {
   );
 };
 
-export default WorldClock; 
+export default WorldClock;
