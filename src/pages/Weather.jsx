@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { lazy, useState } from 'react';
 import HourlyForecast from '../components/HourlyForecast.jsx';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import { useHistory } from '../HistoryContext.jsx';
 import SunriseSunset from '../components/SunriseSunset.jsx';
-import WeatherMap from '../components/WeatherMap.jsx';
+import { LazyBoundary, MapPlaceholder } from '../components/LazyBoundary.jsx';
 import WorldClock from '../components/WorldClock.jsx';
 import { useEffect } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
@@ -14,6 +14,9 @@ import { useWeather } from '../hooks/useWeather.js';
 import { useSeo } from '../hooks/useSeo.js';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
 import styles from './Weather.module.css';
+
+// Leaflet (картата) е в отделен пакет и се зарежда само на тази страница.
+const WeatherMap = lazy(() => import('../components/WeatherMap.jsx'));
 
 function Weather() {
   const { language, changeLanguage, t } = useLanguage();
@@ -267,7 +270,9 @@ function Weather() {
 
           {/* Интерактивна карта най-отдолу */}
           <div className="wp-section">
-            <WeatherMap onLocationSelect={handleMapWeather} />
+            <LazyBoundary fallback={<MapPlaceholder />}>
+              <WeatherMap onLocationSelect={handleMapWeather} />
+            </LazyBoundary>
           </div>
         </PullToRefresh>
       </div>

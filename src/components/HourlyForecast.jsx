@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { lazy, useState } from 'react';
 import { Droplet } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from './Logo.jsx';
-import TemperatureChart from './TemperatureChart.jsx';
+import { LazyBoundary, ChartPlaceholder } from './LazyBoundary.jsx';
 import { getIconUrl } from '../services/weather';
 import styles from './HourlyForecast.module.css';
+
+// Chart.js е в отделен пакет и се зарежда при първо показване на графиката.
+const TemperatureChart = lazy(() => import('./TemperatureChart.jsx'));
 
 function HourlyForecast({ weather }) {
   const { t } = useLanguage();
@@ -51,7 +54,9 @@ function HourlyForecast({ weather }) {
 
       {/* Temperature Chart */}
       <div className={styles['scroll-x']}>
-        <TemperatureChart weather={weather} type={chartType} />
+        <LazyBoundary fallback={<ChartPlaceholder />}>
+          <TemperatureChart weather={weather} type={chartType} />
+        </LazyBoundary>
       </div>
 
       {/* Hourly forecast cards */}

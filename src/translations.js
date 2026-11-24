@@ -61,6 +61,8 @@ export const translations = {
     cityNotFound: 'Градът не е намерен',
     offlineNotice:
       'Няма връзка с интернет. Показва се последно запазената прогноза, която може да е остаряла.',
+    loadError: 'Не успяхме да заредим тази част от страницата. Проверете връзката си.',
+    reloadPage: 'Презареди',
     locationError: 'Не може да се определи местоположението',
     locationPermissionDenied: 'Достъпът до местоположението е отказан',
     locationUnavailable: 'Местоположението е недостъпно',
@@ -155,6 +157,8 @@ export const translations = {
     // Error messages
     cityNotFound: 'City not found',
     offlineNotice: 'You are offline. Showing the last saved forecast, which may be out of date.',
+    loadError: "We couldn't load this part of the page. Check your connection.",
+    reloadPage: 'Reload',
     locationError: 'Cannot determine location',
     locationPermissionDenied: 'Location access denied',
     locationUnavailable: 'Location unavailable',

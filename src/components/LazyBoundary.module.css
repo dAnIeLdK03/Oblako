@@ -1,0 +1,49 @@
+.placeholder {
+  background: var(--bg-color2);
+  border-radius: 12px;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* Същите размери като WeatherMap (400px, margin 30/70) и TemperatureChart (300px + padding) */
+.map {
+  height: 400px;
+  margin: 30px 0 70px;
+}
+
+.chart {
+  height: 340px;
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .chart {
+    height: 280px;
+  }
+}
+
+.page-fallback {
+  min-height: 60vh;
+}
+
+.load-error {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.load-error button {
+  margin-top: 8px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background: #74b9ff;
+  color: #222;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
