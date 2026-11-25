@@ -1,8 +1,14 @@
+// @ts-check
 // ЕДИНСТВЕНИЯТ файл, който знае за конкретния доставчик (Open-Meteo + BigDataCloud).
 // За смяна на API се пренаписва само той — трябва да експортира:
 //   NAME, searchCity(text, {count}), reverseGeocode(lat, lon), fetchWeather({lat, lon}, {days})
 // и да връща данни в собствения модел (виж index.js). Единици: °C, m/s, hPa, метри, unix секунди.
 import { WeatherError, isAbortError } from './errors.js';
+
+/** @typedef {import('./index.js').Forecast} Forecast */
+/** @typedef {import('./index.js').CityMatch} CityMatch */
+/** @typedef {import('./index.js').Condition} Condition */
+/** @typedef {import('./index.js').ConditionGroup} ConditionGroup */
 
 export const NAME = 'openmeteo';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
@@ -13,12 +19,18 @@ const TIMEOUT_MS = 10000;
 
 const abortError = () => new DOMException('Aborted', 'AbortError');
 
+/** @param {number} status */
 function statusError(status) {
   const code = status === 429 ? 'RATE_LIMIT' : status >= 500 ? 'SERVER' : 'UNAVAILABLE';
   return new WeatherError(code, `${NAME} HTTP ${status}`, { status, provider: NAME });
 }
 
 // Една заявка с таймаут; `signal` позволява на извикващия да я отмени.
+/**
+ * @param {string} url
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<any>}
+ */
 async function request(url, signal) {
   if (signal?.aborted) throw abortError();
 
@@ -64,6 +76,7 @@ const getJson = request;
 // ---- Състояния: WMO код -> собствен модел { group, description, icon, isDay } ----
 // group: clear | clouds | drizzle | rain | snow | thunderstorm | fog
 // icon: име на файл в public/weather-icons (без d/n за иконите, които нямат нощен вариант)
+/** @type {Record<number, [ConditionGroup, string, string]>} */
 const WMO = {
   0: ['clear', 'clear sky', '01'],
   1: ['clouds', 'few clouds', '02'],
@@ -95,12 +108,22 @@ const WMO = {
   99: ['thunderstorm', 'thunderstorm with heavy rain', '11'],
 };
 
+/**
+ * @param {number} code  WMO код
+ * @param {boolean} [isDay]
+ * @returns {Condition}
+ */
 function condition(code, isDay = true) {
   const [group, description, base] = WMO[code] || WMO[0];
   return { group, description, icon: `${base}${isDay ? 'd' : 'n'}`, isDay };
 }
 
 // ---- Геокодиране ----
+/**
+ * @param {string} text
+ * @param {{ count?: number, signal?: AbortSignal }} [opts]
+ * @returns {Promise<CityMatch[]>}
+ */
 export async function searchCity(text, { count = 5, signal } = {}) {
   const name = text.trim();
   if (!name) return [];
@@ -117,6 +140,12 @@ export async function searchCity(text, { count = 5, signal } = {}) {
   }));
 }
 
+/**
+ * @param {number} lat
+ * @param {number} lon
+ * @param {{ signal?: AbortSignal }} [opts]
+ * @returns {Promise<{ name: string, country: string } | null>}
+ */
 export async function reverseGeocode(lat, lon, { signal } = {}) {
   try {
     const d = await getJson(
@@ -134,6 +163,11 @@ export async function reverseGeocode(lat, lon, { signal } = {}) {
 // ---- Времето ----
 const mean = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
 
+/**
+ * @param {{ lat: number, lon: number }} coords
+ * @param {{ days?: number, signal?: AbortSignal }} [opts]
+ * @returns {Promise<Forecast>}
+ */
 export async function fetchWeather({ lat, lon }, { days = 7, signal } = {}) {
   const data = await getJson(
     `${FORECAST_URL}?latitude=${lat}&longitude=${lon}` +

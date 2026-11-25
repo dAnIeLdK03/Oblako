@@ -1,30 +1,114 @@
+// @ts-check
 // Единна входна точка за данни за времето. UI-ът ползва САМО този модул и модела по-долу.
 // Конкретният API живее в ./openmeteo.js — за смяна се подменя само импортът по-долу.
 //
-// Модел (единици: °C, m/s, hPa, метри, unix секунди):
-//   getWeather() -> {
-//     provider, utcOffset,
-//     place:   { name, named (false = само координати), country, lat, lon, utcOffset },
-//     current: { time, localTime, temp, feelsLike, humidity, pressure, visibility,
-//                windSpeed, windDeg, cloudCover, uv, sunrise, sunset, condition },
-//     hourly:  [{ time, localTime, hour, temp, feelsLike, humidity, pressure, visibility,
-//                 windSpeed, windDeg, precipProbability (0-100), condition }]   // стъпка 1 час
-//     daily:   [{ date 'YYYY-MM-DD', tempMax, tempMin, feelsLikeMax, feelsLikeMin, humidity,
-//                 pressure, visibility, windSpeed (макс.), windDeg, precipProbability (0-100),
-//                 precipSum (mm), uvMax, sunrise, sunset, condition }]
-//   }
-//   condition: { group: clear|clouds|drizzle|rain|snow|thunderstorm|fog,
-//                description (англ. текст), icon, isDay }
-//   localTime е "YYYY-MM-DDTHH:mm" по часа на самото място (new Date(localTime) го показва правилно).
+// Единици: °C, m/s, hPa, метри, unix секунди. localTime е "YYYY-MM-DDTHH:mm" по часа на самото
+// място (new Date(localTime) го показва правилно). Типовете са JSDoc, проверяват се от редактора
+// (// @ts-check); ползват се така:  /** @type {import('../services/weather/index.js').WeatherData} */
+
+/**
+ * @typedef {'clear' | 'clouds' | 'drizzle' | 'rain' | 'snow' | 'thunderstorm' | 'fog'} ConditionGroup
+ *
+ * @typedef {object} Condition
+ * @property {ConditionGroup} group
+ * @property {string} description  английски текст, напр. "light rain"
+ * @property {string} icon         напр. "10d"; подава се на getIconUrl()
+ * @property {boolean} isDay
+ *
+ * @typedef {object} Place
+ * @property {string} name
+ * @property {boolean} named       false = известни са само координатите (името е "42.70, 23.32")
+ * @property {string} country
+ * @property {number} lat
+ * @property {number} lon
+ * @property {number} utcOffset
+ *
+ * @typedef {object} CurrentWeather
+ * @property {number} time         unix секунди
+ * @property {string} localTime
+ * @property {number} temp
+ * @property {number} feelsLike
+ * @property {number} humidity
+ * @property {number} pressure
+ * @property {number} visibility
+ * @property {number} windSpeed
+ * @property {number} windDeg
+ * @property {number} cloudCover
+ * @property {number} uv
+ * @property {number} sunrise      unix секунди
+ * @property {number} sunset       unix секунди
+ * @property {Condition} condition
+ *
+ * @typedef {object} HourlyPoint   стъпка 1 час
+ * @property {number} time
+ * @property {string} localTime
+ * @property {number} hour         час на мястото (0-23)
+ * @property {number} temp
+ * @property {number} feelsLike
+ * @property {number} humidity
+ * @property {number} pressure
+ * @property {number} visibility
+ * @property {number} windSpeed
+ * @property {number} windDeg
+ * @property {number} precipProbability  0-100
+ * @property {Condition} condition
+ *
+ * @typedef {object} DailyPoint
+ * @property {string} date         "YYYY-MM-DD"
+ * @property {number} tempMax
+ * @property {number} tempMin
+ * @property {number} feelsLikeMax
+ * @property {number} feelsLikeMin
+ * @property {number} humidity
+ * @property {number} pressure
+ * @property {number} visibility
+ * @property {number} windSpeed    максималната за деня
+ * @property {number} windDeg
+ * @property {number} precipProbability  0-100
+ * @property {number} precipSum    mm
+ * @property {number} uvMax
+ * @property {number} sunrise
+ * @property {number} sunset
+ * @property {Condition} condition
+ *
+ * @typedef {object} Forecast      това връща доставчикът (openmeteo.js)
+ * @property {number} utcOffset
+ * @property {CurrentWeather} current
+ * @property {HourlyPoint[]} hourly
+ * @property {DailyPoint[]} daily
+ *
+ * @typedef {Forecast & { provider: string, place: Place }} WeatherData   това връща getWeather()
+ *
+ * @typedef {{ city: string, lat?: undefined, lon?: undefined }
+ *   | { city?: undefined, lat: number, lon: number }} WeatherQuery   град ИЛИ координати
+ *
+ * @typedef {object} CityMatch     резултат от търсене на град
+ * @property {string} name
+ * @property {string} country
+ * @property {string} region
+ * @property {number} lat
+ * @property {number} lon
+ */
+
 import * as provider from './openmeteo.js';
 import { WeatherError, isAbortError } from './errors.js';
 
 export { getIconUrl } from './icons.js';
 export { WeatherError, isAbortError };
 
+/**
+ * @param {string} text
+ * @param {{ count?: number, signal?: AbortSignal }} [opts]
+ * @returns {Promise<CityMatch[]>}
+ */
 export const searchCity = (text, opts) => provider.searchCity(text, opts);
 
 // "Sofia" или "Sofia, BG" / "Sofia, Bulgaria"
+/**
+ * @param {string} city
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<CityMatch>}
+ */
 async function geocode(city, signal) {
   const [name, ...rest] = city.split(',').map((s) => s.trim());
   const hint = rest.join(' ').toLowerCase();
@@ -35,8 +119,13 @@ async function geocode(city, signal) {
   return match || results[0];
 }
 
-// query: { city } или { lat, lon }.  opts.days — дни напред (по подразбиране 7, до 16).
-// opts.signal — AbortSignal; при отказ се хвърля AbortError (виж isAbortError).
+/**
+ * query: { city } или { lat, lon }.  opts.days — дни напред (по подразбиране 7, до 16).
+ * opts.signal — AbortSignal; при отказ се хвърля AbortError (виж isAbortError).
+ * @param {WeatherQuery} query
+ * @param {{ days?: number, signal?: AbortSignal }} [opts]
+ * @returns {Promise<WeatherData>}
+ */
 export async function getWeather(query, { days = 7, signal } = {}) {
   let place;
   let weather;
@@ -46,16 +135,18 @@ export async function getWeather(query, { days = 7, signal } = {}) {
     weather = await provider.fetchWeather(place, { days, signal });
   } else {
     // По координати: името на мястото се търси паралелно с времето.
+    // (Заявка без град е заявка по координати; празен град не е валидна заявка.)
+    const { lat, lon } = /** @type {{ lat: number, lon: number }} */ (query);
     const [found, data] = await Promise.all([
-      provider.reverseGeocode(query.lat, query.lon, { signal }),
-      provider.fetchWeather(query, { days, signal }),
+      provider.reverseGeocode(lat, lon, { signal }),
+      provider.fetchWeather({ lat, lon }, { days, signal }),
     ]);
     named = Boolean(found?.name);
     place = {
-      name: found?.name || `${Number(query.lat).toFixed(2)}, ${Number(query.lon).toFixed(2)}`,
+      name: found?.name || `${Number(lat).toFixed(2)}, ${Number(lon).toFixed(2)}`,
       country: found?.country || '',
-      lat: query.lat,
-      lon: query.lon,
+      lat,
+      lon,
     };
     weather = data;
   }
