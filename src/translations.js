@@ -63,6 +63,14 @@ export const translations = {
       'Няма връзка с интернет. Показва се последно запазената прогноза, която може да е остаряла.',
     loadError: 'Не успяхме да заредим тази част от страницата. Проверете връзката си.',
     reloadPage: 'Презареди',
+
+    // Footer
+    footerRights: 'Всички права запазени.',
+    footerWeatherTips: 'Съвети за времето',
+    footerTerms: 'Условия за ползване',
+    footerPrivacy: 'Правила за поверителност',
+    footerCookies: 'Политика за бисквитки',
+    footerDataBy: 'Метеорологични данни от',
     locationError: 'Не може да се определи местоположението',
     locationPermissionDenied: 'Достъпът до местоположението е отказан',
     locationUnavailable: 'Местоположението е недостъпно',
@@ -159,6 +167,14 @@ export const translations = {
     offlineNotice: 'You are offline. Showing the last saved forecast, which may be out of date.',
     loadError: "We couldn't load this part of the page. Check your connection.",
     reloadPage: 'Reload',
+
+    // Footer
+    footerRights: 'All rights reserved.',
+    footerWeatherTips: 'Weather Tips',
+    footerTerms: 'Terms of Use',
+    footerPrivacy: 'Privacy Policy',
+    footerCookies: 'Cookie Policy',
+    footerDataBy: 'Weather data by',
     locationError: 'Cannot determine location',
     locationPermissionDenied: 'Location access denied',
     locationUnavailable: 'Location unavailable',
