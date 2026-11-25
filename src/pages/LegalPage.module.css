@@ -1,0 +1,48 @@
+/* Общ стил на правните страници (Terms, Privacy, Cookies). Цветовете са от темата,
+   така че картата е светла в светла и тъмна в тъмна тема. */
+
+.page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  background: var(--bg-color2);
+  color: var(--text-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Линковете се отличават с подчертаване (не само с цвят) и са четими във всяка тема */
+.page a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+}

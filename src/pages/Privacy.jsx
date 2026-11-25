@@ -2,33 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSeo } from '../hooks/useSeo.js';
 import Logo from '../components/Logo.jsx';
-
-const th = { textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd' };
-const td = { padding: '6px 8px', borderBottom: '1px solid #eee', verticalAlign: 'top' };
+import styles from './LegalPage.module.css';
 
 function Privacy() {
   useSeo('privacy');
   return (
-    <div
-      style={{
-        maxWidth: 700,
-        margin: '40px auto',
-        padding: 20,
-        background: '#fff',
-        color: '#222',
-        borderRadius: 8,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '15px',
-          marginBottom: '20px',
-        }}
-      >
+    <div className={styles.page}>
+      <div className={styles.header}>
         <Logo size="xlarge" showText={false} />
         <h2>Правила за поверителност</h2>
       </div>
@@ -127,40 +107,40 @@ function Privacy() {
         Когато браузърът Ви зарежда съдържание от друг сървър, той получава IP адреса Ви. При Oblako
         това са:
       </p>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 14 }}>
+      <div className={styles['table-wrap']}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              <th style={th}>Услуга</th>
-              <th style={th}>Кога</th>
-              <th style={th}>Освен IP получава</th>
+              <th>Услуга</th>
+              <th>Кога</th>
+              <th>Освен IP получава</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style={td}>Open-Meteo</td>
-              <td style={td}>Винаги при показване на време</td>
-              <td style={td}>Координати или въведен град</td>
+              <td>Open-Meteo</td>
+              <td>Винаги при показване на време</td>
+              <td>Координати или въведен град</td>
             </tr>
             <tr>
-              <td style={td}>BigDataCloud</td>
-              <td style={td}>При определяне на име по координати</td>
-              <td style={td}>Координати</td>
+              <td>BigDataCloud</td>
+              <td>При определяне на име по координати</td>
+              <td>Координати</td>
             </tr>
             <tr>
-              <td style={td}>OpenStreetMap, OpenTopoMap, Esri</td>
-              <td style={td}>При зареждане на картата (според избрания слой)</td>
-              <td style={td}>Кои части от картата гледате, т.е. приблизителната област</td>
+              <td>OpenStreetMap, OpenTopoMap, Esri</td>
+              <td>При зареждане на картата (според избрания слой)</td>
+              <td>Кои части от картата гледате, т.е. приблизителната област</td>
             </tr>
             <tr>
-              <td style={td}>Cloudflare (cdnjs)</td>
-              <td style={td}>При показване на стандартни иконки на картата</td>
-              <td style={td}>—</td>
+              <td>Cloudflare (cdnjs)</td>
+              <td>При показване на стандартни иконки на картата</td>
+              <td>—</td>
             </tr>
             <tr>
-              <td style={td}>Google</td>
-              <td style={td}>Само със съгласие за статистика</td>
-              <td style={td}>Данните за посещението (вж. по-горе)</td>
+              <td>Google</td>
+              <td>Само със съгласие за статистика</td>
+              <td>Данните за посещението (вж. по-горе)</td>
             </tr>
           </tbody>
         </table>

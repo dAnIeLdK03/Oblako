@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext.jsx';
 import Logo from './Logo.jsx';
+import styles from './Footer.module.css';
 
 function Footer() {
   const { language } = useLanguage();
@@ -26,58 +27,35 @@ function Footer() {
   const t = content[language] || content.en;
 
   return (
-    <footer
-      style={{
-        width: '100%',
-        background: 'var(--bg-color1)',
-        color: '#888',
-        fontSize: '14px',
-        textAlign: 'center',
-        fontWeight: 'normal',
-        boxShadow: '0 -1px 8px rgba(0,0,0,0.04)',
-        padding: '16px 0',
-        borderTop: '1px solid var(--border-color)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '10px',
-          marginBottom: '5px',
-        }}
-      >
+    <footer className={styles.footer}>
+      <div className={styles.brand}>
         <Logo size="small" showText={false} />
         <span>{language === 'bg' ? 'Всички права запазени.' : 'All rights reserved.'}</span>
       </div>
-      <span style={{ fontWeight: 'bold' }}>
-        <Link
-          to="/weather-tips"
-          style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}
-        >
+      <span className={styles.links}>
+        <Link to="/weather-tips" className={styles.link}>
           {t.weatherTips}
         </Link>{' '}
         |
-        <Link to="/terms" style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}>
+        <Link to="/terms" className={styles.link}>
           {t.terms}
         </Link>{' '}
         |
-        <Link to="/privacy" style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}>
+        <Link to="/privacy" className={styles.link}>
           {t.privacy}
         </Link>{' '}
         |
-        <Link to="/cookies" style={{ color: '#888', textDecoration: 'underline', margin: '0 5px' }}>
+        <Link to="/cookies" className={styles.link}>
           {t.cookies}
         </Link>
       </span>
-      <div style={{ marginTop: '6px', fontSize: '12px' }}>
+      <div className={styles.credit}>
         {language === 'bg' ? 'Метеорологични данни от ' : 'Weather data by '}
         <a
           href="https://open-meteo.com/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: '#888', textDecoration: 'underline' }}
+          className={styles.link}
         >
           Open-Meteo.com
         </a>

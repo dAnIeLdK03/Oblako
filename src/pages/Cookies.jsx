@@ -2,33 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSeo } from '../hooks/useSeo.js';
 import Logo from '../components/Logo.jsx';
-
-const th = { textAlign: 'left', padding: '6px 8px', borderBottom: '2px solid #ddd' };
-const td = { padding: '6px 8px', borderBottom: '1px solid #eee', verticalAlign: 'top' };
+import styles from './LegalPage.module.css';
 
 function Cookies() {
   useSeo('cookies');
   return (
-    <div
-      style={{
-        maxWidth: 700,
-        margin: '40px auto',
-        padding: 20,
-        background: '#fff',
-        color: '#222',
-        borderRadius: 8,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '15px',
-          marginBottom: '20px',
-        }}
-      >
+    <div className={styles.page}>
+      <div className={styles.header}>
         <Logo size="xlarge" showText={false} />
         <h2>Политика за бисквитки</h2>
       </div>
@@ -44,44 +24,44 @@ function Cookies() {
 
       <h3>Функционални (винаги)</h3>
       <p>Нужни са за работата на приложението и не се изпращат на трети страни:</p>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 14 }}>
+      <div className={styles['table-wrap']}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              <th style={th}>Ключ</th>
-              <th style={th}>За какво е</th>
+              <th>Ключ</th>
+              <th>За какво е</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style={td}>
+              <td>
                 <code>oblako_cookie_consent</code>
               </td>
-              <td style={td}>Изборът Ви за бисквитки („всички" или „функционални")</td>
+              <td>Изборът Ви за бисквитки („всички" или „функционални")</td>
             </tr>
             <tr>
-              <td style={td}>
+              <td>
                 <code>oblako_language</code>
               </td>
-              <td style={td}>Избраният език</td>
+              <td>Избраният език</td>
             </tr>
             <tr>
-              <td style={td}>
+              <td>
                 <code>weatherAppTheme</code>
               </td>
-              <td style={td}>Избраната тема (светла/тъмна); липсва при автоматичен избор</td>
+              <td>Избраната тема (светла/тъмна); липсва при автоматичен избор</td>
             </tr>
             <tr>
-              <td style={td}>
+              <td>
                 <code>oblako_history</code>
               </td>
-              <td style={td}>Последните 5 търсени града</td>
+              <td>Последните 5 търсени града</td>
             </tr>
             <tr>
-              <td style={td}>
+              <td>
                 <code>oblako_last_query</code>
               </td>
-              <td style={td}>
+              <td>
                 Последното показано място (координати, закръглени до около 1 км, и име) — за
                 показване без интернет
               </td>
@@ -109,29 +89,29 @@ function Cookies() {
         Ако изберете „Приемам всички", се зарежда Google Analytics 4 (Google Ireland Limited), който
         задава следните бисквитки:
       </p>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 14 }}>
+      <div className={styles['table-wrap']}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              <th style={th}>Бисквитка</th>
-              <th style={th}>За какво е</th>
-              <th style={th}>Срок</th>
+              <th>Бисквитка</th>
+              <th>За какво е</th>
+              <th>Срок</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style={td}>
+              <td>
                 <code>_ga</code>
               </td>
-              <td style={td}>Случаен идентификатор, с който различава посетителите</td>
-              <td style={td}>до 2 години</td>
+              <td>Случаен идентификатор, с който различава посетителите</td>
+              <td>до 2 години</td>
             </tr>
             <tr>
-              <td style={td}>
+              <td>
                 <code>_ga_RKJ1SRJKBX</code>
               </td>
-              <td style={td}>Състояние на сесията</td>
-              <td style={td}>до 2 години</td>
+              <td>Състояние на сесията</td>
+              <td>до 2 години</td>
             </tr>
           </tbody>
         </table>

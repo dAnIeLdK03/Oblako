@@ -687,11 +687,6 @@ select,
   .app-container {
     flex-direction: column;
   }
-  .navigation div[style*='position: fixed'] {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
 }
 
 @media (max-width: 768px) {
@@ -761,84 +756,6 @@ select,
   }
   .temp-min {
     font-size: 0.9rem;
-  }
-}
-
-/* Draggable menu button hover effects */
-
-.navigation div[style*='position: fixed']:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
-/* Light theme button visibility */
-
-.light-theme .navigation div[style*='position: fixed'] {
-  background: var(--accent-color) !important;
-  border: 2px solid var(--border-color) !important;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.2) !important;
-}
-
-.light-theme .navigation div[style*='position: fixed']:hover {
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.5),
-    0 4px 12px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* Footer responsive styles */
-
-@media (max-width: 768px) {
-  footer[style*='position: fixed'] {
-    font-size: 12px !important;
-    padding: 8px 0 !important;
-  }
-  footer[style*='position: fixed'] a {
-    margin: 0 3px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  footer[style*='position: fixed'] {
-    font-size: 11px !important;
-    padding: 6px 0 !important;
-  }
-  footer[style*='position: fixed'] a {
-    margin: 0 2px !important;
-  }
-}
-
-/* Mobile button styles */
-
-@media (max-width: 768px) {
-  .navigation div[style*='position: fixed'] {
-    min-width: 45px;
-    min-height: 45px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    touch-action: manipulation;
-  }
-  .light-theme .navigation div[style*='position: fixed'] {
-    box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.4),
-      0 2px 8px rgba(0, 0, 0, 0.2) !important;
-  }
-  .navigation div[style*='position: fixed']:active {
-    transform: scale(0.95);
-    transition: transform 0.1s ease;
-  }
-  .navigation div[style*='position: fixed'] * {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  .light-theme .navigation div[style*='position: fixed'] span {
-    background: white !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
   }
 }
 

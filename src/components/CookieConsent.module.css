@@ -1,0 +1,46 @@
+/* Стилове на банера за бисквитки. Класовете са локални за файла (CSS Modules). */
+
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--bg-color3);
+  color: var(--text-color);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -2px 12px var(--shadow);
+  padding: 16px 10px;
+  text-align: center;
+  z-index: 9999;
+  font-size: 15px;
+}
+
+.banner a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.button {
+  border-radius: 4px;
+  padding: 6px 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.accept {
+  margin-left: 16px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: none;
+}
+
+.accept:hover {
+  background: var(--button-hover);
+}
+
+.decline {
+  margin-left: 8px;
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}

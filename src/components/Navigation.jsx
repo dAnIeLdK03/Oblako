@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
@@ -12,6 +12,7 @@ function Navigation() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuButtonRef = useRef(null);
 
   const menuItems = [
     {
@@ -82,7 +83,7 @@ function Navigation() {
       const isMobile = window.innerWidth <= 768;
       if (isMobile && isMenuOpen) {
         const nav = document.querySelector('.navigation');
-        const button = document.querySelector('[style*="position: fixed"]');
+        const button = menuButtonRef.current;
 
         if (nav && !nav.contains(e.target) && button && !button.contains(e.target)) {
           setIsMenuOpen(false);
@@ -96,63 +97,16 @@ function Navigation() {
 
   return (
     <>
-      {/* Draggable menu button */}
+      {/* Бутон за менюто */}
       <div
-        style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          zIndex: 99999,
-          width: window.innerWidth <= 768 ? '45px' : '40px',
-          height: window.innerWidth <= 768 ? '45px' : '40px',
-          background: 'var(--accent-color)',
-          border: '2px solid var(--border-color)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '12px',
-          cursor: 'pointer',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: window.innerWidth <= 768 ? '10px' : '8px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2)',
-          userSelect: 'none',
-          transition: 'all 0.2s ease',
-          touchAction: 'none',
-        }}
+        ref={menuButtonRef}
+        className={styles['menu-button']}
         onClick={toggleMenu}
         title={language === 'bg' ? 'Отвори меню' : 'Open menu'}
       >
-        <span
-          style={{
-            width: '100%',
-            height: window.innerWidth <= 768 ? '4px' : '3px',
-            background: 'white',
-            margin: '1px 0',
-            borderRadius: '2px',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.3)',
-          }}
-        ></span>
-        <span
-          style={{
-            width: '100%',
-            height: window.innerWidth <= 768 ? '4px' : '3px',
-            background: 'white',
-            margin: '1px 0',
-            borderRadius: '2px',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.3)',
-          }}
-        ></span>
-        <span
-          style={{
-            width: '100%',
-            height: window.innerWidth <= 768 ? '4px' : '3px',
-            background: 'white',
-            margin: '1px 0',
-            borderRadius: '2px',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.3)',
-          }}
-        ></span>
+        <span className={styles['menu-bar']}></span>
+        <span className={styles['menu-bar']}></span>
+        <span className={styles['menu-bar']}></span>
       </div>
 
       <nav className={`navigation ${isMenuOpen ? styles.open : ''}`}>

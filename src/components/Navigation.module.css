@@ -34,6 +34,62 @@
   }
 }
 
+/* Бутон за менюто (фиксиран горе вдясно) */
+.menu-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: var(--accent);
+  border: 2px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  transition: all 0.2s ease;
+  touch-action: none;
+}
+
+.menu-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.menu-bar {
+  width: 100%;
+  height: 3px;
+  background: white;
+  margin: 1px 0;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .menu-button {
+    width: 45px;
+    height: 45px;
+    padding: 10px;
+    touch-action: manipulation;
+  }
+  .menu-button:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+  .menu-bar {
+    height: 4px;
+  }
+}
+
 :global(.navigation).open {
   transform: translateX(0);
 }
@@ -186,12 +242,12 @@
 }
 
 .lang-btn:global(.active) {
-  background: var(--accent-color);
+  background: var(--accent);
   color: white;
 }
 
 .theme-indicator:hover {
-  background: var(--accent-color);
+  background: var(--accent);
   color: white;
 }
 

@@ -104,70 +104,45 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
       })}
     >
       <Popup>
-        <div style={{ minWidth: 150, textAlign: 'center' }}>
+        <div className={styles.popup}>
           {marker.loading && (
             <div>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span className={styles['popup-status']}>
                 <LoaderCircle size={14} /> {language === 'bg' ? 'Зареждане...' : 'Loading...'}
               </span>
             </div>
           )}
           {marker.error && (
             <div>
-              <span style={{ color: 'red', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span className={`${styles['popup-status']} ${styles['popup-error']}`}>
                 <XCircle size={14} /> {marker.error}
               </span>
             </div>
           )}
           {marker.weather && (
             <div>
-              <h4 style={{ margin: '0 0 8px 0', color: '#333' }}>
+              <h4 className={styles['popup-title']}>
                 {marker.weather.place.name || language === 'bg'
                   ? 'Неизвестно място'
                   : 'Unknown location'}
               </h4>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', margin: '8px 0' }}>
+              <div className={styles['popup-temp']}>
                 {convertTemperature(marker.weather.current.temp)}
                 {getTemperatureSymbol()}
               </div>
-              <div style={{ margin: '8px 0', fontSize: '14px', color: '#666' }}>
+              <div className={styles['popup-desc']}>
                 {marker.weather.current.condition.description}
               </div>
               <img
                 src={getWeatherIcon(marker.weather.current.condition.icon)}
                 alt="weather"
-                style={{ width: 50, height: 50 }}
+                className={styles['popup-icon']}
               />
-              <div
-                style={{
-                  marginTop: '8px',
-                  fontSize: '12px',
-                  color: '#888',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                }}
-              >
+              <div className={styles['popup-meta']}>
                 <Droplet size={14} /> {marker.weather.current.humidity}% | <Wind size={14} />{' '}
                 {Math.round((marker.weather.current.windSpeed || 0) * 3.6)} km/h
               </div>
-              <button
-                onClick={() => onRemove(marker.id)}
-                style={{
-                  marginTop: '8px',
-                  padding: '4px 8px',
-                  background: '#ff4444',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
+              <button onClick={() => onRemove(marker.id)} className={styles['popup-remove']}>
                 <XCircle size={14} /> {language === 'bg' ? 'Премахни' : 'Remove'}
               </button>
             </div>
@@ -211,100 +186,29 @@ function WeatherMap({ onLocationSelect }) {
     setMarkers((prev) => prev.filter((marker) => marker.id !== id));
   };
 
+  const mapButtons = [
+    { type: 'street', Icon: Map, label: language === 'bg' ? 'Улица' : 'Street' },
+    { type: 'satellite', Icon: Satellite, label: language === 'bg' ? 'Сателит' : 'Satellite' },
+    { type: 'terrain', Icon: Mountain, label: language === 'bg' ? 'Терен' : 'Terrain' },
+  ];
+
   return (
-    <div
-      style={{
-        height: 400,
-        width: '100%',
-        margin: '30px 0 70px 0',
-        borderRadius: 12,
-        overflow: 'hidden',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-        position: 'relative',
-      }}
-    >
+    <div className={styles['map-wrapper']}>
       {/* Map Controls */}
       {showControls && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            zIndex: 1000,
-            background: 'white',
-            borderRadius: '8px',
-            padding: '8px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '5px',
-          }}
-        >
-          <button
-            onClick={() => setMapType('street')}
-            style={{
-              padding: '4px 8px',
-              background: mapType === 'street' ? '#007bff' : '#f8f9fa',
-              color: mapType === 'street' ? 'white' : '#333',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '11px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <Map size={14} /> {language === 'bg' ? 'Улица' : 'Street'}
-          </button>
-          <button
-            onClick={() => setMapType('satellite')}
-            style={{
-              padding: '4px 8px',
-              background: mapType === 'satellite' ? '#007bff' : '#f8f9fa',
-              color: mapType === 'satellite' ? 'white' : '#333',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '11px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <Satellite size={14} /> {language === 'bg' ? 'Сателит' : 'Satellite'}
-          </button>
-          <button
-            onClick={() => setMapType('terrain')}
-            style={{
-              padding: '4px 8px',
-              background: mapType === 'terrain' ? '#007bff' : '#f8f9fa',
-              color: mapType === 'terrain' ? 'white' : '#333',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '11px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <Mountain size={14} /> {language === 'bg' ? 'Терен' : 'Terrain'}
-          </button>
+        <div className={styles.controls}>
+          {mapButtons.map(({ type, Icon, label }) => (
+            <button
+              key={type}
+              onClick={() => setMapType(type)}
+              className={`${styles['map-btn']} ${mapType === type ? styles['map-btn-active'] : ''}`}
+            >
+              <Icon size={14} /> {label}
+            </button>
+          ))}
           <button
             onClick={clearAllMarkers}
-            style={{
-              padding: '4px 8px',
-              background: '#dc3545',
-              color: 'white',
-              border: '1px solid #dc3545',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '11px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
+            className={`${styles['map-btn']} ${styles['map-btn-danger']}`}
           >
             <Trash2 size={14} /> {language === 'bg' ? 'Изчисти' : 'Clear'}
           </button>
@@ -312,23 +216,7 @@ function WeatherMap({ onLocationSelect }) {
       )}
 
       {/* Instructions */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '10px',
-          left: '10px',
-          zIndex: 1000,
-          background: 'rgba(255,255,255,0.9)',
-          borderRadius: '8px',
-          padding: '8px 12px',
-          fontSize: '12px',
-          color: '#666',
-          maxWidth: '200px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-        }}
-      >
+      <div className={styles.instructions}>
         <MapPin size={14} />{' '}
         {language === 'bg'
           ? 'Кликнете на картата за да добавите маркер'
@@ -338,7 +226,7 @@ function WeatherMap({ onLocationSelect }) {
       <MapContainer
         center={center}
         zoom={6}
-        style={{ height: '100%', width: '100%' }}
+        className={styles['map-container']}
         scrollWheelZoom={true}
       >
         <TileLayer attribution={mapTypes[mapType].attribution} url={mapTypes[mapType].url} />

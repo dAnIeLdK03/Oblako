@@ -1,30 +1,13 @@
 import React from 'react';
 import { useSeo } from '../hooks/useSeo.js';
 import Logo from '../components/Logo.jsx';
+import styles from './LegalPage.module.css';
 
 function Terms() {
   useSeo('terms');
   return (
-    <div
-      style={{
-        maxWidth: 700,
-        margin: '40px auto',
-        padding: 20,
-        background: '#fff',
-        color: '#222',
-        borderRadius: 8,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '15px',
-          marginBottom: '20px',
-        }}
-      >
+    <div className={styles.page}>
+      <div className={styles.header}>
         <Logo size="xlarge" showText={false} />
         <h2>Условия за ползване</h2>
       </div>
