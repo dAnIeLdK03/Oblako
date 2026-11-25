@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { getItem, setItem, removeItem } from './utils/storage.js';
 
 const HistoryContext = createContext();
@@ -11,20 +11,20 @@ export const useHistory = () => {
   return context;
 };
 
-export const HistoryProvider = ({ children }) => {
-  const [searchHistory, setSearchHistory] = useState([]);
+// Запазената история от браузъра; повредени данни дават празна история.
+function readHistory() {
+  const saved = getItem('oblako_history');
+  if (!saved) return [];
+  try {
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed.filter((c) => typeof c === 'string').slice(0, 5) : [];
+  } catch {
+    return [];
+  }
+}
 
-  useEffect(() => {
-    const savedHistory = getItem('oblako_history');
-    if (!savedHistory) return;
-    try {
-      const parsed = JSON.parse(savedHistory);
-      if (Array.isArray(parsed))
-        setSearchHistory(parsed.filter((c) => typeof c === 'string').slice(0, 5));
-    } catch {
-      // повредени данни — започваме с празна история
-    }
-  }, []);
+export const HistoryProvider = ({ children }) => {
+  const [searchHistory, setSearchHistory] = useState(readHistory);
 
   const addToHistory = (city) => {
     if (!city || typeof city !== 'string') return;

@@ -3,7 +3,6 @@ import styles from './WorldClock.module.css';
 
 const WorldClock = ({ city, language, hasError = false }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isAnimating, setIsAnimating] = useState(false);
 
   // Времеви зони за различните градове
   const timeZones = {
@@ -50,12 +49,6 @@ const WorldClock = ({ city, language, hasError = false }) => {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    setIsAnimating(true);
-    const timer = setTimeout(() => setIsAnimating(false), 500);
-    return () => clearTimeout(timer);
-  }, [city]);
-
   const getCityTime = (cityName) => {
     const normalizedCity = cityName.toLowerCase();
     const timeZone = timeZones[normalizedCity] || timeZones[cityName] || 'Europe/Sofia';
@@ -97,9 +90,8 @@ const WorldClock = ({ city, language, hasError = false }) => {
 
   return (
     <div className="digital-clock-container">
-      <div
-        className={`${styles['digital-clock']} ${isAnimating ? styles.animate : ''} ${hasError ? styles.error : ''}`}
-      >
+      {/* key={city}: при смяна на града елементът се монтира наново и CSS пулсът се пуска отначало */}
+      <div key={city} className={`${styles['digital-clock']} ${hasError ? styles.error : ''}`}>
         {hasError ? (
           <>
             <div className={styles['time-display']}>--:--:--</div>

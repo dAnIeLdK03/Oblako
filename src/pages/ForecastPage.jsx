@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Droplet, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
@@ -12,18 +12,21 @@ import styles from './ForecastPage.module.css';
 function ForecastPage() {
   const { language } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
-  const [cityInput, setCityInput] = useState('');
   const [selectedDay, setSelectedDay] = useState(null);
 
   const { weather, loading, error, searchCity } = useWeather({ fallbackCity: 'Sofia' });
+  const placeName = weather?.place.name;
+
+  // Полето следва показаното място (при търсене, споделен линк или навигация). Нулира се
+  // само при смяна на мястото, за да не се пренаписва текстът, който потребителят пише.
+  const [cityInput, setCityInput] = useState(placeName ?? '');
+  const [shownPlace, setShownPlace] = useState(placeName);
+  if (placeName !== shownPlace) {
+    setShownPlace(placeName);
+    if (placeName) setCityInput(placeName);
+  }
   const forecast = weather ? weather.daily.slice(0, 13) : [];
   useSeo('forecast', { city: weather?.place.named ? weather.place.name : undefined });
-
-  // Полето следва показаното място (при търсене, споделен линк или навигация)
-  useEffect(() => {
-    if (weather) setCityInput(weather.place.name);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weather?.place.name]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

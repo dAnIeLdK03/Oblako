@@ -6,7 +6,6 @@ import { useHistory } from '../HistoryContext.jsx';
 import SunriseSunset from '../components/SunriseSunset.jsx';
 import { LazyBoundary, MapPlaceholder } from '../components/LazyBoundary.jsx';
 import WorldClock from '../components/WorldClock.jsx';
-import { useEffect } from 'react';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
@@ -30,8 +29,6 @@ function Weather() {
   } = useTheme();
   const { searchHistory, addToHistory, clearHistory } = useHistory();
 
-  const [city, setCity] = useState('');
-
   const [mapSelectedCity, setMapSelectedCity] = useState(null);
   const {
     weather: weatherData,
@@ -46,12 +43,15 @@ function Weather() {
 
   useSeo('home', { city: weatherData?.place.named ? weatherData.place.name : undefined });
 
-  // Търсачката следва показаното място (при търсене, локация или избор от картата)
-  useEffect(() => {
-    if (weatherData) setCity(weatherData.place.name);
-    // само при смяна на мястото, за да не пренаписваме текста, който потребителят пише
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weatherData?.place.name]);
+  // Търсачката следва показаното място (при търсене, локация или избор от картата). Нулира се
+  // само при смяна на мястото, за да не се пренаписва текстът, който потребителят пише.
+  const placeName = weatherData?.place.name;
+  const [city, setCity] = useState(placeName ?? '');
+  const [shownPlace, setShownPlace] = useState(placeName);
+  if (placeName !== shownPlace) {
+    setShownPlace(placeName);
+    if (placeName) setCity(placeName);
+  }
 
   async function getWeather(e, searchCityName = null) {
     if (e) e.preventDefault();

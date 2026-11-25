@@ -12,8 +12,16 @@ export const useLanguage = () => {
   return context;
 };
 
+// Запазеният език, иначе според езика на браузъра (български или английски).
+function initialLanguage() {
+  const saved = getItem('oblako_language');
+  if (saved && translations[saved]) return saved;
+  const browserLang = navigator.language || navigator.userLanguage || 'en';
+  return browserLang.startsWith('bg') ? 'bg' : 'en';
+}
+
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState('bg'); // Default to Bulgarian
+  const [language, setLanguage] = useState(initialLanguage);
 
   const t = (key) => {
     return translations[language][key] || key;
@@ -23,22 +31,6 @@ export const LanguageProvider = ({ children }) => {
     setLanguage(newLanguage);
     setItem('oblako_language', newLanguage);
   };
-
-  // Load saved language on init, иначе избери според браузъра
-  React.useEffect(() => {
-    const savedLanguage = getItem('oblako_language');
-    if (savedLanguage && translations[savedLanguage]) {
-      setLanguage(savedLanguage);
-    } else {
-      // Автоматичен избор според браузъра
-      const browserLang = navigator.language || navigator.userLanguage || 'en';
-      if (browserLang.startsWith('bg')) {
-        setLanguage('bg');
-      } else {
-        setLanguage('en');
-      }
-    }
-  }, []);
 
   return (
     <LanguageContext.Provider value={{ language, changeLanguage, t }}>

@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { loadAnalytics } from '../utils/analytics.js';
 import { getItem, setItem } from '../utils/storage.js';
 
 function CookieConsent() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const consent = getItem('oblako_cookie_consent');
-    if (!consent) setVisible(true);
-  }, []);
+  // Банерът се показва, докато няма запазен избор
+  const [visible, setVisible] = useState(() => !getItem('oblako_cookie_consent'));
 
   const acceptAll = () => {
     setItem('oblako_cookie_consent', 'all');

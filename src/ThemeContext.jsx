@@ -3,24 +3,14 @@ import { getItem, setItem, removeItem } from './utils/storage.js';
 
 const ThemeContext = createContext();
 
+const getSystemTheme = () =>
+  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => getItem('weatherAppTheme') || getSystemTheme());
   const [temperatureUnit, setTemperatureUnit] = useState('celsius');
 
   // Theme functionality
-  const getSystemTheme = () => {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  };
-
-  useEffect(() => {
-    const savedTheme = getItem('weatherAppTheme');
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      setTheme(getSystemTheme());
-    }
-  }, []);
-
   useEffect(() => {
     if (theme === 'light') {
       document.documentElement.classList.add('light-theme');

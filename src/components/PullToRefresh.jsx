@@ -9,58 +9,67 @@ const PullToRefresh = ({ onRefresh, children }) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const containerRef = useRef(null);
-  const startY = useRef(0);
-  const currentY = useRef(0);
 
-  const handleTouchStart = (e) => {
-    if (containerRef.current && containerRef.current.scrollTop === 0) {
-      startY.current = e.touches[0].clientY;
-    }
-  };
+  // Най-новият onRefresh без да се закачат наново слушателите при всяко рендиране
+  const onRefreshRef = useRef(onRefresh);
+  useEffect(() => {
+    onRefreshRef.current = onRefresh;
+  });
 
-  const handleTouchMove = (e) => {
-    if (containerRef.current && containerRef.current.scrollTop === 0) {
-      currentY.current = e.touches[0].clientY;
-      const distance = currentY.current - startY.current;
-
-      if (distance > 0) {
-        e.preventDefault();
-        setIsPulling(true);
-        setPullDistance(Math.min(distance * 0.5, 100));
-      }
-    }
-  };
-
-  const handleTouchEnd = async () => {
-    if (isPulling && pullDistance > 50) {
-      setIsRefreshing(true);
-      try {
-        await onRefresh();
-      } catch (error) {
-        console.error('Refresh failed:', error);
-      } finally {
-        setIsRefreshing(false);
-      }
-    }
-
-    setIsPulling(false);
-    setPullDistance(0);
-  };
-
+  // Слушателите се закачат веднъж; състоянието на жеста е в променливи на ефекта,
+  // а на екрана се показва през isPulling / pullDistance.
   useEffect(() => {
     const container = containerRef.current;
-    if (container) {
-      container.addEventListener('touchstart', handleTouchStart, { passive: false });
-      container.addEventListener('touchmove', handleTouchMove, { passive: false });
-      container.addEventListener('touchend', handleTouchEnd, { passive: false });
+    if (!container) return;
 
-      return () => {
-        container.removeEventListener('touchstart', handleTouchStart);
-        container.removeEventListener('touchmove', handleTouchMove);
-        container.removeEventListener('touchend', handleTouchEnd);
-      };
-    }
-  }, [pullDistance, isPulling]);
+    let startY = 0;
+    let pulling = false;
+    let distance = 0;
+
+    const handleTouchStart = (e) => {
+      if (container.scrollTop === 0) startY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e) => {
+      if (container.scrollTop !== 0) return;
+      const delta = e.touches[0].clientY - startY;
+      if (delta > 0) {
+        e.preventDefault();
+        pulling = true;
+        distance = Math.min(delta * 0.5, 100);
+        setIsPulling(true);
+        setPullDistance(distance);
+      }
+    };
+
+    const handleTouchEnd = async () => {
+      const shouldRefresh = pulling && distance > 50;
+      pulling = false;
+      distance = 0;
+      setIsPulling(false);
+      setPullDistance(0);
+
+      if (shouldRefresh) {
+        setIsRefreshing(true);
+        try {
+          await onRefreshRef.current();
+        } catch (error) {
+          console.error('Refresh failed:', error);
+        } finally {
+          setIsRefreshing(false);
+        }
+      }
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: false });
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
 
   return (
     <div className={styles['pull-to-refresh-container']}>
