@@ -29,6 +29,7 @@ export default defineConfig({
               [
                 'api.open-meteo.com',
                 'geocoding-api.open-meteo.com',
+                'air-quality-api.open-meteo.com',
                 'api.bigdatacloud.net',
               ].includes(url.hostname),
             handler: 'NetworkFirst',

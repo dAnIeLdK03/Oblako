@@ -83,6 +83,17 @@
  * @typedef {{ city: string, lat?: undefined, lon?: undefined }
  *   | { city?: undefined, lat: number, lon: number }} WeatherQuery   град ИЛИ координати
  *
+ * @typedef {'alder' | 'birch' | 'grass' | 'mugwort' | 'olive' | 'ragweed'} PollenType
+ *
+ * @typedef {object} AirQuality     текущи стойности; null = няма данни
+ * @property {number | null} aqi    европейски индекс за качество на въздуха (0 = най-чист)
+ * @property {number | null} pm25   μg/m³ (както и следващите четири)
+ * @property {number | null} pm10
+ * @property {number | null} no2
+ * @property {number | null} o3
+ * @property {number | null} so2
+ * @property {{ type: PollenType, value: number }[]} pollen  зърна/m³; празно = мястото не се покрива
+ *
  * @typedef {object} ReverseResult  резултат от определяне на място по координати
  * @property {string} name
  * @property {string} country
@@ -108,6 +119,13 @@ export { WeatherError, isAbortError };
  * @returns {Promise<CityMatch[]>}
  */
 export const searchCity = (text, opts) => provider.searchCity(text, opts);
+
+/**
+ * @param {{ lat: number, lon: number }} coords
+ * @param {{ signal?: AbortSignal }} [opts]
+ * @returns {Promise<AirQuality>}
+ */
+export const getAirQuality = (coords, opts) => provider.fetchAirQuality(coords, opts);
 
 // "Sofia" или "Sofia, BG" / "Sofia, Bulgaria"
 /**

@@ -1,7 +1,8 @@
 // @ts-check
 // ЕДИНСТВЕНИЯТ файл, който знае за конкретния доставчик (Open-Meteo + BigDataCloud).
 // За смяна на API се пренаписва само той — трябва да експортира:
-//   NAME, searchCity(text, {count}), reverseGeocode(lat, lon), fetchWeather({lat, lon}, {days})
+//   NAME, searchCity(text, {count}), reverseGeocode(lat, lon), fetchWeather({lat, lon}, {days}),
+//   fetchAirQuality({lat, lon})
 // и да връща данни в собствения модел (виж index.js). Единици: °C, m/s, hPa, метри, unix секунди.
 import { WeatherError, isAbortError } from './errors.js';
 
@@ -10,9 +11,11 @@ import { WeatherError, isAbortError } from './errors.js';
 /** @typedef {import('./index.js').Condition} Condition */
 /** @typedef {import('./index.js').ConditionGroup} ConditionGroup */
 /** @typedef {import('./index.js').ReverseResult} ReverseResult */
+/** @typedef {import('./index.js').AirQuality} AirQuality */
 
 export const NAME = 'openmeteo';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
+const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const REVERSE_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client';
 
@@ -247,5 +250,39 @@ export async function fetchWeather({ lat, lon }, { days = 7, signal } = {}) {
     },
     hourly: allHourly.filter((x) => x.time + 3600 > now), // от текущия час нататък
     daily,
+  };
+}
+
+// ---- Качество на въздуха и полен (CAMS) ----
+const POLLEN_TYPES = ['alder', 'birch', 'grass', 'mugwort', 'olive', 'ragweed'];
+
+/**
+ * @param {{ lat: number, lon: number }} coords
+ * @param {{ signal?: AbortSignal }} [opts]
+ * @returns {Promise<AirQuality>}
+ */
+export async function fetchAirQuality({ lat, lon }, { signal } = {}) {
+  const data = await getJson(
+    `${AIR_QUALITY_URL}?latitude=${lat}&longitude=${lon}` +
+      '&current=european_aqi,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide,' +
+      POLLEN_TYPES.map((type) => `${type}_pollen`).join(',') +
+      '&timezone=auto&timeformat=unixtime',
+    signal,
+  );
+  const c = data.current;
+  if (!c) throw new WeatherError('SERVER', `${NAME}: incomplete data`, { provider: NAME });
+
+  return {
+    aqi: c.european_aqi ?? null,
+    pm25: c.pm2_5 ?? null,
+    pm10: c.pm10 ?? null,
+    no2: c.nitrogen_dioxide ?? null,
+    o3: c.ozone ?? null,
+    so2: c.sulphur_dioxide ?? null,
+    // Извън Европа поленът е null (няма данни), а извън сезона е 0
+    pollen: POLLEN_TYPES.flatMap((type) => {
+      const value = c[`${type}_pollen`];
+      return value == null ? [] : [{ type, value }];
+    }),
   };
 }

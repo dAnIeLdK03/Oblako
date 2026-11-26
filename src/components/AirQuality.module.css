@@ -1,0 +1,108 @@
+/* Стилове на AirQuality. Цветовете за нивата са смислови и са еднакви в двете теми;
+   фонът и текстът са от темата. */
+
+.card {
+  background: var(--bg-color2);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 4px 15px var(--shadow);
+}
+
+.heading,
+.subheading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+}
+
+.subheading {
+  font-size: 1.05em;
+  margin-top: 20px;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.index {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  background: var(--bg-color3);
+  border-left: 6px solid var(--level-color);
+  border-radius: 12px;
+}
+
+.value {
+  font-size: 2.2em;
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.item {
+  padding: 10px;
+  background: var(--bg-color3);
+  border-bottom: 3px solid var(--level-color, transparent);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.item dd {
+  font-weight: 600;
+}
+
+.caption {
+  font-size: 0.8em;
+  color: var(--text-secondary);
+}
+
+.message {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
+.note {
+  margin-top: 15px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.aqi1,
+.pollen1 {
+  --level-color: #4caf50;
+}
+
+.aqi2 {
+  --level-color: #9ccc3c;
+}
+
+.aqi3,
+.pollen2 {
+  --level-color: #e6b800;
+}
+
+.aqi4 {
+  --level-color: #f2994a;
+}
+
+.aqi5,
+.pollen3 {
+  --level-color: #e5484d;
+}
+
+.aqi6 {
+  --level-color: #9c27b0;
+}

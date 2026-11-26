@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getWeather } from '../services/weather';
+import { getAirQuality, getWeather } from '../services/weather';
 import { getPosition } from '../utils/location.js';
 import { rememberQuery } from '../utils/lastQuery.js';
 
@@ -31,6 +31,18 @@ export function weatherQueryOptions(query) {
     },
     staleTime: 5 * MINUTE, // толкова време данните се смятат за свежи (без нова заявка)
     refetchInterval: 15 * MINUTE, // автоматично опресняване, докато страницата е отворена
+    retry: shouldRetry,
+    retryDelay: 600,
+  });
+}
+
+// Качество на въздуха и полен за вече определеното място (данните са почасови).
+export function airQualityQueryOptions({ lat, lon }) {
+  return queryOptions({
+    queryKey: ['airQuality', locationKey({ lat, lon })],
+    queryFn: ({ signal }) => getAirQuality({ lat, lon }, { signal }),
+    staleTime: 15 * MINUTE,
+    refetchInterval: 30 * MINUTE,
     retry: shouldRetry,
     retryDelay: 600,
   });

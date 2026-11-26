@@ -68,14 +68,15 @@ const PAGES = {
     bg: {
       title: 'UV индекс – Oblako',
       titleCity: 'UV индекс във {city} – Oblako',
-      description: 'Текущ UV индекс, ниво на риск и съвети за защита от слънцето.',
-      descriptionCity: 'Текущ UV индекс във {city}, ниво на риск и съвети за защита от слънцето.',
+      description: 'Текущ UV индекс, качество на въздуха, полен и съвети за защита от слънцето.',
+      descriptionCity:
+        'UV индекс, качество на въздуха и полен във {city}, със съвети за защита от слънцето.',
     },
     en: {
       title: 'UV index – Oblako',
       titleCity: 'UV index in {city} – Oblako',
-      description: 'Current UV index, risk level and sun protection advice.',
-      descriptionCity: 'Current UV index in {city}, risk level and sun protection advice.',
+      description: 'Current UV index, air quality, pollen and sun protection advice.',
+      descriptionCity: 'UV index, air quality and pollen in {city}, with sun protection advice.',
     },
   },
   tips: {

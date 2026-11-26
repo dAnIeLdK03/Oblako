@@ -3,6 +3,7 @@ import { Sun, SprayCan, Glasses, Shirt, Clock } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import UVIndex from '../components/UVIndex.jsx';
+import AirQuality from '../components/AirQuality.jsx';
 import Navigation from '../components/Navigation.jsx';
 import { useWeather } from '../hooks/useWeather.js';
 import { useSeo } from '../hooks/useSeo.js';
@@ -45,6 +46,7 @@ const UVIndexPage = () => {
             {weatherData && (
               <div className="uv-content">
                 <UVIndex weatherData={weatherData} />
+                <AirQuality place={weatherData.place} />
 
                 <div className={styles['uv-info-section']}>
                   <h2>{language === 'bg' ? 'За UV индекса' : 'About UV Index'}</h2>
