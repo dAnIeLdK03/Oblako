@@ -189,6 +189,11 @@
   color: var(--accent);
 }
 
+.polar-note {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
 /* Responsive */
 
 @media (max-width: 768px) {

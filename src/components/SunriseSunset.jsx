@@ -1,74 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Sunrise, Sunset, Sun } from 'lucide-react';
 import { useLanguage } from '../LanguageContext.jsx';
+import MoonPhase from './MoonPhase.jsx';
+import { sunTimes } from '../services/astronomy/index.js';
 import styles from './SunriseSunset.module.css';
 
+const DAY = 24 * 60 * 60;
+const currentSeconds = () => Math.floor(Date.now() / 1000);
+const pad = (value) => value.toString().padStart(2, '0');
+
+// Следващият изгрев или залез. Гледа и съседните дни; в полярните ширини може да няма скорошен.
+function findNextEvent(now, today, place) {
+  for (let day = today - 1; day <= today + 2; day++) {
+    const { sunrise, sunset } = sunTimes(day, place);
+    if (sunrise > now) return { type: 'sunrise', time: sunrise };
+    if (sunset > now) return { type: 'sunset', time: sunset };
+  }
+  return null;
+}
+
+// Всичко се изчислява на устройството по координатите на мястото (без заявки).
 function SunriseSunset({ weatherData }) {
   const { t } = useLanguage();
-  const [countdown, setCountdown] = useState('');
-  const [nextEvent, setNextEvent] = useState('');
+  const [now, setNow] = useState(currentSeconds);
 
   useEffect(() => {
-    if (!weatherData?.current) return;
-
-    const updateCountdown = () => {
-      const now = new Date();
-      const currentTime = Math.floor(now.getTime() / 1000);
-
-      const sunrise = weatherData.current.sunrise;
-      const sunset = weatherData.current.sunset;
-
-      let targetTime, eventType;
-
-      if (currentTime < sunrise) {
-        targetTime = sunrise;
-        eventType = 'sunrise';
-      } else if (currentTime < sunset) {
-        targetTime = sunset;
-        eventType = 'sunset';
-      } else {
-        targetTime = sunrise + 24 * 60 * 60;
-        eventType = 'sunrise';
-      }
-
-      setNextEvent(eventType);
-
-      const timeDiff = targetTime - currentTime;
-
-      if (timeDiff <= 0) {
-        setCountdown('00:00:00');
-        return;
-      }
-
-      const hours = Math.floor(timeDiff / 3600);
-      const minutes = Math.floor((timeDiff % 3600) / 60);
-      const seconds = timeDiff % 60;
-
-      setCountdown(
-        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
-      );
-    };
-
-    updateCountdown();
-
-    const interval = setInterval(updateCountdown, 1000);
-
+    const interval = setInterval(() => setNow(currentSeconds()), 1000);
     return () => clearInterval(interval);
-  }, [weatherData]);
+  }, []);
 
-  if (!weatherData?.current) return null;
+  if (!weatherData?.place) return null;
 
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
+  const { place, utcOffset } = weatherData;
+  const today = Math.floor((now + utcOffset) / DAY); // датата на самото място
+  const { sunrise, sunset, dayLength, polar } = sunTimes(today, place);
+  const next = findNextEvent(now, today, place);
 
-  const sunrise = weatherData.current.sunrise;
-  const sunset = weatherData.current.sunset;
+  // Часът е по времето на мястото, а не по часовата зона на браузъра
+  const formatTime = (timestamp) =>
+    timestamp == null ? '—' : new Date((timestamp + utcOffset) * 1000).toISOString().slice(11, 16);
+
+  const timeDiff = next ? next.time - now : 0;
+  const countdown = `${pad(Math.floor(timeDiff / 3600))}:${pad(Math.floor((timeDiff % 3600) / 60))}:${pad(timeDiff % 60)}`;
 
   return (
     <div className="sunrise-sunset-container">
@@ -100,27 +73,33 @@ function SunriseSunset({ weatherData }) {
         </div>
       </div>
 
-      {/*Countdown Timer*/}
-      <div className={styles['countdown-container']}>
-        <div className={styles['countdown-header']}>
-          <span className={styles['countdown-label']}>
-            {nextEvent === 'sunrise' ? <Sunrise size={16} /> : <Sunset size={16} />}{' '}
-            {t('nextEvent')}:
-          </span>
-          <span className={styles['next-event-name']}>
-            {nextEvent === 'sunrise' ? t('sunrise') : t('sunset')}
-          </span>
-        </div>
+      {polar && (
+        <p className={styles['polar-note']}>{t(polar === 'day' ? 'polarDay' : 'polarNight')}</p>
+      )}
 
-        <div className={styles['countdown-timer']}>
-          <div className={styles['countdown-display']}>{countdown}</div>
-          <div className={styles['countdown-units']}>
-            <span>{t('hours')}</span>
-            <span>{t('minutes')}</span>
-            <span>{t('seconds')}</span>
+      {/*Countdown Timer*/}
+      {next && (
+        <div className={styles['countdown-container']}>
+          <div className={styles['countdown-header']}>
+            <span className={styles['countdown-label']}>
+              {next.type === 'sunrise' ? <Sunrise size={16} /> : <Sunset size={16} />}{' '}
+              {t('nextEvent')}:
+            </span>
+            <span className={styles['next-event-name']}>
+              {next.type === 'sunrise' ? t('sunrise') : t('sunset')}
+            </span>
+          </div>
+
+          <div className={styles['countdown-timer']}>
+            <div className={styles['countdown-display']}>{countdown}</div>
+            <div className={styles['countdown-units']}>
+              <span>{t('hours')}</span>
+              <span>{t('minutes')}</span>
+              <span>{t('seconds')}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/*Day Length*/}
       <div className={styles['day-length']}>
@@ -128,14 +107,11 @@ function SunriseSunset({ weatherData }) {
           <Sun size={16} /> {t('dayLength')}:
         </span>
         <span className={styles['day-length-value']}>
-          {(() => {
-            const dayLengthSeconds = sunset - sunrise;
-            const hours = Math.floor(dayLengthSeconds / 3600);
-            const minutes = Math.floor((dayLengthSeconds % 3600) / 60);
-            return `${hours}h ${minutes}m`;
-          })()}
+          {Math.floor(dayLength / 3600)}h {Math.floor((dayLength % 3600) / 60)}m
         </span>
       </div>
+
+      <MoonPhase now={now} place={place} utcOffset={utcOffset} />
     </div>
   );
 }
