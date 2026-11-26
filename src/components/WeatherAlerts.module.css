@@ -1,0 +1,103 @@
+/* Стилове на WeatherAlerts. Цветовете за тежест са смислови (като светофар) и са еднакви в двете теми;
+   фонът и текстът са от темата. */
+
+.alerts {
+  --alert-info: var(--text-secondary);
+  --alert-yellow: #e6b800;
+  --alert-orange: #f2994a;
+  --alert-red: #e5484d;
+  background: var(--bg-color2);
+  color: var(--text-color);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0 0 20px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.region {
+  font-weight: normal;
+  color: var(--text-secondary);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  --alert-color: var(--alert-info);
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-color3);
+  border-left: 4px solid var(--alert-color);
+  border-radius: 8px;
+}
+
+.level2 {
+  --alert-color: var(--alert-yellow);
+}
+
+.level3 {
+  --alert-color: var(--alert-orange);
+}
+
+.level4 {
+  --alert-color: var(--alert-red);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--alert-color);
+}
+
+.body {
+  min-width: 0;
+  flex: 1;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.chip {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--alert-color);
+  background: color-mix(in srgb, var(--alert-color) 18%, transparent);
+}
+
+.detail {
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+.meta {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.note {
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}

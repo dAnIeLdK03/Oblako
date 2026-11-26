@@ -52,6 +52,18 @@ export default defineConfig({
             },
           },
           {
+            // Официалните предупреждения (нашата функция): мрежата първо, иначе последният отговор.
+            // Клиентът така или иначе отхвърля изтеклите по поле "to".
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname === '/api/alerts',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'oblako-alerts',
+              networkTimeoutSeconds: 5,
+              expiration: { maxEntries: 2, maxAgeSeconds: 6 * 60 * 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          {
             // Големи снимки на градове и лога: кешират се при първо виждане
             urlPattern: ({ url, sameOrigin }) =>
               sameOrigin &&

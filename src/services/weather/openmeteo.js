@@ -9,6 +9,7 @@ import { WeatherError, isAbortError } from './errors.js';
 /** @typedef {import('./index.js').CityMatch} CityMatch */
 /** @typedef {import('./index.js').Condition} Condition */
 /** @typedef {import('./index.js').ConditionGroup} ConditionGroup */
+/** @typedef {import('./index.js').ReverseResult} ReverseResult */
 
 export const NAME = 'openmeteo';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
@@ -144,7 +145,7 @@ export async function searchCity(text, { count = 5, signal } = {}) {
  * @param {number} lat
  * @param {number} lon
  * @param {{ signal?: AbortSignal }} [opts]
- * @returns {Promise<{ name: string, country: string } | null>}
+ * @returns {Promise<ReverseResult | null>}
  */
 export async function reverseGeocode(lat, lon, { signal } = {}) {
   try {
@@ -153,7 +154,9 @@ export async function reverseGeocode(lat, lon, { signal } = {}) {
       signal,
     );
     const name = d.city || d.locality || d.principalSubdivision;
-    return name ? { name, country: d.countryCode || '' } : null;
+    return name
+      ? { name, country: d.countryCode || '', regionCode: d.principalSubdivisionCode || undefined }
+      : null;
   } catch (err) {
     if (isAbortError(err)) throw err; // отмяната трябва да стигне до извикващия
     return null; // името е допълнително — без него продължаваме

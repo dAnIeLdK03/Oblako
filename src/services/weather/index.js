@@ -22,6 +22,7 @@
  * @property {number} lat
  * @property {number} lon
  * @property {number} utcOffset
+ * @property {string} [regionCode]  ISO 3166-2 на областта, напр. "BG-22" (ако е известна); за предупреждения
  *
  * @typedef {object} CurrentWeather
  * @property {number} time         unix секунди
@@ -82,6 +83,11 @@
  * @typedef {{ city: string, lat?: undefined, lon?: undefined }
  *   | { city?: undefined, lat: number, lon: number }} WeatherQuery   град ИЛИ координати
  *
+ * @typedef {object} ReverseResult  резултат от определяне на място по координати
+ * @property {string} name
+ * @property {string} country
+ * @property {string} [regionCode]
+ *
  * @typedef {object} CityMatch     резултат от търсене на град
  * @property {string} name
  * @property {string} country
@@ -130,9 +136,16 @@ export async function getWeather(query, { days = 7, signal } = {}) {
   let place;
   let weather;
   let named = true;
+  let regionCode;
   if (query.city) {
     place = await geocode(query.city, signal);
-    weather = await provider.fetchWeather(place, { days, signal });
+    // Областта е нужна само за официалните предупреждения, които имаме за България
+    const [data, found] = await Promise.all([
+      provider.fetchWeather(place, { days, signal }),
+      place.country === 'BG' ? provider.reverseGeocode(place.lat, place.lon, { signal }) : null,
+    ]);
+    weather = data;
+    regionCode = found?.regionCode;
   } else {
     // По координати: името на мястото се търси паралелно с времето.
     // (Заявка без град е заявка по координати; празен град не е валидна заявка.)
@@ -142,6 +155,7 @@ export async function getWeather(query, { days = 7, signal } = {}) {
       provider.fetchWeather({ lat, lon }, { days, signal }),
     ]);
     named = Boolean(found?.name);
+    regionCode = found?.regionCode;
     place = {
       name: found?.name || `${Number(lat).toFixed(2)}, ${Number(lon).toFixed(2)}`,
       country: found?.country || '',
@@ -160,6 +174,7 @@ export async function getWeather(query, { days = 7, signal } = {}) {
       lat: place.lat,
       lon: place.lon,
       utcOffset: weather.utcOffset,
+      regionCode,
     },
     current: weather.current,
     hourly: weather.hourly,

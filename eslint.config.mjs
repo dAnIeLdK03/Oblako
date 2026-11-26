@@ -36,6 +36,13 @@ export default defineConfig([
     rules: { 'react-refresh/only-export-components': 'off' },
   },
 
+  // Vercel Functions (CommonJS, Node)
+  {
+    files: ['api/**/*.js'],
+    extends: [js.configs.recommended],
+    languageOptions: { sourceType: 'commonjs', globals: globals.node },
+  },
+
   // Скриптове и конфигурации (ESM, Node)
   {
     files: ['scripts/**/*.js', 'vite.config.mjs', 'eslint.config.mjs'],

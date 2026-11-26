@@ -9,6 +9,7 @@ import WorldClock from '../components/WorldClock.jsx';
 import SkeletonLoading from '../components/SkeletonLoading.jsx';
 import PullToRefresh from '../components/PullToRefresh.jsx';
 import WeatherHero from '../components/WeatherHero.jsx';
+import WeatherAlerts from '../components/WeatherAlerts.jsx';
 import { useWeather } from '../hooks/useWeather.js';
 import { useSeo } from '../hooks/useSeo.js';
 import { BarChart3, Calendar, MapPin, Eye, Droplet, Thermometer, Wind } from 'lucide-react';
@@ -211,6 +212,7 @@ function Weather() {
 
           {weatherData && (
             <div className={styles['wp-content']}>
+              <WeatherAlerts weather={weatherData} />
               <div className="wp-grid">
                 <div className={styles['wp-card']}>
                   <h3 className={styles['wp-card-title']}>
