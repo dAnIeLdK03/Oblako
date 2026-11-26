@@ -278,7 +278,7 @@ function DetailedDayForecast({ day, onClose }) {
                     {language === 'bg' ? 'Вероятност' : 'Probability'}
                   </div>
                   <div className={styles['precipitation-value']}>
-                    {Math.round(day.precipProbability)}%
+                    {day.precipProbability == null ? '—' : `${Math.round(day.precipProbability)}%`}
                   </div>
                 </div>
               </div>

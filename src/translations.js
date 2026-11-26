@@ -92,8 +92,7 @@ export const translations = {
     alertSourceOfficial: 'Официално · НИМХ (MeteoAlarm)',
     alertSourceForecast: 'По прогнозата',
     alertsAttribution: 'Официални данни: MeteoAlarm / НИМХ (CC BY 4.0).',
-    alertsDisclaimer:
-      'Автоматични предупреждения по прогнозата на Open-Meteo. Не заместват официалните.',
+    alertsDisclaimer: 'Автоматични предупреждения по прогнозата. Не заместват официалните.',
 
     // Footer
     footerRights: 'Всички права запазени.',
@@ -102,6 +101,7 @@ export const translations = {
     footerPrivacy: 'Правила за поверителност',
     footerCookies: 'Политика за бисквитки',
     footerDataBy: 'Метеорологични данни от',
+    footerFallbackBy: 'резервен източник:',
     locationError: 'Не може да се определи местоположението',
     locationPermissionDenied: 'Достъпът до местоположението е отказан',
     locationUnavailable: 'Местоположението е недостъпно',
@@ -268,7 +268,7 @@ export const translations = {
     alertSourceForecast: 'From the forecast',
     alertsAttribution: 'Official data: MeteoAlarm / NIMH (CC BY 4.0).',
     alertsDisclaimer:
-      'Automatic alerts based on the Open-Meteo forecast. They do not replace official warnings.',
+      'Automatic alerts based on the weather forecast. They do not replace official warnings.',
 
     // Footer
     footerRights: 'All rights reserved.',
@@ -277,6 +277,7 @@ export const translations = {
     footerPrivacy: 'Privacy Policy',
     footerCookies: 'Cookie Policy',
     footerDataBy: 'Weather data by',
+    footerFallbackBy: 'backup source:',
     locationError: 'Cannot determine location',
     locationPermissionDenied: 'Location access denied',
     locationUnavailable: 'Location unavailable',

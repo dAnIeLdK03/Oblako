@@ -30,6 +30,7 @@ export default defineConfig({
                 'api.open-meteo.com',
                 'geocoding-api.open-meteo.com',
                 'air-quality-api.open-meteo.com',
+                'api.met.no',
                 'api.bigdatacloud.net',
               ].includes(url.hostname),
             handler: 'NetworkFirst',
@@ -42,7 +43,7 @@ export default defineConfig({
                 {
                   cacheKeyWillBeUsed: async ({ request }) => {
                     const url = new URL(request.url);
-                    for (const key of ['latitude', 'longitude']) {
+                    for (const key of ['latitude', 'longitude', 'lat', 'lon']) {
                       const value = parseFloat(url.searchParams.get(key));
                       if (Number.isFinite(value)) url.searchParams.set(key, value.toFixed(2));
                     }

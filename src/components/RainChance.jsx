@@ -4,6 +4,10 @@ import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import styles from './RainChance.module.css';
 
+// null = доставчикът не дава вероятност (резервният извън Северна Европа)
+const roundChance = (value) => (value == null ? null : Math.round(value));
+const chanceLabel = (value) => (value == null ? '—' : `${value}%`);
+
 function RainChance({ weatherData }) {
   const { language } = useLanguage();
   const { convertTemperature, getTemperatureSymbol } = useTheme();
@@ -17,7 +21,7 @@ function RainChance({ weatherData }) {
       .slice(0, 8)
       .map((h) => ({
         hour: `${h.hour.toString().padStart(2, '0')}:00`,
-        chance: Math.round(h.precipProbability),
+        chance: roundChance(h.precipProbability),
         type: getWeatherType(h.condition.group),
         temp: Math.round(h.temp),
       }));
@@ -29,7 +33,7 @@ function RainChance({ weatherData }) {
       const weekday = new Date(`${d.date}T12:00:00`).getDay();
       return {
         day: language === 'bg' ? days[weekday] : daysEn[weekday],
-        chance: Math.round(d.precipProbability),
+        chance: roundChance(d.precipProbability),
         type: getWeatherType(d.condition.group),
         temp: Math.round(d.tempMax),
       };
@@ -126,12 +130,12 @@ function RainChance({ weatherData }) {
                   <div
                     className={styles['rain-chance-fill']}
                     style={{
-                      width: `${item.chance}%`,
+                      width: `${item.chance ?? 0}%`,
                       backgroundColor: getChanceColor(item.chance),
                     }}
                   ></div>
                 </div>
-                <div className={styles['rain-percentage']}>{item.chance}%</div>
+                <div className={styles['rain-percentage']}>{chanceLabel(item.chance)}</div>
               </div>
             ))}
           </div>
@@ -153,12 +157,12 @@ function RainChance({ weatherData }) {
                   <div
                     className={styles['rain-chance-fill']}
                     style={{
-                      width: `${item.chance}%`,
+                      width: `${item.chance ?? 0}%`,
                       backgroundColor: getChanceColor(item.chance),
                     }}
                   ></div>
                 </div>
-                <div className={styles['rain-percentage']}>{item.chance}%</div>
+                <div className={styles['rain-percentage']}>{chanceLabel(item.chance)}</div>
               </div>
             ))}
           </div>

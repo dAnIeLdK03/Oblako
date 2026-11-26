@@ -1,10 +1,11 @@
 // @ts-check
-// ЕДИНСТВЕНИЯТ файл, който знае за конкретния доставчик (Open-Meteo + BigDataCloud).
-// За смяна на API се пренаписва само той — трябва да експортира:
+// Основният доставчик (Open-Meteo + BigDataCloud). Само файловете на доставчиците знаят за конкретните
+// API-та; резервният за прогнозата е ./metno.js. За смяна на API този файл трябва да експортира:
 //   NAME, searchCity(text, {count}), reverseGeocode(lat, lon), fetchWeather({lat, lon}, {days}),
 //   fetchAirQuality({lat, lon})
 // и да връща данни в собствения модел (виж index.js). Единици: °C, m/s, hPa, метри, unix секунди.
 import { WeatherError, isAbortError } from './errors.js';
+import { request } from './http.js';
 
 /** @typedef {import('./index.js').Forecast} Forecast */
 /** @typedef {import('./index.js').CityMatch} CityMatch */
@@ -19,63 +20,9 @@ const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const REVERSE_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client';
 
-const TIMEOUT_MS = 10000;
-
-const abortError = () => new DOMException('Aborted', 'AbortError');
-
-/** @param {number} status */
-function statusError(status) {
-  const code = status === 429 ? 'RATE_LIMIT' : status >= 500 ? 'SERVER' : 'UNAVAILABLE';
-  return new WeatherError(code, `${NAME} HTTP ${status}`, { status, provider: NAME });
-}
-
-// Една заявка с таймаут; `signal` позволява на извикващия да я отмени.
-/**
- * @param {string} url
- * @param {AbortSignal} [signal]
- * @returns {Promise<any>}
- */
-async function request(url, signal) {
-  if (signal?.aborted) throw abortError();
-
-  const controller = new AbortController();
-  let timedOut = false;
-  const onAbort = () => controller.abort();
-  signal?.addEventListener('abort', onAbort, { once: true });
-  const timer = setTimeout(() => {
-    timedOut = true;
-    controller.abort();
-  }, TIMEOUT_MS);
-
-  const classify = (err) => {
-    if (timedOut) return new WeatherError('TIMEOUT', `${NAME} timeout`, { provider: NAME });
-    if (isAbortError(err)) return err; // отказана от извикващия
-    if (err instanceof SyntaxError)
-      return new WeatherError('SERVER', 'Invalid response', { provider: NAME });
-    return new WeatherError('NETWORK', err.message, { provider: NAME });
-  };
-
-  try {
-    let res;
-    try {
-      res = await fetch(url, { signal: controller.signal });
-    } catch (err) {
-      throw classify(err);
-    }
-    if (!res.ok) throw statusError(res.status);
-    try {
-      return await res.json();
-    } catch (err) {
-      throw classify(err);
-    }
-  } finally {
-    clearTimeout(timer);
-    signal?.removeEventListener('abort', onAbort);
-  }
-}
-
 // Повторните опити, кешът и дедупликацията са в TanStack Query (src/hooks/weatherQueries.js).
-const getJson = request;
+const getJson = (/** @type {string} */ url, /** @type {AbortSignal | undefined} */ signal) =>
+  request(url, NAME, signal);
 
 // ---- Състояния: WMO код -> собствен модел { group, description, icon, isDay } ----
 // group: clear | clouds | drizzle | rain | snow | thunderstorm | fog
@@ -141,6 +88,7 @@ export async function searchCity(text, { count = 5, signal } = {}) {
     region: r.admin1 || '',
     lat: r.latitude,
     lon: r.longitude,
+    timezone: r.timezone,
   }));
 }
 
@@ -157,8 +105,16 @@ export async function reverseGeocode(lat, lon, { signal } = {}) {
       signal,
     );
     const name = d.city || d.locality || d.principalSubdivision;
+    const timezone = d.localityInfo?.informative?.find(
+      (/** @type {any} */ item) => item.description === 'time zone',
+    )?.name;
     return name
-      ? { name, country: d.countryCode || '', regionCode: d.principalSubdivisionCode || undefined }
+      ? {
+          name,
+          country: d.countryCode || '',
+          regionCode: d.principalSubdivisionCode || undefined,
+          timezone,
+        }
       : null;
   } catch (err) {
     if (isAbortError(err)) throw err; // отмяната трябва да стигне до извикващия

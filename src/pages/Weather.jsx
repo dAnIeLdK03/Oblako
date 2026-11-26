@@ -227,12 +227,14 @@ function Weather() {
                         {weatherData.place.name}, {weatherData.place.country}
                       </span>
                     </div>
-                    <div className={styles['wp-stat']}>
-                      <Eye size={16} className={styles['wp-stat-icon']} />
-                      <span>
-                        {t('visibility')}: {formatVisibility(weatherData.current.visibility)}
-                      </span>
-                    </div>
+                    {weatherData.current.visibility != null && (
+                      <div className={styles['wp-stat']}>
+                        <Eye size={16} className={styles['wp-stat-icon']} />
+                        <span>
+                          {t('visibility')}: {formatVisibility(weatherData.current.visibility)}
+                        </span>
+                      </div>
+                    )}
                     <div className={styles['wp-stat']}>
                       <Droplet size={16} className={styles['wp-stat-icon']} />
                       <span>

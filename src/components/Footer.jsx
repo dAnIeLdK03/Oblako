@@ -40,6 +40,26 @@ function Footer() {
         >
           Open-Meteo.com
         </a>
+        {' · '}
+        {t('footerFallbackBy')}{' '}
+        <a
+          href="https://www.met.no/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.link}
+        >
+          MET Norway
+        </a>{' '}
+        (
+        <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          target="_blank"
+          rel="license noopener noreferrer"
+          className={styles.link}
+        >
+          CC BY 4.0
+        </a>
+        )
       </div>
     </footer>
   );

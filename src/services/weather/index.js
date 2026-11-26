@@ -1,6 +1,6 @@
 // @ts-check
 // Единна входна точка за данни за времето. UI-ът ползва САМО този модул и модела по-долу.
-// Конкретният API живее в ./openmeteo.js — за смяна се подменя само импортът по-долу.
+// Конкретните API-та живеят в ./openmeteo.js (основен) и ./metno.js (резервен за прогнозата).
 //
 // Единици: °C, m/s, hPa, метри, unix секунди. localTime е "YYYY-MM-DDTHH:mm" по часа на самото
 // място (new Date(localTime) го показва правилно). Типовете са JSDoc, проверяват се от редактора
@@ -31,7 +31,7 @@
  * @property {number} feelsLike
  * @property {number} humidity
  * @property {number} pressure
- * @property {number} visibility
+ * @property {number | null} visibility   null = доставчикът няма данни
  * @property {number} windSpeed
  * @property {number} windDeg
  * @property {number} cloudCover
@@ -48,10 +48,10 @@
  * @property {number} feelsLike
  * @property {number} humidity
  * @property {number} pressure
- * @property {number} visibility
+ * @property {number | null} visibility
  * @property {number} windSpeed
  * @property {number} windDeg
- * @property {number} precipProbability  0-100
+ * @property {number | null} precipProbability  0-100; null = няма данни
  * @property {Condition} condition
  *
  * @typedef {object} DailyPoint
@@ -62,10 +62,10 @@
  * @property {number} feelsLikeMin
  * @property {number} humidity
  * @property {number} pressure
- * @property {number} visibility
+ * @property {number | null} visibility
  * @property {number} windSpeed    максималната за деня
  * @property {number} windDeg
- * @property {number} precipProbability  0-100
+ * @property {number | null} precipProbability  0-100; null = няма данни
  * @property {number} precipSum    mm
  * @property {number} uvMax
  * @property {number} sunrise
@@ -98,6 +98,7 @@
  * @property {string} name
  * @property {string} country
  * @property {string} [regionCode]
+ * @property {string} [timezone]   IANA име, напр. "Europe/Sofia"
  *
  * @typedef {object} CityMatch     резултат от търсене на град
  * @property {string} name
@@ -105,9 +106,11 @@
  * @property {string} region
  * @property {number} lat
  * @property {number} lon
+ * @property {string} [timezone]
  */
 
 import * as provider from './openmeteo.js';
+import * as fallback from './metno.js';
 import { WeatherError, isAbortError } from './errors.js';
 
 export { getIconUrl } from './icons.js';
@@ -143,6 +146,30 @@ async function geocode(city, signal) {
   return match || results[0];
 }
 
+// Прогноза от основния доставчик; при 429 или 5xx — от резервния. Другите грешки (мрежа, таймаут,
+// 4xx) не сменят доставчика. Ако и резервният се провали, се връща грешката на основния.
+/**
+ * @param {{ lat: number, lon: number }} coords
+ * @param {{ days: number, signal?: AbortSignal,
+ *   getTimezone: () => Promise<string | undefined> }} opts
+ */
+async function fetchForecast(coords, { days, signal, getTimezone }) {
+  try {
+    const data = await provider.fetchWeather(coords, { days, signal });
+    return { ...data, provider: provider.NAME };
+  } catch (err) {
+    const status = err instanceof WeatherError ? err.status : undefined;
+    if (!status || (status !== 429 && status < 500)) throw err;
+    try {
+      const timezone = await getTimezone();
+      const data = await fallback.fetchWeather(coords, { days, signal, timezone });
+      return { ...data, provider: fallback.NAME };
+    } catch (fallbackError) {
+      throw isAbortError(fallbackError) ? fallbackError : err;
+    }
+  }
+}
+
 /**
  * query: { city } или { lat, lon }.  opts.days — дни напред (по подразбиране 7, до 16).
  * opts.signal — AbortSignal; при отказ се хвърля AbortError (виж isAbortError).
@@ -159,7 +186,7 @@ export async function getWeather(query, { days = 7, signal } = {}) {
     place = await geocode(query.city, signal);
     // Областта е нужна само за официалните предупреждения, които имаме за България
     const [data, found] = await Promise.all([
-      provider.fetchWeather(place, { days, signal }),
+      fetchForecast(place, { days, signal, getTimezone: async () => place.timezone }),
       place.country === 'BG' ? provider.reverseGeocode(place.lat, place.lon, { signal }) : null,
     ]);
     weather = data;
@@ -168,9 +195,13 @@ export async function getWeather(query, { days = 7, signal } = {}) {
     // По координати: името на мястото се търси паралелно с времето.
     // (Заявка без град е заявка по координати; празен град не е валидна заявка.)
     const { lat, lon } = /** @type {{ lat: number, lon: number }} */ (query);
+    const lookup = provider.reverseGeocode(lat, lon, { signal });
     const [found, data] = await Promise.all([
-      provider.reverseGeocode(lat, lon, { signal }),
-      provider.fetchWeather({ lat, lon }, { days, signal }),
+      lookup,
+      fetchForecast(
+        { lat, lon },
+        { days, signal, getTimezone: async () => (await lookup)?.timezone },
+      ),
     ]);
     named = Boolean(found?.name);
     regionCode = found?.regionCode;
@@ -183,7 +214,7 @@ export async function getWeather(query, { days = 7, signal } = {}) {
     weather = data;
   }
   return {
-    provider: provider.NAME,
+    provider: weather.provider,
     utcOffset: weather.utcOffset,
     place: {
       name: place.name,
