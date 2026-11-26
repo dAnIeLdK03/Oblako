@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext.jsx';
 import { useTheme } from '../ThemeContext.jsx';
 import Logo from './Logo.jsx';
+import UnitSettings from './UnitSettings.jsx';
 import { placeSearch } from '../utils/locationParams.js';
 import { Home, CalendarDays, CloudRain, Sun, Moon, Lightbulb } from 'lucide-react';
 import styles from './Navigation.module.css';
@@ -145,6 +146,7 @@ function Navigation() {
           </ul>
 
           <div className={styles['nav-footer']}>
+            <UnitSettings />
             <div className={`${styles['nav-theme']} ${styles['nav-language']}`}>
               <span>{language === 'bg' ? 'Език:' : 'Language:'}</span>
               <div

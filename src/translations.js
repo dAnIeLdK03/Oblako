@@ -9,6 +9,7 @@ export const translations = {
     // Weather info
     now: 'Сега',
     visibility: 'Видимост',
+    pressure: 'Налягане',
     humidity: 'Влажност',
 
     // Forecast
@@ -195,6 +196,7 @@ export const translations = {
     // Weather info
     now: 'Now',
     visibility: 'Visibility',
+    pressure: 'Pressure',
     humidity: 'Humidity',
 
     // Forecast

@@ -11,7 +11,7 @@ import styles from './ForecastPage.module.css';
 
 function ForecastPage() {
   const { language } = useLanguage();
-  const { convertTemperature, getTemperatureSymbol } = useTheme();
+  const { convertTemperature, getTemperatureSymbol, formatWind } = useTheme();
   const [selectedDay, setSelectedDay] = useState(null);
 
   const { weather, loading, error, searchCity } = useWeather({ fallbackCity: 'Sofia' });
@@ -140,7 +140,7 @@ function ForecastPage() {
                       <Droplet size={14} /> {day.humidity}%
                     </div>
                     <div className="wind">
-                      <Wind size={14} /> {Math.round(day.windSpeed)} m/s
+                      <Wind size={14} /> {formatWind(day.windSpeed)}
                     </div>
                   </div>
                 </div>

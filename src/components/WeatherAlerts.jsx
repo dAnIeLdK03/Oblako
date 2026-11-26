@@ -36,7 +36,7 @@ const ICONS = {
 // Предупрежденията за показаното място: официални (България) и собствени по прогнозата.
 function WeatherAlerts({ weather }) {
   const { language, t } = useLanguage();
-  const { convertTemperature, getTemperatureSymbol } = useTheme();
+  const { convertTemperature, getTemperatureSymbol, formatWind } = useTheme();
   const { alerts, regionCode, hasOfficial } = useAlerts(weather);
 
   if (!alerts.length) return null;
@@ -64,7 +64,7 @@ function WeatherAlerts({ weather }) {
     if (alert.source === 'official') return alert.text?.[language] || alert.text?.en || '';
     const v = alert.value;
     if (v == null) return '';
-    if (alert.type === 'wind') return `${t('alertUpTo')} ${Math.round(v * 3.6)} km/h`;
+    if (alert.type === 'wind') return `${t('alertUpTo')} ${formatWind(v)}`;
     if (alert.type === 'rain')
       return `${t('alertUpTo')} ${Math.round(v)} mm ${t('alertRainPerDay')}`;
     if (alert.type === 'high-temperature' || alert.type === 'low-temperature') {

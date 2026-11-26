@@ -1,5 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getItem, setItem, removeItem } from './utils/storage.js';
+import {
+  loadUnits,
+  saveUnits,
+  toTemperature,
+  formatWind,
+  formatPressure,
+  formatVisibility,
+} from './utils/units.js';
 
 const ThemeContext = createContext();
 
@@ -8,7 +16,7 @@ const getSystemTheme = () =>
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => getItem('weatherAppTheme') || getSystemTheme());
-  const [temperatureUnit, setTemperatureUnit] = useState('celsius');
+  const [units, setUnits] = useState(loadUnits);
 
   // Theme functionality
   useEffect(() => {
@@ -42,22 +50,11 @@ export function ThemeProvider({ children }) {
     setTheme(getSystemTheme());
   };
 
-  // Temperature functionality
-  const toggleTemperatureUnit = () => {
-    const newUnit = temperatureUnit === 'celsius' ? 'fahrenheit' : 'celsius';
-    setTemperatureUnit(newUnit);
-  };
-
-  const convertTemperature = (celsius) => {
-    if (temperatureUnit === 'fahrenheit') {
-      const fahrenheit = Math.round((celsius * 9) / 5 + 32);
-      return fahrenheit;
-    }
-    return Math.round(celsius);
-  };
-
-  const getTemperatureSymbol = () => {
-    return temperatureUnit === 'celsius' ? '°C' : '°F';
+  // Единици (запомнят се в браузъра)
+  const setUnit = (kind, unit) => {
+    const next = { ...units, [kind]: unit };
+    setUnits(next);
+    saveUnits(next);
   };
 
   return (
@@ -66,10 +63,13 @@ export function ThemeProvider({ children }) {
         theme,
         toggleTheme,
         setAutoTheme,
-        temperatureUnit,
-        toggleTemperatureUnit,
-        convertTemperature,
-        getTemperatureSymbol,
+        units,
+        setUnit,
+        convertTemperature: (celsius) => toTemperature(celsius, units.temperature),
+        getTemperatureSymbol: () => units.temperature,
+        formatWind: (value) => formatWind(value, units.wind),
+        formatPressure: (value) => formatPressure(value, units.pressure),
+        formatVisibility: (value) => formatVisibility(value, units.visibility),
       }}
     >
       {children}

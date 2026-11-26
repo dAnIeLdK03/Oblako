@@ -7,7 +7,8 @@ import styles from './DetailedDayForecast.module.css';
 
 function DetailedDayForecast({ day, onClose }) {
   const { language } = useLanguage();
-  const { convertTemperature, getTemperatureSymbol } = useTheme();
+  const { convertTemperature, getTemperatureSymbol, formatWind, formatPressure, formatVisibility } =
+    useTheme();
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -191,8 +192,7 @@ function DetailedDayForecast({ day, onClose }) {
                     {language === 'bg' ? 'Вятър' : 'Wind'}
                   </div>
                   <div className={styles['parameter-value']}>
-                    {Math.round(day.windSpeed)} m/s{' '}
-                    {day.windDeg ? getWindDirection(day.windDeg) : ''}
+                    {formatWind(day.windSpeed)} {day.windDeg ? getWindDirection(day.windDeg) : ''}
                   </div>
                 </div>
               </div>
@@ -206,7 +206,7 @@ function DetailedDayForecast({ day, onClose }) {
                     <div className={styles['parameter-label']}>
                       {language === 'bg' ? 'Налягане' : 'Pressure'}
                     </div>
-                    <div className={styles['parameter-value']}>{day.pressure} hPa</div>
+                    <div className={styles['parameter-value']}>{formatPressure(day.pressure)}</div>
                   </div>
                 </div>
               )}
@@ -221,7 +221,7 @@ function DetailedDayForecast({ day, onClose }) {
                       {language === 'bg' ? 'Видимост' : 'Visibility'}
                     </div>
                     <div className={styles['parameter-value']}>
-                      {Math.round(day.visibility / 1000)} km
+                      {formatVisibility(day.visibility)}
                     </div>
                   </div>
                 </div>
@@ -242,7 +242,7 @@ function DetailedDayForecast({ day, onClose }) {
                     <div className={styles['wind-label']}>
                       {language === 'bg' ? 'Скорост' : 'Speed'}
                     </div>
-                    <div className={styles['wind-value']}>{Math.round(day.windSpeed)} m/s</div>
+                    <div className={styles['wind-value']}>{formatWind(day.windSpeed)}</div>
                   </div>
                 </div>
 

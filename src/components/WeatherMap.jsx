@@ -75,7 +75,7 @@ function MapController({ onLocationSelect, setMarkers }) {
   return null;
 }
 
-function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSymbol }) {
+function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSymbol, formatWind }) {
   const { language } = useLanguage();
 
   const getWeatherIcon = (iconCode) => {
@@ -140,7 +140,7 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
               />
               <div className={styles['popup-meta']}>
                 <Droplet size={14} /> {marker.weather.current.humidity}% | <Wind size={14} />{' '}
-                {Math.round((marker.weather.current.windSpeed || 0) * 3.6)} km/h
+                {formatWind(marker.weather.current.windSpeed || 0)}
               </div>
               <button onClick={() => onRemove(marker.id)} className={styles['popup-remove']}>
                 <XCircle size={14} /> {language === 'bg' ? 'Премахни' : 'Remove'}
@@ -155,7 +155,7 @@ function WeatherMarker({ marker, onRemove, convertTemperature, getTemperatureSym
 
 function WeatherMap({ onLocationSelect }) {
   const { language } = useLanguage();
-  const { convertTemperature, getTemperatureSymbol } = useTheme();
+  const { convertTemperature, getTemperatureSymbol, formatWind } = useTheme();
   const [markers, setMarkers] = useState([]);
   const [mapType, setMapType] = useState('street');
   const [showControls] = useState(true);
@@ -237,6 +237,7 @@ function WeatherMap({ onLocationSelect }) {
             marker={marker}
             onRemove={removeMarker}
             convertTemperature={convertTemperature}
+            formatWind={formatWind}
             getTemperatureSymbol={getTemperatureSymbol}
           />
         ))}

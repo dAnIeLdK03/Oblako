@@ -23,10 +23,10 @@ function Weather() {
   const {
     theme,
     toggleTheme,
-    temperatureUnit,
-    toggleTemperatureUnit,
     convertTemperature,
     getTemperatureSymbol,
+    formatWind,
+    formatVisibility,
   } = useTheme();
   const { searchHistory, addToHistory, clearHistory } = useHistory();
 
@@ -182,8 +182,6 @@ function Weather() {
           changeLanguage={changeLanguage}
           theme={theme}
           toggleTheme={toggleTheme}
-          temperatureUnit={temperatureUnit}
-          toggleTemperatureUnit={toggleTemperatureUnit}
           convertTemperature={convertTemperature}
           getTemperatureSymbol={getTemperatureSymbol}
           translateWeatherCondition={translateWeatherCondition}
@@ -232,7 +230,7 @@ function Weather() {
                     <div className={styles['wp-stat']}>
                       <Eye size={16} className={styles['wp-stat-icon']} />
                       <span>
-                        {t('visibility')}: {weatherData.current.visibility / 1000} km
+                        {t('visibility')}: {formatVisibility(weatherData.current.visibility)}
                       </span>
                     </div>
                     <div className={styles['wp-stat']}>
@@ -251,7 +249,7 @@ function Weather() {
                     <div className={styles['wp-stat']}>
                       <Wind size={16} className={styles['wp-stat-icon']} />
                       <span>
-                        {t('wind')}: {Math.round(weatherData.current.windSpeed * 3.6)} km/h
+                        {t('wind')}: {formatWind(weatherData.current.windSpeed)}
                       </span>
                     </div>
                   </div>

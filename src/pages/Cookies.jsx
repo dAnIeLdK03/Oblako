@@ -53,6 +53,12 @@ function Cookies() {
             </tr>
             <tr>
               <td>
+                <code>oblako_units</code>
+              </td>
+              <td>Избраните единици за температура, вятър, налягане и видимост</td>
+            </tr>
+            <tr>
+              <td>
                 <code>oblako_history</code>
               </td>
               <td>Последните 5 търсени града</td>
